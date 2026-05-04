@@ -1,0 +1,508 @@
+# Page snapshot
+
+```yaml
+- generic:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link "Skip to Navigation" [ref=e4] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - generic [ref=e9]:
+        - generic [ref=e13]:
+          - button "Toggle Panel" [ref=e17] [cursor=pointer]:
+            - img [ref=e21]
+            - generic [ref=e24]: Menu
+          - generic [ref=e29]:
+            - img [ref=e33]
+            - generic [ref=e37]: Sandbox (SPTest)
+        - button "Show menu" [ref=e46] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Show menu
+      - generic [ref=e52]:
+        - button "Search" [ref=e58]:
+          - img [ref=e60]
+          - text: Search...
+        - navigation "Global Header" [ref=e63]:
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - group [ref=e67]:
+                - button "Add favorite" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e70]:
+                    - img [ref=e74]
+                    - tooltip "Add favorite"
+                - button "Favorites list" [ref=e78] [cursor=pointer]:
+                  - generic [ref=e79]:
+                    - img [ref=e83]
+                    - tooltip "Favorites list"
+            - listitem [ref=e86]:
+              - button "Global Actions" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]:
+                  - img [ref=e97]
+                  - tooltip "Global Actions"
+            - listitem [ref=e100]:
+              - button "Guidance Center" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]:
+                  - img [ref=e107]
+                  - tooltip "Guidance Center"
+            - listitem [ref=e110]:
+              - button "Salesforce Help" [ref=e113] [cursor=pointer]:
+                - generic [ref=e114]:
+                  - img [ref=e118]
+                  - tooltip "Salesforce Help"
+            - listitem [ref=e121]:
+              - button "Setup" [ref=e127] [cursor=pointer]:
+                - generic [ref=e128]:
+                  - img [ref=e132]
+                  - tooltip "Setup"
+            - listitem [ref=e135]:
+              - button "Notifications" [ref=e138] [cursor=pointer]:
+                - generic [ref=e139]:
+                  - img [ref=e144]
+                  - tooltip "Notifications"
+            - listitem [ref=e148]:
+              - button "View profile" [ref=e151] [cursor=pointer]:
+                - generic [ref=e152]:
+                  - tooltip "View profile"
+    - generic [ref=e156]:
+      - generic [ref=e159]:
+        - generic [ref=e161]:
+          - navigation "App" [ref=e162]:
+            - button "App Launcher" [ref=e164] [cursor=pointer]:
+              - generic [ref=e175]: App Launcher
+          - heading "Events (Planner)" [level=1] [ref=e176]:
+            - generic "Events (Planner)" [ref=e177]
+        - navigation "Global" [ref=e180]:
+          - list [ref=e181]:
+            - listitem [ref=e182]:
+              - link "Events" [ref=e183] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event__c/home
+                - generic [ref=e184]: Events
+              - button "Events List" [ref=e188] [cursor=pointer]:
+                - img [ref=e192]
+                - generic [ref=e195]: Events List
+            - listitem [ref=e196]:
+              - link "Event Builder" [ref=e197] [cursor=pointer]:
+                - /url: /lightning/n/conference360__Event_Builder
+                - generic [ref=e198]: Event Builder
+            - listitem [ref=e199]:
+              - link "Home" [ref=e200] [cursor=pointer]:
+                - /url: /lightning/page/home
+                - generic [ref=e201]: Home
+            - listitem [ref=e202]:
+              - link "Contacts" [ref=e203] [cursor=pointer]:
+                - /url: /lightning/o/Contact/home
+                - generic [ref=e204]: Contacts
+              - button "Contacts List" [ref=e208] [cursor=pointer]:
+                - img [ref=e212]
+                - generic [ref=e215]: Contacts List
+            - listitem [ref=e216]:
+              - link "Attendees" [ref=e217] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Attendee__c/home
+                - generic [ref=e218]: Attendees
+              - button "Attendees List" [ref=e222] [cursor=pointer]:
+                - img [ref=e226]
+                - generic [ref=e229]: Attendees List
+            - listitem [ref=e230]:
+              - link "Campaigns" [ref=e231] [cursor=pointer]:
+                - /url: /lightning/o/Campaign/home
+                - generic [ref=e232]: Campaigns
+              - button "Campaigns List" [ref=e236] [cursor=pointer]:
+                - img [ref=e240]
+                - generic [ref=e243]: Campaigns List
+            - listitem [ref=e244]:
+              - link "Event Settings" [ref=e245] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event_Settings__c/home
+                - generic [ref=e246]: Event Settings
+              - button "Event Settings List" [ref=e250] [cursor=pointer]:
+                - img [ref=e254]
+                - generic [ref=e257]: Event Settings List
+            - listitem [ref=e258]:
+              - link "Forms" [ref=e259] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Form__c/home
+                - generic [ref=e260]: Forms
+              - button "Forms List" [ref=e264] [cursor=pointer]:
+                - img [ref=e268]
+                - generic [ref=e271]: Forms List
+            - listitem [ref=e272] [cursor=pointer]:
+              - link "Event Groups" [ref=e273]:
+                - /url: /lightning/o/conference360__Event_Group__c/home
+                - generic [ref=e274]: Event Groups
+              - button "Event Groups List" [ref=e278]:
+                - img [ref=e282]
+                - generic [ref=e285]: Event Groups List
+            - listitem [ref=e286]:
+              - button "Show more navigation items" [ref=e288] [cursor=pointer]:
+                - generic [ref=e289]: More
+                - img [ref=e293]
+                - generic [ref=e296]: Show more navigation items
+            - listitem [ref=e297]:
+              - button "Edit nav items" [ref=e299] [cursor=pointer]:
+                - img [ref=e301]
+                - generic [ref=e304]: Edit nav items
+      - main [ref=e306]:
+        - generic [ref=e316]:
+          - generic [ref=e318]:
+            - generic [ref=e319]:
+              - generic [ref=e321]:
+                - img [ref=e325]
+                - generic [ref=e326]:
+                  - heading "Event Groups" [level=1] [ref=e330]
+                  - generic [ref=e331]:
+                    - generic [ref=e333] [cursor=pointer]:
+                      - heading "Event Groups All" [level=1] [ref=e334]:
+                        - generic [ref=e335]: Event Groups
+                        - generic [ref=e336]: All
+                      - 'button "Select a List View: Event Groups" [active] [ref=e339]':
+                        - generic [ref=e340]:
+                          - img
+                        - generic [ref=e341]: "Select a List View: Event Groups"
+                    - button "Pin this list view." [ref=e345] [cursor=pointer]:
+                      - img [ref=e347]
+                      - generic [ref=e350]: Pin this list view.
+              - list [ref=e353]:
+                - listitem [ref=e354]:
+                  - button "New" [ref=e355] [cursor=pointer]:
+                    - generic "New" [ref=e356]
+                - listitem [ref=e357]:
+                  - button "Change Owner" [ref=e358] [cursor=pointer]:
+                    - generic "Change Owner" [ref=e359]
+                - listitem [ref=e360]:
+                  - button "Printable View" [ref=e361] [cursor=pointer]:
+                    - generic "Printable View" [ref=e362]
+            - generic [ref=e363]:
+              - paragraph [ref=e365]:
+                - generic [ref=e367]:
+                  - status "All" [ref=e368]: 3 items • Sorted by Event Group Name •
+                  - text: Updated a few seconds ago
+              - generic [ref=e374]:
+                - generic [ref=e375]: Search this list...
+                - generic [ref=e376]:
+                  - searchbox "Search this list..." [ref=e377]
+                  - generic:
+                    - img
+              - generic [ref=e378]:
+                - button "List View Controls" [ref=e382] [cursor=pointer]:
+                  - img [ref=e384]
+                  - img [ref=e388]
+                  - generic [ref=e391]: List View Controls
+                - button "Select list display" [ref=e394] [cursor=pointer]:
+                  - img [ref=e396]
+                  - img [ref=e400]
+                  - generic [ref=e403]: Select list display
+                - generic [ref=e405]:
+                  - button "Refresh" [ref=e408] [cursor=pointer]:
+                    - img [ref=e410]
+                    - generic [ref=e413]: Refresh
+                  - button "Column sort" [ref=e416] [cursor=pointer]:
+                    - img [ref=e418]
+                    - generic [ref=e421]: Column sort
+                  - button "Edit List" [ref=e424] [cursor=pointer]:
+                    - img [ref=e426]
+                    - generic [ref=e429]: Edit List
+                  - group [ref=e430]:
+                    - generic [ref=e432]:
+                      - button "Charts" [ref=e435] [cursor=pointer]:
+                        - img [ref=e437]
+                        - generic [ref=e440]: Charts
+                      - button "Filters" [ref=e443] [cursor=pointer]:
+                        - img [ref=e445]
+                        - generic [ref=e448]: Filters
+          - generic [ref=e455]:
+            - generic [ref=e456]: Navigation Mode
+            - grid [ref=e460]:
+              - rowgroup:
+                - row "Row Number Choose a Row Select 3 items Event Group Name Default Key Event Group URL UI Experience Filter Fields Event Settings Data Dictionary Group Last Modified Date Action":
+                  - columnheader "Row Number":
+                    - generic [ref=e463]:
+                      - generic "Row Number"
+                  - gridcell "Choose a Row Select 3 items":
+                    - generic [ref=e464]:
+                      - generic [ref=e465]: Choose a Row
+                      - generic [ref=e467]:
+                        - checkbox "Select 3 items" [ref=e468]
+                        - generic [ref=e471]: Select 3 items
+                  - columnheader "Event Group Name":
+                    - generic [ref=e473]:
+                      - 'button "Sort by: Event Group Name" [ref=e474] [cursor=pointer]':
+                        - generic [ref=e475]: "Sort by:"
+                        - generic "Event Group Name" [ref=e476]
+                        - img [ref=e478]
+                      - generic [ref=e481]: Sorted Ascending
+                      - button "Show Event Group Name column actions" [ref=e483] [cursor=pointer]:
+                        - img [ref=e485]
+                        - generic [ref=e488]: Show Event Group Name column actions
+                      - slider "Event Group Name column width" [ref=e489]: "285"
+                  - columnheader "Default":
+                    - generic [ref=e493]:
+                      - 'button "Sort by: Default" [ref=e494] [cursor=pointer]':
+                        - generic [ref=e495]: "Sort by:"
+                        - generic "Default" [ref=e496]
+                      - generic [ref=e497]: "Sorted: None"
+                      - button "Show Default column actions" [ref=e499] [cursor=pointer]:
+                        - img [ref=e501]
+                        - generic [ref=e504]: Show Default column actions
+                      - slider "Default column width" [ref=e505]: "117"
+                  - columnheader "Key":
+                    - generic [ref=e509]:
+                      - 'button "Sort by: Key" [ref=e510] [cursor=pointer]':
+                        - generic [ref=e511]: "Sort by:"
+                        - generic "Key" [ref=e512]
+                      - generic [ref=e513]: "Sorted: None"
+                      - button "Show Key column actions" [ref=e515] [cursor=pointer]:
+                        - img [ref=e517]
+                        - generic [ref=e520]: Show Key column actions
+                      - slider "Key column width" [ref=e521]: "82"
+                  - columnheader "Event Group URL":
+                    - generic [ref=e525]:
+                      - 'button "Sort by: Event Group URL" [ref=e526] [cursor=pointer]':
+                        - generic [ref=e527]: "Sort by:"
+                        - generic "Event Group URL" [ref=e528]
+                      - generic [ref=e529]: "Sorted: None"
+                      - button "Show Event Group URL column actions" [ref=e531] [cursor=pointer]:
+                        - img [ref=e533]
+                        - generic [ref=e536]: Show Event Group URL column actions
+                      - slider "Event Group URL column width" [ref=e537]: "311"
+                  - columnheader "UI Experience":
+                    - generic [ref=e541]:
+                      - 'button "Sort by: UI Experience" [ref=e542] [cursor=pointer]':
+                        - generic [ref=e543]: "Sort by:"
+                        - generic "UI Experience" [ref=e544]
+                      - generic [ref=e545]: "Sorted: None"
+                      - button "Show UI Experience column actions" [ref=e547] [cursor=pointer]:
+                        - img [ref=e549]
+                        - generic [ref=e552]: Show UI Experience column actions
+                      - slider "UI Experience column width" [ref=e553]: "71"
+                  - columnheader "Filter Fields":
+                    - generic [ref=e558]:
+                      - generic "Filter Fields" [ref=e559]
+                      - button "Show Filter Fields column actions" [ref=e561] [cursor=pointer]:
+                        - img [ref=e563]
+                        - generic [ref=e566]: Show Filter Fields column actions
+                      - slider "Filter Fields column width" [ref=e567]: "65"
+                  - columnheader "Event Settings":
+                    - generic [ref=e571]:
+                      - 'button "Sort by: Event Settings" [ref=e572] [cursor=pointer]':
+                        - generic [ref=e573]: "Sort by:"
+                        - generic "Event Settings" [ref=e574]
+                      - generic [ref=e575]: "Sorted: None"
+                      - button "Show Event Settings column actions" [ref=e577] [cursor=pointer]:
+                        - img [ref=e579]
+                        - generic [ref=e582]: Show Event Settings column actions
+                      - slider "Event Settings column width" [ref=e583]: "159"
+                  - columnheader "Data Dictionary Group":
+                    - generic [ref=e587]:
+                      - 'button "Sort by: Data Dictionary Group" [ref=e588] [cursor=pointer]':
+                        - generic [ref=e589]: "Sort by:"
+                        - generic "Data Dictionary Group" [ref=e590]
+                      - generic [ref=e591]: "Sorted: None"
+                      - button "Show Data Dictionary Group column actions" [ref=e593] [cursor=pointer]:
+                        - img [ref=e595]
+                        - generic [ref=e598]: Show Data Dictionary Group column actions
+                      - slider "Data Dictionary Group column width" [ref=e599]: "60"
+                  - columnheader "Last Modified Date":
+                    - generic [ref=e603]:
+                      - 'button "Sort by: Last Modified Date" [ref=e604] [cursor=pointer]':
+                        - generic [ref=e605]: "Sort by:"
+                        - generic "Last Modified Date" [ref=e606]
+                      - generic [ref=e607]: "Sorted: None"
+                      - button "Show Last Modified Date column actions" [ref=e609] [cursor=pointer]:
+                        - img [ref=e611]
+                        - generic [ref=e614]: Show Last Modified Date column actions
+                      - slider "Last Modified Date column width" [ref=e615]: "100"
+                  - columnheader "Action":
+                    - generic [ref=e620]:
+                      - generic "Action"
+              - rowgroup [ref=e621]:
+                - row "Select Item 1 Choose a Row BU Undergraduate Orientation 2024 Edit Event Group Name False Default Edit Default g2pfdRCHSY Edit Key https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY Locked Event Group URL List Edit UI Experience No Filters Edit Filter Fields BU Orientation Event Settings Edit Event Settings Locked Data Dictionary Group 3/26/2026, 4:18 PM Locked Last Modified Date Show Actions" [ref=e622]:
+                  - gridcell [ref=e623]
+                  - gridcell "Select Item 1 Choose a Row" [ref=e627]:
+                    - generic [ref=e628]:
+                      - checkbox "Select Item 1 Choose a Row" [ref=e629]
+                      - generic [ref=e632]: Select Item 1
+                  - rowheader "BU Undergraduate Orientation 2024 Edit Event Group Name" [ref=e633]:
+                    - generic [ref=e634]:
+                      - link "BU Undergraduate Orientation 2024" [ref=e640] [cursor=pointer]:
+                        - /url: /lightning/r/a1xdi000000oZvRAAU/view
+                        - generic [ref=e641]: BU Undergraduate Orientation 2024
+                      - button "Edit Event Group Name" [ref=e642] [cursor=pointer]:
+                        - img [ref=e643]
+                  - gridcell "False Default Edit Default" [ref=e646]:
+                    - generic [ref=e647]:
+                      - generic [ref=e653]:
+                        - generic "False" [ref=e654]:
+                          - generic [ref=e655]:
+                            - img [ref=e657]
+                            - generic [ref=e660]: "False"
+                        - generic [ref=e661]: Default
+                      - button "Edit Default" [ref=e662] [cursor=pointer]:
+                        - img [ref=e663]
+                  - gridcell "g2pfdRCHSY Edit Key" [ref=e666]:
+                    - generic [ref=e667]:
+                      - generic [ref=e670]: g2pfdRCHSY
+                      - button "Edit Key" [ref=e671] [cursor=pointer]:
+                        - img [ref=e672]
+                  - gridcell "https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY Locked Event Group URL" [ref=e675]:
+                    - generic [ref=e676]:
+                      - link "https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY" [ref=e682] [cursor=pointer]:
+                        - /url: https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY
+                      - img "Locked Event Group URL" [ref=e683]:
+                        - img [ref=e684]
+                  - gridcell "List Edit UI Experience" [ref=e687]:
+                    - generic [ref=e688]:
+                      - generic [ref=e691]: List
+                      - button "Edit UI Experience" [ref=e692] [cursor=pointer]:
+                        - img [ref=e693]
+                  - gridcell "No Filters Edit Filter Fields" [ref=e696]:
+                    - generic [ref=e697]:
+                      - generic [ref=e700]: No Filters
+                      - button "Edit Filter Fields" [ref=e701] [cursor=pointer]:
+                        - img [ref=e702]
+                  - gridcell "BU Orientation Event Settings Edit Event Settings" [ref=e705]:
+                    - generic [ref=e706]:
+                      - link "BU Orientation Event Settings" [ref=e711] [cursor=pointer]:
+                        - /url: /lightning/r/a24di000004bSavAAE/view
+                        - generic [ref=e712]: BU Orientation Event Settings
+                      - button "Edit Event Settings" [ref=e713] [cursor=pointer]:
+                        - img [ref=e714]
+                  - gridcell "Locked Data Dictionary Group" [ref=e717]:
+                    - img "Locked Data Dictionary Group" [ref=e719]:
+                      - img [ref=e720]
+                  - gridcell "3/26/2026, 4:18 PM Locked Last Modified Date" [ref=e723]:
+                    - generic [ref=e724]:
+                      - generic [ref=e727]: 3/26/2026, 4:18 PM
+                      - img "Locked Last Modified Date" [ref=e728]:
+                        - img [ref=e729]
+                  - gridcell "Show Actions" [ref=e732]:
+                    - button "Show Actions" [ref=e738] [cursor=pointer]:
+                      - img [ref=e740]
+                      - generic [ref=e743]: Show Actions
+                - row "Select Item 2 Choose a Row BU Undergraduate Orientation 2025 Edit Event Group Name True Default Edit Default Pv103dNGX8 Edit Key https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8 Locked Event Group URL List Edit UI Experience No Filters Edit Filter Fields BU Orientation Event Settings Edit Event Settings Locked Data Dictionary Group 5/1/2026, 9:44 AM Locked Last Modified Date Show Actions" [ref=e744]:
+                  - gridcell [ref=e745]
+                  - gridcell "Select Item 2 Choose a Row" [ref=e749]:
+                    - generic [ref=e750]:
+                      - checkbox "Select Item 2 Choose a Row" [ref=e751]
+                      - generic [ref=e754]: Select Item 2
+                  - rowheader "BU Undergraduate Orientation 2025 Edit Event Group Name" [ref=e755]:
+                    - generic [ref=e756]:
+                      - link "BU Undergraduate Orientation 2025" [ref=e762] [cursor=pointer]:
+                        - /url: /lightning/r/a1xdi000000oZvSAAU/view
+                        - generic [ref=e763]: BU Undergraduate Orientation 2025
+                      - button "Edit Event Group Name" [ref=e764] [cursor=pointer]:
+                        - img [ref=e765]
+                  - gridcell "True Default Edit Default" [ref=e768]:
+                    - generic [ref=e769]:
+                      - generic [ref=e775]:
+                        - generic "True" [ref=e776]:
+                          - generic [ref=e777]:
+                            - img [ref=e779]
+                            - generic [ref=e782]: "True"
+                        - generic [ref=e783]: Default
+                      - button "Edit Default" [ref=e784] [cursor=pointer]:
+                        - img [ref=e785]
+                  - gridcell "Pv103dNGX8 Edit Key" [ref=e788]:
+                    - generic [ref=e789]:
+                      - generic [ref=e792]: Pv103dNGX8
+                      - button "Edit Key" [ref=e793] [cursor=pointer]:
+                        - img [ref=e794]
+                  - gridcell "https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8 Locked Event Group URL" [ref=e797]:
+                    - generic [ref=e798]:
+                      - link "https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8" [ref=e804] [cursor=pointer]:
+                        - /url: https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8
+                      - img "Locked Event Group URL" [ref=e805]:
+                        - img [ref=e806]
+                  - gridcell "List Edit UI Experience" [ref=e809]:
+                    - generic [ref=e810]:
+                      - generic [ref=e813]: List
+                      - button "Edit UI Experience" [ref=e814] [cursor=pointer]:
+                        - img [ref=e815]
+                  - gridcell "No Filters Edit Filter Fields" [ref=e818]:
+                    - generic [ref=e819]:
+                      - generic [ref=e822]: No Filters
+                      - button "Edit Filter Fields" [ref=e823] [cursor=pointer]:
+                        - img [ref=e824]
+                  - gridcell "BU Orientation Event Settings Edit Event Settings" [ref=e827]:
+                    - generic [ref=e828]:
+                      - link "BU Orientation Event Settings" [ref=e833] [cursor=pointer]:
+                        - /url: /lightning/r/a24di000004bSavAAE/view
+                        - generic [ref=e834]: BU Orientation Event Settings
+                      - button "Edit Event Settings" [ref=e835] [cursor=pointer]:
+                        - img [ref=e836]
+                  - gridcell "Locked Data Dictionary Group" [ref=e839]:
+                    - img "Locked Data Dictionary Group" [ref=e841]:
+                      - img [ref=e842]
+                  - gridcell "5/1/2026, 9:44 AM Locked Last Modified Date" [ref=e845]:
+                    - generic [ref=e846]:
+                      - generic [ref=e849]: 5/1/2026, 9:44 AM
+                      - img "Locked Last Modified Date" [ref=e850]:
+                        - img [ref=e851]
+                  - gridcell "Show Actions" [ref=e854]:
+                    - button "Show Actions" [ref=e860] [cursor=pointer]:
+                      - img [ref=e862]
+                      - generic [ref=e865]: Show Actions
+                - row "Select Item 3 Choose a Row BU Undergraduate Orientation 2026 Edit Event Group Name False Default Edit Default NJ8G9adw8J Edit Key https://events.blackthorn.io//00Ddi000002NNnZ/g/NJ8G9adw8J Locked Event Group URL List Edit UI Experience No Filters Edit Filter Fields BU Orientation Event Settings Edit Event Settings Locked Data Dictionary Group 4/30/2026, 8:26 AM Locked Last Modified Date Show Actions" [ref=e866]:
+                  - gridcell [ref=e867]
+                  - gridcell "Select Item 3 Choose a Row" [ref=e871]:
+                    - generic [ref=e872]:
+                      - checkbox "Select Item 3 Choose a Row" [ref=e873]
+                      - generic [ref=e876]: Select Item 3
+                  - rowheader "BU Undergraduate Orientation 2026 Edit Event Group Name" [ref=e877]:
+                    - generic [ref=e878]:
+                      - link "BU Undergraduate Orientation 2026" [ref=e884] [cursor=pointer]:
+                        - /url: /lightning/r/a1xdi000001HPhNAAW/view
+                        - generic [ref=e885]: BU Undergraduate Orientation 2026
+                      - button "Edit Event Group Name" [ref=e886] [cursor=pointer]:
+                        - img [ref=e887]
+                  - gridcell "False Default Edit Default" [ref=e890]:
+                    - generic [ref=e891]:
+                      - generic [ref=e897]:
+                        - generic "False" [ref=e898]:
+                          - generic [ref=e899]:
+                            - img [ref=e901]
+                            - generic [ref=e904]: "False"
+                        - generic [ref=e905]: Default
+                      - button "Edit Default" [ref=e906] [cursor=pointer]:
+                        - img [ref=e907]
+                  - gridcell "NJ8G9adw8J Edit Key" [ref=e910]:
+                    - generic [ref=e911]:
+                      - generic [ref=e914]: NJ8G9adw8J
+                      - button "Edit Key" [ref=e915] [cursor=pointer]:
+                        - img [ref=e916]
+                  - gridcell "https://events.blackthorn.io//00Ddi000002NNnZ/g/NJ8G9adw8J Locked Event Group URL" [ref=e919]:
+                    - generic [ref=e920]:
+                      - link "https://events.blackthorn.io//00Ddi000002NNnZ/g/NJ8G9adw8J" [ref=e926] [cursor=pointer]:
+                        - /url: https://events.blackthorn.io//00Ddi000002NNnZ/g/NJ8G9adw8J
+                      - img "Locked Event Group URL" [ref=e927]:
+                        - img [ref=e928]
+                  - gridcell "List Edit UI Experience" [ref=e931]:
+                    - generic [ref=e932]:
+                      - generic [ref=e935]: List
+                      - button "Edit UI Experience" [ref=e936] [cursor=pointer]:
+                        - img [ref=e937]
+                  - gridcell "No Filters Edit Filter Fields" [ref=e940]:
+                    - generic [ref=e941]:
+                      - generic [ref=e944]: No Filters
+                      - button "Edit Filter Fields" [ref=e945] [cursor=pointer]:
+                        - img [ref=e946]
+                  - gridcell "BU Orientation Event Settings Edit Event Settings" [ref=e949]:
+                    - generic [ref=e950]:
+                      - link "BU Orientation Event Settings" [ref=e955] [cursor=pointer]:
+                        - /url: /lightning/r/a24di000004bSavAAE/view
+                        - generic [ref=e956]: BU Orientation Event Settings
+                      - button "Edit Event Settings" [ref=e957] [cursor=pointer]:
+                        - img [ref=e958]
+                  - gridcell "Locked Data Dictionary Group" [ref=e961]:
+                    - img "Locked Data Dictionary Group" [ref=e963]:
+                      - img [ref=e964]
+                  - gridcell "4/30/2026, 8:26 AM Locked Last Modified Date" [ref=e967]:
+                    - generic [ref=e968]:
+                      - generic [ref=e971]: 4/30/2026, 8:26 AM
+                      - img "Locked Last Modified Date" [ref=e972]:
+                        - img [ref=e973]
+                  - gridcell "Show Actions" [ref=e976]:
+                    - button "Show Actions" [ref=e982] [cursor=pointer]:
+                      - img [ref=e984]
+                      - generic [ref=e987]: Show Actions
+  - generic:
+    - status
+```

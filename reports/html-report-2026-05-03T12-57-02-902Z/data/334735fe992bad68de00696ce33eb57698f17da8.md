@@ -1,0 +1,481 @@
+# Page snapshot
+
+```yaml
+- generic [active]:
+  - generic:
+    - generic [ref=e2]:
+      - generic [ref=e3]:
+        - link [ref=e4] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - text: Skip to Navigation
+        - link [ref=e5] [cursor=pointer]:
+          - /url: javascript:void(0);
+          - text: Skip to Main Content
+        - generic [ref=e9]:
+          - generic [ref=e13]:
+            - button [ref=e17] [cursor=pointer]:
+              - img [ref=e21]
+              - generic [ref=e24]: Menu
+            - generic [ref=e29]:
+              - img [ref=e33]
+              - generic [ref=e37]: Sandbox (SPTest)
+          - button [ref=e46] [cursor=pointer]:
+            - img [ref=e48]
+            - generic [ref=e51]: Show menu
+        - generic [ref=e52]:
+          - button [ref=e58]:
+            - img [ref=e60]
+            - text: Search...
+          - navigation [ref=e63]:
+            - list [ref=e65]:
+              - listitem [ref=e66]:
+                - group [ref=e67]:
+                  - button [ref=e69] [cursor=pointer]:
+                    - img [ref=e74]
+                  - button [ref=e78] [cursor=pointer]:
+                    - img [ref=e83]
+              - listitem [ref=e86]:
+                - button [ref=e92] [cursor=pointer]:
+                  - img [ref=e97]
+              - listitem [ref=e100]:
+                - button [ref=e102] [cursor=pointer]:
+                  - img [ref=e107]
+              - listitem [ref=e110]:
+                - button [ref=e113] [cursor=pointer]:
+                  - img [ref=e118]
+              - listitem [ref=e121]:
+                - button [ref=e127] [cursor=pointer]:
+                  - img [ref=e132]
+              - listitem [ref=e135]:
+                - button [ref=e138] [cursor=pointer]:
+                  - img [ref=e144]
+              - listitem [ref=e148]:
+                - button [ref=e151] [cursor=pointer]
+      - generic [ref=e156]:
+        - generic [ref=e159]:
+          - generic [ref=e161]:
+            - navigation [ref=e162]:
+              - button [ref=e164] [cursor=pointer]:
+                - generic [ref=e175]: App Launcher
+            - heading [level=1] [ref=e176]:
+              - generic [ref=e177]: Events (Planner)
+          - navigation [ref=e180]:
+            - list [ref=e181]:
+              - listitem [ref=e182]:
+                - link [ref=e183] [cursor=pointer]:
+                  - /url: /lightning/o/conference360__Event__c/home
+                  - generic [ref=e184]: Events
+                - button [ref=e188] [cursor=pointer]:
+                  - img [ref=e192]
+                  - generic [ref=e195]: Events List
+              - listitem [ref=e196]:
+                - link [ref=e197] [cursor=pointer]:
+                  - /url: /lightning/n/conference360__Event_Builder
+                  - generic [ref=e198]: Event Builder
+              - listitem [ref=e199]:
+                - link [ref=e200] [cursor=pointer]:
+                  - /url: /lightning/page/home
+                  - generic [ref=e201]: Home
+              - listitem [ref=e202]:
+                - link [ref=e203] [cursor=pointer]:
+                  - /url: /lightning/o/Contact/home
+                  - generic [ref=e204]: Contacts
+                - button [ref=e208] [cursor=pointer]:
+                  - img [ref=e212]
+                  - generic [ref=e215]: Contacts List
+              - listitem [ref=e216]:
+                - link [ref=e217] [cursor=pointer]:
+                  - /url: /lightning/o/conference360__Attendee__c/home
+                  - generic [ref=e218]: Attendees
+                - button [ref=e222] [cursor=pointer]:
+                  - img [ref=e226]
+                  - generic [ref=e229]: Attendees List
+              - listitem [ref=e230]:
+                - link [ref=e231] [cursor=pointer]:
+                  - /url: /lightning/o/Campaign/home
+                  - generic [ref=e232]: Campaigns
+                - button [ref=e236] [cursor=pointer]:
+                  - img [ref=e240]
+                  - generic [ref=e243]: Campaigns List
+              - listitem [ref=e244]:
+                - link [ref=e245] [cursor=pointer]:
+                  - /url: /lightning/o/conference360__Event_Settings__c/home
+                  - generic [ref=e246]: Event Settings
+                - button [ref=e250] [cursor=pointer]:
+                  - img [ref=e254]
+                  - generic [ref=e257]: Event Settings List
+              - listitem [ref=e258]:
+                - link [ref=e259] [cursor=pointer]:
+                  - /url: /lightning/o/conference360__Form__c/home
+                  - generic [ref=e260]: Forms
+                - button [ref=e264] [cursor=pointer]:
+                  - img [ref=e268]
+                  - generic [ref=e271]: Forms List
+              - listitem [ref=e272] [cursor=pointer]:
+                - link [ref=e273]:
+                  - /url: /lightning/o/conference360__Event_Group__c/home
+                  - generic [ref=e274]: Event Groups
+                - button [ref=e278]:
+                  - img [ref=e282]
+                  - generic [ref=e285]: Event Groups List
+              - listitem [ref=e286]:
+                - button [ref=e288] [cursor=pointer]:
+                  - generic [ref=e289]: More
+                  - img [ref=e293]
+                  - generic [ref=e296]: Show more navigation items
+              - listitem [ref=e297]:
+                - button [ref=e299] [cursor=pointer]:
+                  - img [ref=e301]
+                  - generic [ref=e304]: Edit nav items
+        - main [ref=e306]:
+          - generic [ref=e322]:
+            - generic [ref=e332]:
+              - heading [level=1] [ref=e339]:
+                - generic [ref=e341]: Event Group
+                - generic [ref=e342]: BU Undergraduate Orientation 2025
+              - generic [ref=e346]:
+                - button [ref=e352] [cursor=pointer]: Edit
+                - button [ref=e358] [cursor=pointer]: Clone
+                - button [ref=e364] [cursor=pointer]: Delete
+            - generic [ref=e366]:
+              - generic [ref=e372]:
+                - heading [level=2] [ref=e373]: Tabs
+                - generic [ref=e375]:
+                  - heading [level=2] [ref=e376]: Tabs
+                  - tablist [ref=e378]:
+                    - tab [selected] [ref=e379] [cursor=pointer]: Details
+                  - tabpanel [ref=e382]:
+                    - generic [ref=e395]:
+                      - list [ref=e399]:
+                        - generic [ref=e400]:
+                          - generic [ref=e402]:
+                            - listitem [ref=e404]:
+                              - generic [ref=e405]:
+                                - generic [ref=e406]: Event Group Name
+                                - generic [ref=e407]:
+                                  - generic [ref=e409]: BU Undergraduate Orientation 2025
+                                  - button [ref=e410] [cursor=pointer]:
+                                    - generic [ref=e412]: Edit Event Group Name
+                            - listitem [ref=e414]:
+                              - generic [ref=e415]:
+                                - generic [ref=e416]: Default
+                                - button [ref=e420] [cursor=pointer]:
+                                  - img [ref=e422]
+                                  - generic [ref=e425]: Help Default
+                                - generic [ref=e426]:
+                                  - generic [ref=e431]:
+                                    - generic [ref=e433]:
+                                      - img [ref=e435]
+                                      - generic [ref=e438]: "False"
+                                    - generic [ref=e439]: Default
+                                  - button [ref=e440] [cursor=pointer]:
+                                    - generic [ref=e442]: Edit Default
+                          - generic [ref=e444]:
+                            - listitem [ref=e446]:
+                              - generic [ref=e447]:
+                                - generic [ref=e448]: Event Group URL
+                                - button [ref=e452] [cursor=pointer]:
+                                  - img [ref=e454]
+                                  - generic [ref=e457]: Help Event Group URL
+                                - link [ref=e464] [cursor=pointer]:
+                                  - /url: https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8
+                                  - text: https://events.blackthorn.io//00Ddi000002NNnZ/g/Pv103dNGX8
+                            - listitem [ref=e466]:
+                              - generic [ref=e467]:
+                                - generic [ref=e468]: Key
+                                - button [ref=e472] [cursor=pointer]:
+                                  - img [ref=e474]
+                                  - generic [ref=e477]: Help Key
+                                - generic [ref=e478]:
+                                  - generic [ref=e480]: Pv103dNGX8
+                                  - button [ref=e481] [cursor=pointer]:
+                                    - generic [ref=e483]: Edit Key
+                          - generic [ref=e485]:
+                            - listitem [ref=e487]:
+                              - generic [ref=e488]:
+                                - generic [ref=e489]: Logo URL
+                                - button [ref=e493] [cursor=pointer]:
+                                  - img [ref=e495]
+                                  - generic [ref=e498]: Help Logo URL
+                                - button [ref=e500] [cursor=pointer]:
+                                  - generic [ref=e502]: Edit Logo URL
+                            - listitem [ref=e504]:
+                              - generic [ref=e505]:
+                                - generic [ref=e506]: Event Settings
+                                - button [ref=e510] [cursor=pointer]:
+                                  - img [ref=e512]
+                                  - generic [ref=e515]: Help Event Settings
+                                - generic [ref=e516]:
+                                  - generic [ref=e522]:
+                                    - link [ref=e523] [cursor=pointer]:
+                                      - /url: /lightning/r/conference360__Event_Settings__c/a24di000004bSavAAE/view
+                                      - generic [ref=e527]: BU Orientation Event Settings
+                                    - button [ref=e529] [cursor=pointer]:
+                                      - img [ref=e531]
+                                      - generic [ref=e534]: Open BU Orientation Event Settings Preview
+                                  - button [ref=e535] [cursor=pointer]:
+                                    - generic [ref=e537]: Edit Event Settings
+                          - generic [ref=e539]:
+                            - listitem [ref=e541]:
+                              - generic [ref=e542]:
+                                - generic [ref=e543]: UI Experience
+                                - button [ref=e547] [cursor=pointer]:
+                                  - img [ref=e549]
+                                  - generic [ref=e552]: Help UI Experience
+                                - generic [ref=e553]:
+                                  - generic [ref=e555]: List
+                                  - button [ref=e556] [cursor=pointer]:
+                                    - generic [ref=e558]: Edit UI Experience
+                            - listitem [ref=e560]:
+                              - generic [ref=e561]:
+                                - generic [ref=e562]: Filter Fields
+                                - button [ref=e566] [cursor=pointer]:
+                                  - img [ref=e568]
+                                  - generic [ref=e571]: Help Filter Fields
+                                - generic [ref=e572]:
+                                  - generic [ref=e574]: No Filters
+                                  - button [ref=e575] [cursor=pointer]:
+                                    - generic [ref=e577]: Edit Filter Fields
+                      - generic [ref=e579]:
+                        - heading [level=3] [ref=e580]:
+                          - button [expanded] [ref=e581] [cursor=pointer]:
+                            - img [ref=e586]
+                            - generic [ref=e589]: System Information
+                        - list [ref=e591]:
+                          - generic [ref=e594]:
+                            - listitem [ref=e596]:
+                              - generic [ref=e597]:
+                                - generic [ref=e598]: Created By
+                                - generic [ref=e602]:
+                                  - generic [ref=e608]:
+                                    - link [ref=e609] [cursor=pointer]:
+                                      - /url: /lightning/r/User/0055f000009EGnmAAG/view
+                                      - generic [ref=e613]: Service Owner
+                                    - button [ref=e615] [cursor=pointer]:
+                                      - img [ref=e617]
+                                      - generic [ref=e620]: Open Service Owner Preview
+                                  - text: ", 10/24/2025, 10:05 AM"
+                            - listitem [ref=e622]:
+                              - generic [ref=e623]:
+                                - generic [ref=e624]: Last Modified By
+                                - generic [ref=e628]:
+                                  - generic [ref=e634]:
+                                    - link [ref=e635] [cursor=pointer]:
+                                      - /url: /lightning/r/User/005di00000J1pNPAAZ/view
+                                      - generic [ref=e639]: Pranay Gunda
+                                    - button [ref=e641] [cursor=pointer]:
+                                      - img [ref=e643]
+                                      - generic [ref=e646]: Open Pranay Gunda Preview
+                                  - text: ", 5/3/2026, 8:59 AM"
+              - article [ref=e658]:
+                - generic [ref=e659]:
+                  - generic [ref=e660]:
+                    - generic [ref=e663]:
+                      - generic [ref=e665]:
+                        - img [ref=e669]
+                        - heading [level=2] [ref=e671]:
+                          - link [ref=e672] [cursor=pointer]:
+                            - /url: /lightning/r/conference360__Event_Group__c/a1xdi000000oZvSAAU/related/conference360__Events__r/view
+                            - generic [ref=e673]: Events
+                            - generic [ref=e674]: (3+)
+                      - button [ref=e679] [cursor=pointer]:
+                        - img [ref=e681]
+                        - generic [ref=e684]: Show actions for Events
+                    - generic [ref=e692]:
+                      - article [ref=e695]:
+                        - generic [ref=e696]:
+                          - heading [level=3] [ref=e698]:
+                            - generic [ref=e704]:
+                              - link [ref=e705] [cursor=pointer]:
+                                - /url: /lightning/r/a26di000000LNZiAAO/view
+                                - generic [ref=e709]: Fall 2025 Orientation
+                              - button [ref=e711] [cursor=pointer]:
+                                - img [ref=e713]
+                                - generic [ref=e716]: Open Fall 2025 Orientation Preview
+                          - generic [ref=e718]:
+                            - term [ref=e719]: "Status:"
+                            - definition [ref=e720]:
+                              - generic [ref=e722]: Active
+                            - term [ref=e723]: "Event Start Date:"
+                            - definition [ref=e724]:
+                              - generic [ref=e725]: 8/25/2025
+                            - term [ref=e726]: "Total Capacity:"
+                            - definition [ref=e727]:
+                              - generic [ref=e728]: 8,930
+                        - button [ref=e733] [cursor=pointer]:
+                          - img [ref=e735]
+                          - generic [ref=e738]: Show Actions
+                      - article [ref=e741]:
+                        - generic [ref=e742]:
+                          - heading [level=3] [ref=e744]:
+                            - generic [ref=e750]:
+                              - link [ref=e751] [cursor=pointer]:
+                                - /url: /lightning/r/a26di000000LNZjAAO/view
+                                - generic [ref=e755]: Fall 2025 Orientation - Cannot Attend
+                              - button [ref=e757] [cursor=pointer]:
+                                - img [ref=e759]
+                                - generic [ref=e762]: Open Fall 2025 Orientation - Cannot Attend Preview
+                          - generic [ref=e764]:
+                            - term [ref=e765]: "Status:"
+                            - definition [ref=e766]:
+                              - generic [ref=e768]: Active
+                            - term [ref=e769]: "Event Start Date:"
+                            - definition [ref=e770]:
+                              - generic [ref=e771]: 8/25/2025
+                            - term [ref=e772]: "Total Capacity:"
+                            - definition [ref=e773]:
+                              - generic [ref=e774]: 1,660
+                        - button [ref=e779] [cursor=pointer]:
+                          - img [ref=e781]
+                          - generic [ref=e784]: Show Actions
+                      - article [ref=e787]:
+                        - generic [ref=e788]:
+                          - heading [level=3] [ref=e790]:
+                            - generic [ref=e796]:
+                              - link [ref=e797] [cursor=pointer]:
+                                - /url: /lightning/r/a26di000000LNZkAAO/view
+                                - generic [ref=e801]: Orientation test
+                              - button [ref=e803] [cursor=pointer]:
+                                - img [ref=e805]
+                                - generic [ref=e808]: Open Orientation test Preview
+                          - generic [ref=e810]:
+                            - term [ref=e811]: "Status:"
+                            - definition [ref=e812]:
+                              - generic [ref=e814]: Active
+                            - term [ref=e815]: "Event Start Date:"
+                            - definition [ref=e816]:
+                              - generic [ref=e817]: 10/16/2025
+                            - term [ref=e818]: "Total Capacity:"
+                            - definition [ref=e819]:
+                              - generic [ref=e820]: "40"
+                        - button [ref=e825] [cursor=pointer]:
+                          - img [ref=e827]
+                          - generic [ref=e830]: Show Actions
+                  - link [ref=e831] [cursor=pointer]:
+                    - /url: /lightning/r/conference360__Event_Group__c/a1xdi000000oZvSAAU/related/conference360__Events__r/view
+                    - generic [ref=e832]:
+                      - text: View All
+                      - generic [ref=e833]: Events
+    - dialog "New Event Group" [ref=e839]:
+      - generic [ref=e840]:
+        - button "Cancel and close" [ref=e841] [cursor=pointer]:
+          - img [ref=e843]
+          - generic [ref=e846]: Cancel and close
+        - generic [ref=e847]:
+          - generic [ref=e854]:
+            - heading "New Event Group" [level=2] [ref=e856]
+            - generic [ref=e858]:
+              - generic [ref=e859]: "* = Required Information"
+              - generic [ref=e861]:
+                - generic [ref=e868]:
+                  - heading "Information" [level=3] [ref=e869]:
+                    - generic [ref=e870]: Information
+                  - list [ref=e872]:
+                    - generic [ref=e873]:
+                      - generic [ref=e875]:
+                        - listitem [ref=e877]:
+                          - button "Undo Event Group Name" [ref=e879] [cursor=pointer]:
+                            - img [ref=e881]
+                          - generic [ref=e889]:
+                            - generic [ref=e890]: "*Event Group Name"
+                            - textbox "Event Group Name" [ref=e892]: BU Undergraduate Orientation 2026
+                        - listitem [ref=e894]:
+                          - generic [ref=e899]:
+                            - generic [ref=e901]: Default
+                            - button "Default Help Info" [ref=e905] [cursor=pointer]:
+                              - img [ref=e907]
+                              - generic [ref=e910]: Default Help Info
+                            - checkbox "Default" [ref=e912]
+                      - generic [ref=e914]:
+                        - listitem [ref=e916]:
+                          - generic [ref=e921]:
+                            - generic [ref=e922]: Logo URL
+                            - button "Logo URL Help Info" [ref=e926] [cursor=pointer]:
+                              - img [ref=e928]
+                              - generic [ref=e931]: Logo URL Help Info
+                            - textbox "Logo URL" [ref=e933]
+                        - listitem [ref=e935]:
+                          - generic [ref=e941]:
+                            - generic [ref=e942]: Key
+                            - button "Key Help Info" [ref=e946] [cursor=pointer]:
+                              - img [ref=e948]
+                              - generic [ref=e951]: Key Help Info
+                            - textbox "Key" [ref=e953]: Pv103dNGX8
+                      - generic [ref=e955]:
+                        - listitem [ref=e957]:
+                          - generic [ref=e964]:
+                            - generic [ref=e966]: UI Experience
+                            - button "UI Experience Help Info" [ref=e970] [cursor=pointer]:
+                              - img [ref=e972]
+                              - generic [ref=e975]: UI Experience Help Info
+                            - generic [ref=e979]:
+                              - combobox "UI Experience" [ref=e980] [cursor=pointer]:
+                                - generic [ref=e981]: List
+                              - generic:
+                                - generic:
+                                  - generic:
+                                    - generic:
+                                      - img
+                            - status
+                        - listitem [ref=e983]:
+                          - generic [ref=e989]:
+                            - generic [ref=e990]: Event Settings
+                            - button "Event Settings Help Info" [ref=e994] [cursor=pointer]:
+                              - img [ref=e996]
+                              - generic [ref=e999]: Event Settings Help Info
+                            - generic [ref=e1004]:
+                              - generic [ref=e1006]:
+                                - img [ref=e1008]
+                                - generic [ref=e1011]: Event Settings
+                              - combobox "Event Settings" [ref=e1014]: BU Orientation Event Settings
+                              - button "Clear Event Settings Selection" [ref=e1015] [cursor=pointer]:
+                                - img [ref=e1017]
+                                - generic [ref=e1020]: Clear Event Settings Selection
+                            - status
+                      - listitem [ref=e1025]:
+                        - group "requiredFilter Fields" [ref=e1032]:
+                          - generic [ref=e1033]: "*Filter Fields"
+                          - button "Filter Fields Help Info" [ref=e1037] [cursor=pointer]:
+                            - img [ref=e1039]
+                            - generic [ref=e1042]: Filter Fields Help Info
+                          - generic [ref=e1044]:
+                            - generic [ref=e1046]: Press Ctrl (Cmd on Mac) + Left Arrow or Ctrl (Cmd on Mac) + Right Arrow to move items between lists. Supports single character navigation. Press CTRL + Space key to select the option.
+                            - generic [ref=e1047]:
+                              - generic [ref=e1048]: Available
+                              - listbox "Available" [ref=e1050]:
+                                - option "Category" [ref=e1051]:
+                                  - generic "Category" [ref=e1053]
+                                - option "Keywords" [ref=e1054]:
+                                  - generic "Keywords" [ref=e1056]
+                                - option "Distance" [ref=e1057]:
+                                  - generic "Distance" [ref=e1059]
+                            - generic [ref=e1060]:
+                              - button "Move selection to Chosen" [ref=e1062] [cursor=pointer]:
+                                - img [ref=e1064]
+                                - generic [ref=e1067]: Move selection to Chosen
+                              - button "Move selection to Available" [ref=e1069] [cursor=pointer]:
+                                - img [ref=e1071]
+                                - generic [ref=e1074]: Move selection to Available
+                            - generic [ref=e1075]:
+                              - generic [ref=e1076]: Chosen
+                              - listbox "Chosen" [ref=e1078]:
+                                - option "No Filters" [ref=e1079]:
+                                  - generic "No Filters" [ref=e1081]
+                - generic [ref=e1086]:
+                  - generic "Cancel" [ref=e1087]:
+                    - generic [ref=e1090]:
+                      - generic:
+                        - button "Cancel" [disabled]
+                  - generic "Save & New" [ref=e1091]:
+                    - generic [ref=e1094]:
+                      - generic:
+                        - button "Save & New" [disabled]
+                  - generic "Save" [ref=e1095]:
+                    - generic [ref=e1098]:
+                      - generic:
+                        - button "Save" [disabled]
+          - status [ref=e1099]
+    - alert [ref=e1101]
+  - generic:
+    - status
+```

@@ -1,0 +1,8 @@
+Access Token retrieved.
+ℹ️ Not found. Proceeding with clone flow...
+Unchecked Default checkbox.
+✅ Clicked Clone button.
+Event Group "BU Undergraduate Orientation 2026" cloned successfully.
+
+🔍 Verifying record via SOQL...
+Access Token retrieved.

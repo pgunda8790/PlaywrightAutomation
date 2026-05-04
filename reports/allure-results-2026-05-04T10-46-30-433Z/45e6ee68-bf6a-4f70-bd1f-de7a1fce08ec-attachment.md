@@ -1,0 +1,385 @@
+# Page snapshot
+
+```yaml
+- generic [active]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link "Skip to Navigation" [ref=e4] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - generic [ref=e9]:
+        - generic [ref=e13]:
+          - button "Toggle Panel" [ref=e17] [cursor=pointer]:
+            - img [ref=e21]
+            - generic [ref=e24]: Menu
+          - generic [ref=e29]:
+            - img [ref=e33]
+            - generic [ref=e37]: Sandbox (SPTest)
+        - button "Show menu" [ref=e46] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Show menu
+      - generic [ref=e52]:
+        - button "Search" [ref=e58]:
+          - img [ref=e60]
+          - text: Search...
+        - navigation "Global Header" [ref=e63]:
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - group [ref=e67]:
+                - button "Add favorite" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e70]:
+                    - img [ref=e74]
+                    - tooltip "Add favorite"
+                - button "Favorites list" [ref=e78] [cursor=pointer]:
+                  - generic [ref=e79]:
+                    - img [ref=e83]
+                    - tooltip "Favorites list"
+            - listitem [ref=e86]:
+              - button "Global Actions" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]:
+                  - img [ref=e97]
+                  - tooltip "Global Actions"
+            - listitem [ref=e100]:
+              - button "Guidance Center" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]:
+                  - img [ref=e107]
+                  - tooltip "Guidance Center"
+            - listitem [ref=e110]:
+              - button "Salesforce Help" [ref=e113] [cursor=pointer]:
+                - generic [ref=e114]:
+                  - img [ref=e118]
+                  - tooltip "Salesforce Help"
+            - listitem [ref=e121]:
+              - button "Setup" [ref=e127] [cursor=pointer]:
+                - generic [ref=e128]:
+                  - img [ref=e132]
+                  - tooltip "Setup"
+            - listitem [ref=e135]:
+              - button "Notifications" [ref=e138] [cursor=pointer]:
+                - generic [ref=e139]:
+                  - img [ref=e144]
+                  - tooltip "Notifications"
+            - listitem [ref=e148]:
+              - button "View profile" [ref=e151] [cursor=pointer]:
+                - generic [ref=e152]:
+                  - tooltip "View profile"
+    - generic [ref=e156]:
+      - generic [ref=e159]:
+        - generic [ref=e161]:
+          - navigation "App" [ref=e162]:
+            - button "App Launcher" [ref=e164] [cursor=pointer]:
+              - generic [ref=e175]: App Launcher
+          - heading "Events (Planner)" [level=1] [ref=e176]:
+            - generic "Events (Planner)" [ref=e177]
+        - navigation "Global" [ref=e180]:
+          - list [ref=e181]:
+            - listitem [ref=e182]:
+              - link "Events" [ref=e183] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event__c/home
+                - generic [ref=e184]: Events
+              - button "Events List" [ref=e188] [cursor=pointer]:
+                - img [ref=e192]
+                - generic [ref=e195]: Events List
+            - listitem [ref=e196]:
+              - link "Event Builder" [ref=e197] [cursor=pointer]:
+                - /url: /lightning/n/conference360__Event_Builder
+                - generic [ref=e198]: Event Builder
+            - listitem [ref=e199]:
+              - link "Home" [ref=e200] [cursor=pointer]:
+                - /url: /lightning/page/home
+                - generic [ref=e201]: Home
+            - listitem [ref=e202]:
+              - link "Contacts" [ref=e203] [cursor=pointer]:
+                - /url: /lightning/o/Contact/home
+                - generic [ref=e204]: Contacts
+              - button "Contacts List" [ref=e208] [cursor=pointer]:
+                - img [ref=e212]
+                - generic [ref=e215]: Contacts List
+            - listitem [ref=e216]:
+              - link "Attendees" [ref=e217] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Attendee__c/home
+                - generic [ref=e218]: Attendees
+              - button "Attendees List" [ref=e222] [cursor=pointer]:
+                - img [ref=e226]
+                - generic [ref=e229]: Attendees List
+            - listitem [ref=e230]:
+              - link "Campaigns" [ref=e231] [cursor=pointer]:
+                - /url: /lightning/o/Campaign/home
+                - generic [ref=e232]: Campaigns
+              - button "Campaigns List" [ref=e236] [cursor=pointer]:
+                - img [ref=e240]
+                - generic [ref=e243]: Campaigns List
+            - listitem [ref=e244]:
+              - link "Event Settings" [ref=e245] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event_Settings__c/home
+                - generic [ref=e246]: Event Settings
+              - button "Event Settings List" [ref=e250] [cursor=pointer]:
+                - img [ref=e254]
+                - generic [ref=e257]: Event Settings List
+            - listitem [ref=e258]:
+              - link "Forms" [ref=e259] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Form__c/home
+                - generic [ref=e260]: Forms
+              - button "Forms List" [ref=e264] [cursor=pointer]:
+                - img [ref=e268]
+                - generic [ref=e271]: Forms List
+            - listitem [ref=e272] [cursor=pointer]:
+              - link "Event Groups" [ref=e273]:
+                - /url: /lightning/o/conference360__Event_Group__c/home
+                - generic [ref=e274]: Event Groups
+              - button "Event Groups List" [ref=e278]:
+                - img [ref=e282]
+                - generic [ref=e285]: Event Groups List
+            - listitem [ref=e286]:
+              - button "Show more navigation items" [ref=e288] [cursor=pointer]:
+                - generic [ref=e289]: More
+                - img [ref=e293]
+                - generic [ref=e296]: Show more navigation items
+            - listitem [ref=e297]:
+              - button "Edit nav items" [ref=e299] [cursor=pointer]:
+                - img [ref=e301]
+                - generic [ref=e304]: Edit nav items
+      - main [ref=e306]:
+        - generic [ref=e322]:
+          - generic [ref=e332]:
+            - heading "Event Group BU Undergraduate Orientation 2024" [level=1] [ref=e339]:
+              - generic [ref=e341]: Event Group
+              - generic [ref=e342]: BU Undergraduate Orientation 2024
+            - generic [ref=e346]:
+              - generic "Edit" [ref=e347]:
+                - button "Edit" [ref=e352] [cursor=pointer]
+              - generic "Clone" [ref=e353]:
+                - button "Clone" [ref=e358] [cursor=pointer]
+              - generic "Delete" [ref=e359]:
+                - button "Delete" [ref=e364] [cursor=pointer]
+          - generic [ref=e366]:
+            - generic [ref=e372]:
+              - heading "Tabs" [level=2] [ref=e373]
+              - generic "Tabs" [ref=e374]:
+                - generic [ref=e375]:
+                  - heading "Tabs" [level=2] [ref=e376]
+                  - tablist "Tabs" [ref=e378]:
+                    - tab "Details" [selected] [ref=e379] [cursor=pointer]
+                  - tabpanel "Details" [ref=e382]:
+                    - generic [ref=e395]:
+                      - list [ref=e399]:
+                        - generic [ref=e400]:
+                          - generic [ref=e402]:
+                            - listitem [ref=e404]:
+                              - generic [ref=e405]:
+                                - generic [ref=e406]: Event Group Name
+                                - generic [ref=e407]:
+                                  - generic [ref=e409]: BU Undergraduate Orientation 2024
+                                  - button "Edit Event Group Name" [ref=e410] [cursor=pointer]:
+                                    - generic [ref=e412]: Edit Event Group Name
+                            - listitem [ref=e414]:
+                              - generic [ref=e415]:
+                                - generic [ref=e416]: Default
+                                - generic "Help Default" [ref=e417]:
+                                  - button "Help Default" [ref=e420] [cursor=pointer]:
+                                    - img [ref=e422]
+                                    - generic [ref=e425]: Help Default
+                                - generic [ref=e426]:
+                                  - generic [ref=e431]:
+                                    - generic "False" [ref=e432]:
+                                      - generic [ref=e433]:
+                                        - img [ref=e435]
+                                        - generic [ref=e438]: "False"
+                                    - generic [ref=e439]: Default
+                                  - button "Edit Default" [ref=e440] [cursor=pointer]:
+                                    - generic [ref=e442]: Edit Default
+                          - generic [ref=e444]:
+                            - listitem [ref=e446]:
+                              - generic [ref=e447]:
+                                - generic [ref=e448]: Event Group URL
+                                - generic "Help Event Group URL" [ref=e449]:
+                                  - button "Help Event Group URL" [ref=e452] [cursor=pointer]:
+                                    - img [ref=e454]
+                                    - generic [ref=e457]: Help Event Group URL
+                                - link "https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY" [ref=e464] [cursor=pointer]:
+                                  - /url: https://events.blackthorn.io//00Ddi000002NNnZ/g/g2pfdRCHSY
+                            - listitem [ref=e466]:
+                              - generic [ref=e467]:
+                                - generic [ref=e468]: Key
+                                - generic "Help Key" [ref=e469]:
+                                  - button "Help Key" [ref=e472] [cursor=pointer]:
+                                    - img [ref=e474]
+                                    - generic [ref=e477]: Help Key
+                                - generic [ref=e478]:
+                                  - generic [ref=e480]: g2pfdRCHSY
+                                  - button "Edit Key" [ref=e481] [cursor=pointer]:
+                                    - generic [ref=e483]: Edit Key
+                          - generic [ref=e485]:
+                            - listitem [ref=e487]:
+                              - generic [ref=e488]:
+                                - generic [ref=e489]: Logo URL
+                                - generic "Help Logo URL" [ref=e490]:
+                                  - button "Help Logo URL" [ref=e493] [cursor=pointer]:
+                                    - img [ref=e495]
+                                    - generic [ref=e498]: Help Logo URL
+                                - button "Edit Logo URL" [ref=e500] [cursor=pointer]:
+                                  - generic [ref=e502]: Edit Logo URL
+                            - listitem [ref=e504]:
+                              - generic [ref=e505]:
+                                - generic [ref=e506]: Event Settings
+                                - generic "Help Event Settings" [ref=e507]:
+                                  - button "Help Event Settings" [ref=e510] [cursor=pointer]:
+                                    - img [ref=e512]
+                                    - generic [ref=e515]: Help Event Settings
+                                - generic [ref=e516]:
+                                  - generic [ref=e522]:
+                                    - link "BU Orientation Event Settings" [ref=e523] [cursor=pointer]:
+                                      - /url: /lightning/r/conference360__Event_Settings__c/a24di000004bSavAAE/view
+                                      - generic [ref=e527]: BU Orientation Event Settings
+                                    - button "Open BU Orientation Event Settings Preview" [ref=e529] [cursor=pointer]:
+                                      - img [ref=e531]
+                                      - generic [ref=e534]: Open BU Orientation Event Settings Preview
+                                  - button "Edit Event Settings" [ref=e535] [cursor=pointer]:
+                                    - generic [ref=e537]: Edit Event Settings
+                          - generic [ref=e539]:
+                            - listitem [ref=e541]:
+                              - generic [ref=e542]:
+                                - generic [ref=e543]: UI Experience
+                                - generic "Help UI Experience" [ref=e544]:
+                                  - button "Help UI Experience" [ref=e547] [cursor=pointer]:
+                                    - img [ref=e549]
+                                    - generic [ref=e552]: Help UI Experience
+                                - generic [ref=e553]:
+                                  - generic [ref=e555]: List
+                                  - button "Edit UI Experience" [ref=e556] [cursor=pointer]:
+                                    - generic [ref=e558]: Edit UI Experience
+                            - listitem [ref=e560]:
+                              - generic [ref=e561]:
+                                - generic [ref=e562]: Filter Fields
+                                - generic "Help Filter Fields" [ref=e563]:
+                                  - button "Help Filter Fields" [ref=e566] [cursor=pointer]:
+                                    - img [ref=e568]
+                                    - generic [ref=e571]: Help Filter Fields
+                                - generic [ref=e572]:
+                                  - generic [ref=e574]: No Filters
+                                  - button "Edit Filter Fields" [ref=e575] [cursor=pointer]:
+                                    - generic [ref=e577]: Edit Filter Fields
+                      - generic [ref=e579]:
+                        - heading "System Information" [level=3] [ref=e580]:
+                          - button "System Information" [expanded] [ref=e581] [cursor=pointer]:
+                            - img [ref=e586]
+                            - generic [ref=e589]: System Information
+                        - list [ref=e591]:
+                          - generic [ref=e594]:
+                            - listitem [ref=e596]:
+                              - generic [ref=e597]:
+                                - generic [ref=e598]: Created By
+                                - generic [ref=e602]:
+                                  - generic [ref=e608]:
+                                    - link "Service Owner" [ref=e609] [cursor=pointer]:
+                                      - /url: /lightning/r/User/0055f000009EGnmAAG/view
+                                      - generic [ref=e613]: Service Owner
+                                    - button "Open Service Owner Preview" [ref=e615] [cursor=pointer]:
+                                      - img [ref=e617]
+                                      - generic [ref=e620]: Open Service Owner Preview
+                                  - text: ", 10/24/2025, 10:05 AM"
+                            - listitem [ref=e622]:
+                              - generic [ref=e623]:
+                                - generic [ref=e624]: Last Modified By
+                                - generic [ref=e628]:
+                                  - generic [ref=e634]:
+                                    - link "Service Owner" [ref=e635] [cursor=pointer]:
+                                      - /url: /lightning/r/User/0055f000009EGnmAAG/view
+                                      - generic [ref=e639]: Service Owner
+                                    - button "Open Service Owner Preview" [ref=e641] [cursor=pointer]:
+                                      - img [ref=e643]
+                                      - generic [ref=e646]: Open Service Owner Preview
+                                  - text: ", 3/26/2026, 4:18 PM"
+            - article "Events" [ref=e658]:
+              - generic [ref=e659]:
+                - generic [ref=e660]:
+                  - generic [ref=e663]:
+                    - generic [ref=e665]:
+                      - img [ref=e669]
+                      - heading "Events (3+)" [level=2] [ref=e671]:
+                        - link "Events (3+)" [ref=e672] [cursor=pointer]:
+                          - /url: /lightning/r/conference360__Event_Group__c/a1xdi000000oZvRAAU/related/conference360__Events__r/view
+                          - generic "Events" [ref=e673]
+                          - generic "(3+)" [ref=e674]
+                    - button "Show actions for Events" [ref=e679] [cursor=pointer]:
+                      - img [ref=e681]
+                      - generic [ref=e684]: Show actions for Events
+                  - generic [ref=e692]:
+                    - article "Winter Orientation" [ref=e695]:
+                      - generic [ref=e696]:
+                        - heading "Winter Orientation Open Winter Orientation Preview" [level=3] [ref=e698]:
+                          - generic [ref=e704]:
+                            - link "Winter Orientation" [ref=e705] [cursor=pointer]:
+                              - /url: /lightning/r/a26di000000LNZhAAO/view
+                              - generic [ref=e709]: Winter Orientation
+                            - button "Open Winter Orientation Preview" [ref=e711] [cursor=pointer]:
+                              - img [ref=e713]
+                              - generic [ref=e716]: Open Winter Orientation Preview
+                        - generic [ref=e718]:
+                          - term [ref=e719]: "Status:"
+                          - definition [ref=e720]:
+                            - generic [ref=e722]: Active
+                          - term [ref=e723]: "Event Start Date:"
+                          - definition [ref=e724]:
+                            - generic [ref=e725]: 1/17/2025
+                          - term [ref=e726]: "Total Capacity:"
+                          - definition [ref=e727]:
+                            - generic [ref=e728]: 1,440
+                      - button "Show Actions" [ref=e733] [cursor=pointer]:
+                        - img [ref=e735]
+                        - generic [ref=e738]: Show Actions
+                    - article "Feb Orientation clone of winter" [ref=e741]:
+                      - generic [ref=e742]:
+                        - heading "Feb Orientation clone of winter Open Feb Orientation clone of winter Preview" [level=3] [ref=e744]:
+                          - generic [ref=e750]:
+                            - link "Feb Orientation clone of winter" [ref=e751] [cursor=pointer]:
+                              - /url: /lightning/r/a26di000000SHYzAAO/view
+                              - generic [ref=e755]: Feb Orientation clone of winter
+                            - button "Open Feb Orientation clone of winter Preview" [ref=e757] [cursor=pointer]:
+                              - img [ref=e759]
+                              - generic [ref=e762]: Open Feb Orientation clone of winter Preview
+                        - generic [ref=e764]:
+                          - term [ref=e765]: "Status:"
+                          - definition [ref=e766]:
+                            - generic [ref=e768]: Active
+                          - term [ref=e769]: "Event Start Date:"
+                          - definition [ref=e770]:
+                            - generic [ref=e771]: 2/14/2026
+                          - term [ref=e772]: "Total Capacity:"
+                          - definition [ref=e773]:
+                            - generic [ref=e774]: 1,640
+                      - button "Show Actions" [ref=e779] [cursor=pointer]:
+                        - img [ref=e781]
+                        - generic [ref=e784]: Show Actions
+                    - article "March Orientation clone of winter" [ref=e787]:
+                      - generic [ref=e788]:
+                        - heading "March Orientation clone of winter Open March Orientation clone of winter Preview" [level=3] [ref=e790]:
+                          - generic [ref=e796]:
+                            - link "March Orientation clone of winter" [ref=e797] [cursor=pointer]:
+                              - /url: /lightning/r/a26di000000SHh3AAG/view
+                              - generic [ref=e801]: March Orientation clone of winter
+                            - button "Open March Orientation clone of winter Preview" [ref=e803] [cursor=pointer]:
+                              - img [ref=e805]
+                              - generic [ref=e808]: Open March Orientation clone of winter Preview
+                        - generic [ref=e810]:
+                          - term [ref=e811]: "Status:"
+                          - definition [ref=e812]:
+                            - generic [ref=e814]: Active
+                          - term [ref=e815]: "Event Start Date:"
+                          - definition [ref=e816]:
+                            - generic [ref=e817]: 3/14/2026
+                          - term [ref=e818]: "Total Capacity:"
+                          - definition [ref=e819]:
+                            - generic [ref=e820]: 1,940
+                      - button "Show Actions" [ref=e825] [cursor=pointer]:
+                        - img [ref=e827]
+                        - generic [ref=e830]: Show Actions
+                - link "View All Events" [ref=e831] [cursor=pointer]:
+                  - /url: /lightning/r/conference360__Event_Group__c/a1xdi000000oZvRAAU/related/conference360__Events__r/view
+                  - generic [ref=e832]:
+                    - text: View All
+                    - generic [ref=e833]: Events
+  - generic:
+    - status
+```

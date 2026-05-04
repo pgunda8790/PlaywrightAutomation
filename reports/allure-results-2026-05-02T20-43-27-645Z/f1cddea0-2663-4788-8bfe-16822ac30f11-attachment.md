@@ -1,0 +1,260 @@
+# Page snapshot
+
+```yaml
+- generic [active]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - link "Skip to Navigation" [ref=e4] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - link "Skip to Main Content" [ref=e5] [cursor=pointer]:
+        - /url: javascript:void(0);
+      - generic [ref=e9]:
+        - generic [ref=e13]:
+          - button "Toggle Panel" [ref=e17] [cursor=pointer]:
+            - img [ref=e21]
+            - generic [ref=e24]: Menu
+          - generic [ref=e29]:
+            - img [ref=e33]
+            - generic [ref=e37]: Sandbox (SPTest)
+        - button "Show menu" [ref=e46] [cursor=pointer]:
+          - img [ref=e48]
+          - generic [ref=e51]: Show menu
+      - generic [ref=e52]:
+        - button "Search" [ref=e58]:
+          - img [ref=e60]
+          - text: Search...
+        - navigation "Global Header" [ref=e63]:
+          - list [ref=e65]:
+            - listitem [ref=e66]:
+              - group [ref=e67]:
+                - button "Add favorite" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e70]:
+                    - img [ref=e74]
+                    - tooltip "Add favorite"
+                - button "Favorites list" [ref=e78] [cursor=pointer]:
+                  - generic [ref=e79]:
+                    - img [ref=e83]
+                    - tooltip "Favorites list"
+            - listitem [ref=e86]:
+              - button "Global Actions" [ref=e92] [cursor=pointer]:
+                - generic [ref=e93]:
+                  - img [ref=e97]
+                  - tooltip "Global Actions"
+            - listitem [ref=e100]:
+              - button "Guidance Center" [ref=e102] [cursor=pointer]:
+                - generic [ref=e103]:
+                  - img [ref=e107]
+                  - tooltip "Guidance Center"
+            - listitem [ref=e110]:
+              - button "Salesforce Help" [ref=e113] [cursor=pointer]:
+                - generic [ref=e114]:
+                  - img [ref=e118]
+                  - tooltip "Salesforce Help"
+            - listitem [ref=e121]:
+              - button "Setup" [ref=e127] [cursor=pointer]:
+                - generic [ref=e128]:
+                  - img [ref=e132]
+                  - tooltip "Setup"
+            - listitem [ref=e135]:
+              - button "Notifications" [ref=e138] [cursor=pointer]:
+                - generic [ref=e139]:
+                  - img [ref=e144]
+                  - tooltip "Notifications"
+            - listitem [ref=e148]:
+              - button "View profile" [ref=e151] [cursor=pointer]:
+                - generic [ref=e152]:
+                  - tooltip "View profile"
+    - generic [ref=e156]:
+      - generic [ref=e159]:
+        - generic [ref=e161]:
+          - navigation "App" [ref=e162]:
+            - button "App Launcher" [ref=e164] [cursor=pointer]:
+              - generic [ref=e175]: App Launcher
+          - heading "Events (Planner)" [level=1] [ref=e176]:
+            - generic "Events (Planner)" [ref=e177]
+        - navigation "Global" [ref=e180]:
+          - list [ref=e181]:
+            - listitem [ref=e182] [cursor=pointer]:
+              - link "Events" [ref=e183]:
+                - /url: /lightning/o/conference360__Event__c/home
+                - generic [ref=e184]: Events
+              - button "Events List" [ref=e188]:
+                - img [ref=e192]
+                - generic [ref=e195]: Events List
+            - listitem [ref=e196]:
+              - link "Event Builder" [ref=e197] [cursor=pointer]:
+                - /url: /lightning/n/conference360__Event_Builder
+                - generic [ref=e198]: Event Builder
+            - listitem [ref=e199]:
+              - link "Home" [ref=e200] [cursor=pointer]:
+                - /url: /lightning/page/home
+                - generic [ref=e201]: Home
+            - listitem [ref=e202]:
+              - link "Contacts" [ref=e203] [cursor=pointer]:
+                - /url: /lightning/o/Contact/home
+                - generic [ref=e204]: Contacts
+              - button "Contacts List" [ref=e208] [cursor=pointer]:
+                - img [ref=e212]
+                - generic [ref=e215]: Contacts List
+            - listitem [ref=e216]:
+              - link "Attendees" [ref=e217] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Attendee__c/home
+                - generic [ref=e218]: Attendees
+              - button "Attendees List" [ref=e222] [cursor=pointer]:
+                - img [ref=e226]
+                - generic [ref=e229]: Attendees List
+            - listitem [ref=e230]:
+              - link "Campaigns" [ref=e231] [cursor=pointer]:
+                - /url: /lightning/o/Campaign/home
+                - generic [ref=e232]: Campaigns
+              - button "Campaigns List" [ref=e236] [cursor=pointer]:
+                - img [ref=e240]
+                - generic [ref=e243]: Campaigns List
+            - listitem [ref=e244]:
+              - link "Event Settings" [ref=e245] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event_Settings__c/home
+                - generic [ref=e246]: Event Settings
+              - button "Event Settings List" [ref=e250] [cursor=pointer]:
+                - img [ref=e254]
+                - generic [ref=e257]: Event Settings List
+            - listitem [ref=e258]:
+              - link "Forms" [ref=e259] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Form__c/home
+                - generic [ref=e260]: Forms
+              - button "Forms List" [ref=e264] [cursor=pointer]:
+                - img [ref=e268]
+                - generic [ref=e271]: Forms List
+            - listitem [ref=e272]:
+              - link "Event Groups" [ref=e273] [cursor=pointer]:
+                - /url: /lightning/o/conference360__Event_Group__c/home
+                - generic [ref=e274]: Event Groups
+              - button "Event Groups List" [ref=e278] [cursor=pointer]:
+                - img [ref=e282]
+                - generic [ref=e285]: Event Groups List
+            - listitem [ref=e286]:
+              - button "Show more navigation items" [ref=e288] [cursor=pointer]:
+                - generic [ref=e289]: More
+                - img [ref=e293]
+                - generic [ref=e296]: Show more navigation items
+            - listitem [ref=e297]:
+              - button "Edit nav items" [ref=e299] [cursor=pointer]:
+                - img [ref=e301]
+                - generic [ref=e304]: Edit nav items
+      - main [ref=e306]:
+        - generic [ref=e316]:
+          - generic [ref=e318]:
+            - generic [ref=e319]:
+              - generic [ref=e321]:
+                - img [ref=e325]
+                - generic [ref=e326]:
+                  - heading "Events" [level=1] [ref=e330]
+                  - generic [ref=e331]:
+                    - generic [ref=e333] [cursor=pointer]:
+                      - heading "Events Recently Viewed" [level=1] [ref=e334]:
+                        - generic [ref=e335]: Events
+                        - generic [ref=e336]: Recently Viewed
+                      - 'button "Select a List View: Events" [ref=e339]':
+                        - img [ref=e341]
+                        - generic [ref=e344]: "Select a List View: Events"
+                    - button "This list is pinned." [disabled] [ref=e348] [cursor=pointer]:
+                      - img [ref=e350]
+                      - generic [ref=e353]: This list is pinned.
+              - list [ref=e356]:
+                - listitem [ref=e357]:
+                  - button "New" [ref=e358] [cursor=pointer]:
+                    - generic "New" [ref=e359]
+                - listitem [ref=e360]:
+                  - button "Change Owner" [ref=e361] [cursor=pointer]:
+                    - generic "Change Owner" [ref=e362]
+            - generic [ref=e363]:
+              - paragraph [ref=e365]:
+                - generic [ref=e367]:
+                  - status "Recently Viewed" [ref=e368]: 1 item •
+                  - text: Updated a few seconds ago
+              - generic [ref=e374]:
+                - generic [ref=e375]: Search this list...
+                - generic [ref=e376]:
+                  - searchbox "Search this list..." [ref=e377]
+                  - generic:
+                    - img
+              - generic [ref=e378]:
+                - button "List View Controls" [ref=e382] [cursor=pointer]:
+                  - img [ref=e384]
+                  - img [ref=e388]
+                  - generic [ref=e391]: List View Controls
+                - button "Select list display" [ref=e394] [cursor=pointer]:
+                  - img [ref=e396]
+                  - img [ref=e400]
+                  - generic [ref=e403]: Select list display
+                - generic [ref=e405]:
+                  - button "Refresh" [ref=e408] [cursor=pointer]:
+                    - img [ref=e410]
+                    - generic [ref=e413]: Refresh
+                  - button "Column sort is disabled. To sort columns, a list view needs at least one row and two columns." [ref=e416] [cursor=pointer]:
+                    - img [ref=e418]
+                    - generic [ref=e421]: Column sort is disabled. To sort columns, a list view needs at least one row and two columns.
+                  - button "Edit List" [ref=e424] [cursor=pointer]:
+                    - img [ref=e426]
+                    - generic [ref=e429]: Edit List
+                  - group [ref=e430]:
+                    - generic [ref=e432]:
+                      - generic:
+                        - generic:
+                          - button "Charts" [disabled]:
+                            - generic:
+                              - img
+                            - generic: Charts
+                      - generic:
+                        - generic:
+                          - button "Filters" [disabled]:
+                            - generic:
+                              - img
+                            - generic: Filters
+          - generic [ref=e439]:
+            - generic [ref=e440]: Navigation Mode
+            - grid [ref=e444]:
+              - rowgroup:
+                - row "Row Number Choose a Row Select 1 item Event Name Action":
+                  - columnheader "Row Number":
+                    - generic [ref=e447]:
+                      - generic "Row Number"
+                  - gridcell "Choose a Row Select 1 item":
+                    - generic [ref=e448]:
+                      - generic [ref=e449]: Choose a Row
+                      - generic [ref=e451]:
+                        - checkbox "Select 1 item" [ref=e452]
+                        - generic [ref=e455]: Select 1 item
+                  - columnheader "Event Name":
+                    - generic [ref=e457]:
+                      - 'button "Sort by: Event Name" [ref=e458] [cursor=pointer]':
+                        - generic [ref=e459]: "Sort by:"
+                        - generic "Event Name" [ref=e460]
+                      - generic [ref=e461]: "Sorted: None"
+                      - button "Show Event Name column actions" [ref=e463] [cursor=pointer]:
+                        - img [ref=e465]
+                        - generic [ref=e468]: Show Event Name column actions
+                      - slider "Event Name column width" [ref=e469]: "1121"
+                  - columnheader "Action":
+                    - generic [ref=e474]:
+                      - generic "Action"
+              - rowgroup [ref=e475]:
+                - row "Select Item 1 Choose a Row Fall 2025 Orientation Edit Event Name Show Actions" [ref=e476]:
+                  - gridcell [ref=e477]
+                  - gridcell "Select Item 1 Choose a Row" [ref=e481]:
+                    - generic [ref=e482]:
+                      - checkbox "Select Item 1 Choose a Row" [ref=e483]
+                      - generic [ref=e486]: Select Item 1
+                  - rowheader "Fall 2025 Orientation Edit Event Name" [ref=e487]:
+                    - generic [ref=e488]:
+                      - link "Fall 2025 Orientation" [ref=e494] [cursor=pointer]:
+                        - /url: /lightning/r/a26di000000LNZiAAO/view
+                        - generic [ref=e495]: Fall 2025 Orientation
+                      - button "Edit Event Name" [ref=e496] [cursor=pointer]:
+                        - img [ref=e497]
+                  - gridcell "Show Actions" [ref=e500]:
+                    - button "Show Actions" [ref=e506] [cursor=pointer]:
+                      - img [ref=e508]
+                      - generic [ref=e511]: Show Actions
+  - generic:
+    - status
+```
