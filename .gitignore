@@ -10,5 +10,4 @@ playwright/.auth/
 reports/state.json
 # Environment files
 .env
-.env.*
 tests/.env
