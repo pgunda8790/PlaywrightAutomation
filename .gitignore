@@ -11,3 +11,4 @@ reports/state.json
 # Environment files
 .env
 tests/.env
+state.json

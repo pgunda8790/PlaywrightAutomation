@@ -1,3 +1,0 @@
-Access Token retrieved.
-Record found for Orientation2026
-Event Group "Orientation 2026" already exists

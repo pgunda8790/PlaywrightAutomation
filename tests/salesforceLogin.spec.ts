@@ -15,7 +15,7 @@ test('Verify Salesforce Login', async ({ page }) => {
 
   const home = new SalesforceHomePage(page);
   // To Go directly to our Salesforce instance
-await page.goto('https://orgfarm-15f6472b64-dev-ed.develop.lightning.force.com');
+await page.goto(process.env.orgURL!);
 
   
   await expect(home.developerEditionElement).toBeVisible();

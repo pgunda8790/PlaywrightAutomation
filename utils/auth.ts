@@ -38,14 +38,14 @@ export async function loginAndSaveSession() {
   const eventPage = new EventGroupPage(page);
   
 
-  const username = process.env.MY_username!;
-  const password = process.env.MY_password!;
+  const username = process.env.MY_PERSONAL_USERNAME!;
+  const password = process.env.MY_PERSONAL_PASSWORD!;
   const orgURL = process.env.orgURL!;
 try{
   await page.goto(orgURL);
-  await eventPage.buLoginName.fill(process.env.buLoginName!);
-  await eventPage.buPassword.fill(process.env.buPassword!);
-  await eventPage.buLoginContinue.click();
+  //await eventPage.buLoginName.fill(process.env.buLoginName!);
+  //await eventPage.buPassword.fill(process.env.buPassword!);
+  //await eventPage.buLoginContinue.click();
   await page.locator('#username').fill(username);
   await page.locator('#password').fill(password);
   await page.click('#Login');
