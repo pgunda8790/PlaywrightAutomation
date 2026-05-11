@@ -1,6 +1,8 @@
 import { Page } from '@playwright/test';
 import { runSOQL } from './apiHelper';
 import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
+import{getRecord} from '../utils/sfForceOperations';
+import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -37,7 +39,7 @@ export async function clickOrientationRecord(page: Page){
     console.warn('No Orientation record found to click:', error);
     return false;
   }
-  
+ 
 }
 
 export async function uncheckDefaultCheckbox(page: Page){
@@ -71,4 +73,40 @@ export async function cloneEvent(page: Page): Promise<void> {
     await eventPage.inputGroupName.fill(newName);
     await eventPage.saveButton.click();
   
+}
+
+export async function addSessions(jsonFilePath: string, page: Page) {
+  const register = new EventRegistrationPage(page);
+  const sessionNames: string[] = require(jsonFilePath).sessionsToAdd;
+  console.log("Sessionnames :"+sessionNames);
+  const allSessions = register.allsessions;
+  const totalCount = await allSessions.count();
+  console.log("Total count "+totalCount);
+
+  for (let i = 0; i < totalCount; i++) {
+    const sessionText = (await allSessions.nth(i).innerText()).trim();
+
+    if (sessionNames.includes(sessionText)) {
+      const addButton = register.addSessionButton.nth(i);
+
+      if (await addButton.isEnabled()) {
+        await addButton.click();
+            console.log("Added : "+sessionText);
+      }
+    }
+  }
+}
+
+export async function verifyAttendee(page:Page)
+{
+const query = `SELECT 
+    conference360__Account_Name__c,
+    conference360__Event_Name__c,
+    conference360__Email2__c
+FROM conference360__Attendee__c
+WHERE conference360__Email2__c = 'tst_test0502@bu.edu'
+and conference360__Event_Name__c like '%May Orientation%'`;
+  const records = await runSOQL(query,page);
+  return records.length > 0;
+
 }

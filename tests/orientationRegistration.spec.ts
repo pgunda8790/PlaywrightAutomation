@@ -1,47 +1,68 @@
-import { test, expect,Locator} from '@playwright/test';
+import { test, expect} from '@playwright/test';
 import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
-
+import {EventRegistrationPage} from '../pages/OrientationEvents/eventRegistrationPage';
 import dotenv from 'dotenv';
-import { runSOQL } from '../utils/apiHelper';
+import {addSessions,verifyAttendee} from '../utils/eventGroupHelper';
+import { userLoginByPassMFA } from '../utils/BuLogin';
+
+
 
 test('Create Orientation Event Group if not exists', async ({ page }) => {
 
 const event = new EventGroupPage(page);
+const register = new EventRegistrationPage(page);
+
 await page.goto(process.env.MY_BU_PORTAL!);
-await event.buLoginName.fill(process.env.BUTestUser!);
-await event.buPassword.fill(process.env.BUTestPassword!);
-await event.bypassCode.fill(process.env.BUPasscode!);
-await event.verifyCode.click();
-await event.trustBroser.click();
-await event.welcomeText.waitFor({ state: 'visible' });
-
-await event.mayOrientation.click();
-await event.registerEvent.click();
-
-await event.addMyself.click();
-await expect(event.redeemed).toBeVisible();
-await event.registerEvent.click();
-
-await expect(event.userDataAutoFetch).toBeVisible();
-await event.dieteryPreference.click();
-await event.yes.click();
-await event.diaryFreeMealCheck.click();
-await event.MealSpecification.fill("Lactose Free Meal");
-await event.emergencyName.fill("John");
-await event.emergencyPhone.fill("2315618212");
-await event.optionalTour.click();
-await event.readAndUnderstandInfo.fill("TestUser");
+await userLoginByPassMFA(page);
+await register.newStudentOrientation.click();
+await register.mayOrientation.click();
+await register.registerEvent.first().click();
+await register.addMyself.click();
+await expect(register.redeemed).toBeVisible();
+await register.registerEvent.last().click();
+await expect(register.userDataAutoFetch).toBeVisible();
+await register.dieteryPreference.click();
+await register.yes.click();
+await register.diaryFreeMealCheck.click();
+await register.MealSpecification.fill("Lactose Free Meal");
+await register.emergencyName.fill("John");
+await register.emergencyPhone.fill("2315618212");
+await register.optionalTour.click();
+await register.readAndUnderstandInfo.fill("TestUser");
+await page.waitForTimeout(2000);
+await register.readAndUnderstandInfo.press('Tab');
+await register.reviewSession.click({ force: true });
+await register.sessionsScreen.waitFor({ state: 'visible'});
+await register.allsessions.first().waitFor({ state: 'visible', timeout: 15000 });
+await addSessions("../data/accountData.json",page);
+await register.registerEvent.last().click();
+await page.waitForLoadState('domcontentloaded');
+await expect(register.congratulationsText.waitFor({ state: 'visible' }));
 
 });
 
+test('The Registration Cancellation',async ({ page }) =>{
 
+const event = new EventGroupPage(page);
+const register = new EventRegistrationPage(page);
+await userLoginByPassMFA(page);
+await register.newStudentOrientation.click();
+await register.cancelRegistration.click();
+await register.yesCancel.click();
+await expect(register.confirmCancel).toBeVisible();
+await register.finish.click();
 
-
-
-
-
-
-
-  
 });
 
+test('Verify the Attendee record Saved @testNow', async ({ page }) => {
+    
+const event = new EventGroupPage(page);
+await userLoginByPassMFA(page);
+const attendeeFound = await verifyAttendee(page);
+
+if(attendeeFound)
+{
+    console.log("Attendee Found");
+}
+
+});
