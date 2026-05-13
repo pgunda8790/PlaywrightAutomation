@@ -2,7 +2,8 @@ import { Page, Locator } from '@playwright/test';
 
 export class EventRegistrationPage {
 
-    newStudentOrientation:Locator;
+  BuHomePageLogo:Locator;
+  newStudentOrientation:Locator;
   mayOrientation:Locator;
   registerEvent:Locator;
   addMyself:Locator;
@@ -20,7 +21,7 @@ export class EventRegistrationPage {
   allsessions:Locator;
   spotsRemaining:Locator;
   addSessionButton:Locator;
-  congratulationsText:Locator;
+  congratulationsLogo:Locator;
   cancelRegistration:Locator;
   yesCancel:Locator;
   confirmCancel:Locator;
@@ -32,6 +33,7 @@ export class EventRegistrationPage {
 
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     
+    this.BuHomePageLogo =page.locator("//a[@title='MyBU']");
     this.newStudentOrientation=page.locator("//div[normalize-space()='New Student Orientation']/div");
     this.mayOrientation=page.locator("(//div[contains(normalize-space(),'May')])[last()]");
     this.registerEvent=frame.locator("//button[normalize-space()='Register' or normalize-space()='register']");
@@ -51,7 +53,7 @@ export class EventRegistrationPage {
     this.addSessionButton=frame.locator("//button[contains(@id,'add-button')]");
     this.reviewSession=frame.locator("(//span[normalize-space()='Review Sessions'])[last()]");
     this.spotsRemaining=frame.locator("//span[contains(normalize-space(),'SPOTS REMAINING')]");
-    this.congratulationsText=page.locator("(//div[contains(normalize-space(),' Congratulations')])[1]");
+    this.congratulationsLogo=frame.locator("//img[@alt='Success']");
     this.cancelRegistration=page.locator("//button[normalize-space()='Cancel Registration']");
     this.yesCancel = page.locator("//button[normalize-space()='Yes']");
     this.confirmCancel = page.locator("(//div[contains(normalize-space(),'Your registration has been canceled')])[last()]");

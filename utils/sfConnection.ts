@@ -33,7 +33,7 @@ export async function getSFConnection() {
   return { accessToken, instanceUrl };
 }
 
-export async function runQuery(query: string) {
+export async function getQuery(query: string) {
   const { accessToken, instanceUrl } = await getSFConnection();
 
   console.log('🔄 Running query via direct REST fetch...');

@@ -12,22 +12,20 @@ export async function checkOrientationRecordExists(page:Page){
   return records.length > 0;
 }
 
-export async function clickActiveEventGroup(page: Page) {
-
+export async function clickActiveEventGroup(page: Page){
   const eventPage = new EventGroupPage(page);
 
-  const activeGroupVisible = await eventPage.activeGroup.isVisible();
+  await page.waitForLoadState('domcontentloaded');
   
-  try {
-    await eventPage.activeGroup.click();
-    await page.waitForLoadState('networkidle');
-    return true;
-  } catch {
+  const isVisible = await eventPage.activeGroup.isVisible();
+  if (!isVisible) {
     console.log('No active Event Group found.');
     return false;
   }
-  
-  }
+
+  await eventPage.activeGroup.click();
+  return true;
+}
 
 
 export async function clickOrientationRecord(page: Page){
@@ -104,7 +102,7 @@ const query = `SELECT
     conference360__Event_Name__c,
     conference360__Email2__c
 FROM conference360__Attendee__c
-WHERE conference360__Email2__c = 'tst_test0502@bu.edu'
+WHERE conference360__Email2__c = 'tst_2201@bu.edu'
 and conference360__Event_Name__c like '%May Orientation%'`;
   const records = await runSOQL(query,page);
   return records.length > 0;

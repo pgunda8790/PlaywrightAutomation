@@ -14,11 +14,11 @@ export default async function globalSetup(): Promise<void> {
   */
 
 import dotenv from 'dotenv';
-import { sessionExists, loginAndSaveSession } from '../utils/auth';
+import { sessionExists, loginAndSaveSession } from '../utils/authUtils';
 dotenv.config();
 
 export default async function globalSetup(): Promise<void> {
-  console.log('orgURL:', process.env.orgURL);           // ← confirm env loads
+  console.log('orgURL:', process.env.orgURL!);           // ← confirm env loads
   console.log('state.json exists:', require('fs').existsSync('state.json')); // ← confirm file found
 
   if (await sessionExists()) {
