@@ -15,8 +15,7 @@ export async function getAccessToken(page: Page): Promise<string> {
     ? sid.value.split('!')[1]
     : sid.value;
 
-  console.log('Access Token retrieved:', accessToken);
-  console.log('sid domain:', sid.domain);
+  console.log('Access Token retrieved:');
   return accessToken;
 }
 

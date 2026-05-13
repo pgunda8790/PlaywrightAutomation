@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import {addSessions,verifyAttendee} from '../utils/eventGroupHelper';
 import { userLoginByPassMFA } from '../utils/BuLogin';
 import { error } from 'node:console';
+import{saveToJson,getFromJson} from '../utils/dataExtracter';
 
 
 
@@ -19,9 +20,11 @@ await register.newStudentOrientation.click();
 await register.mayOrientation.click();
 await register.registerEvent.first().click();
 await register.addMyself.click();
+await saveToJson({EventName:register.eventName});
 await expect(register.redeemed).toBeVisible();
 await register.registerEvent.last().click();
 await expect(register.userDataAutoFetch).toBeVisible();
+await saveToJson({Email:register.email});
 await register.dieteryPreference.click();
 await register.yes.click();
 await register.diaryFreeMealCheck.click();
@@ -51,7 +54,7 @@ catch{
 test.describe('Verify Attendee', () => {
 test.use({ storageState: 'state.json' }); 
 
-test('Verify the Attendee record Saved', async ({ page }) => {
+test('Verify the Attendee record Saved @testNow', async ({ page }) => {
  
 await page.goto(process.env.orgURL!);
 const attendeeFound = await verifyAttendee(page);

@@ -45,28 +45,28 @@ export async function loginAndSaveSession() {
   const page = await context.newPage();
   const eventPage = new EventGroupPage(page);
   const login = new LoginPage(page);
-try{
-  await page.goto(process.env.orgURL!);
-  await login.buLoginName.fill(process.env.buLoginName!);
-  await login.buPassword.fill(process.env.buPassword!);
-  await login.buLoginContinue.click();
-  await login.trustBrowser.click();
-  await page.waitForFunction(
-  () => document.title === 'Recently Viewed | Events | Salesforce',
-  { timeout: 30000 }
-);
-const pageTitle = await page.title();
-return pageTitle === 'Recently Viewed | Events | Salesforce';
- 
-}
-catch
-{
- console.log('Login skipped');
-}
-  await page.waitForURL('**/lightning/**',{ timeout: 100000 });
 
-  await context.storageState({ path: STATE_PATH });
-  await context.close();
-  await browser.close();
-  console.log('Fresh session saved to state.json');
+  try {
+    await page.goto(process.env.orgURL!);
+    await login.buLoginName.fill(process.env.buLoginName!);
+    await login.buPassword.fill(process.env.buPassword!);
+    await login.buLoginContinue.click();
+    await login.trustBrowser.click();
+    
+    await page.waitForFunction(
+      () => document.title === 'Recently Viewed | Events | Salesforce',
+      { timeout: 30000 }
+    );
+
+    // ✅ save state only after confirmed login
+    await context.storageState({ path: STATE_PATH });
+    console.log('Fresh session saved to state.json');
+
+  } catch (error) {
+    console.log('Login failed:', error);
+    throw error; // ✅ re-throw so global-setup knows it failed
+  } finally {
+    await context.close();
+    await browser.close();
+  }
 }

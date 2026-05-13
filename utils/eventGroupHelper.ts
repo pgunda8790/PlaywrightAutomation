@@ -3,6 +3,7 @@ import { runSOQL } from './apiHelper';
 import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
 import{getRecord} from '../utils/sfForceOperations';
 import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
+import {getFromJson} from '../utils/dataExtracter';
 
 const currentYear = new Date().getFullYear().toString();
 
@@ -95,16 +96,19 @@ export async function addSessions(jsonFilePath: string, page: Page) {
   }
 }
 
-export async function verifyAttendee(page:Page)
-{
-const query = `SELECT 
+export async function verifyAttendee(page: Page) {
+
+  const eventName = getFromJson('EventName');
+  const email = getFromJson('Email');
+
+  const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,
     conference360__Email2__c
 FROM conference360__Attendee__c
-WHERE conference360__Email2__c = 'tst_2201@bu.edu'
-and conference360__Event_Name__c like '%May Orientation%'`;
-  const records = await runSOQL(query,page);
-  return records.length > 0;
+WHERE conference360__Email2__c = '${email}'
+AND conference360__Event_Name__c LIKE '%${eventName}%'`;
 
+  const records = await runSOQL(query, page);
+  return records.length > 0;
 }

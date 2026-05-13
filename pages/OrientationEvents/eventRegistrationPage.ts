@@ -27,6 +27,8 @@ export class EventRegistrationPage {
   confirmCancel:Locator;
   finish:Locator;
   sessionsScreen:Locator;
+  eventName:Locator;
+  email:Locator ;
 
 
   constructor(private page: Page) {
@@ -58,6 +60,8 @@ export class EventRegistrationPage {
     this.yesCancel = page.locator("//button[normalize-space()='Yes']");
     this.confirmCancel = page.locator("(//div[contains(normalize-space(),'Your registration has been canceled')])[last()]");
     this.finish=page.locator("//button[normalize-space()='Finish']");
+    this.eventName=frame.locator("//button[@title='back']/following-sibling::h1");
+    this.email=frame.locator("//input[@name='email']");
 
   } 
 }
