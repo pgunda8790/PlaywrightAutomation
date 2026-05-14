@@ -29,6 +29,7 @@ export class EventRegistrationPage {
   sessionsScreen:Locator;
   eventName:Locator;
   email:Locator ;
+  requiredFieldError :Locator;
 
 
   constructor(private page: Page) {
@@ -62,6 +63,7 @@ export class EventRegistrationPage {
     this.finish=page.locator("//button[normalize-space()='Finish']");
     this.eventName=frame.locator("//button[@title='back']/following-sibling::h1");
     this.email=frame.locator("//input[@name='email']");
+    this.requiredFieldError = frame.locator("(//mat-error[normalize-space()='This is required'])[1]");
 
   } 
 }

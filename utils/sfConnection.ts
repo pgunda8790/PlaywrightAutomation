@@ -3,65 +3,43 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let accessToken: string | null = null;
-let instanceUrl: string | null = null;
-
-export async function getSFConnection() {
-  if (accessToken && instanceUrl) {
-    console.log('♻️ Reusing existing Salesforce connection');
-    return { accessToken, instanceUrl };
-  }
-
-  console.log('🔄 Step 1: Logging in via jsforce SOAP...');
-  const tempConn = new jsforce.Connection({
+// Each call creates its own connection — safe for parallel tests
+async function createConnection(): Promise<jsforce.Connection> {
+  const conn = new jsforce.Connection({
     loginUrl: process.env.sfConnectionURL!,
-    version: '57.0'
+    version: process.env.SF_API_VERSION ?? '59.0'
   });
 
-  await tempConn.login(
+  await conn.login(
     process.env.MY_USERNAME!,
     process.env.MY_PASSWORD! + (process.env.SF_SECURITY_TOKEN ?? '')
   );
 
-  accessToken = tempConn.accessToken!;
-  instanceUrl = tempConn.instanceUrl;
+  console.log('✅ Salesforce login successful');
+  console.log('✅ Instance URL:', conn.instanceUrl);
 
-  console.log('✅ Login successful');
-  console.log('✅ Instance URL:', instanceUrl);
-  console.log('✅ Access Token:', accessToken ? 'set' : '❌ missing');
-
-  return { accessToken, instanceUrl };
+  return conn;
 }
 
-export async function getQuery(query: string) {
-  const { accessToken, instanceUrl } = await getSFConnection();
+export async function getRecord(query: string): Promise<boolean> {
+  let conn: jsforce.Connection | null = null;
 
-  console.log('🔄 Running query via direct REST fetch...');
+  try {
+    conn = await createConnection();
 
-  const url = `${instanceUrl}/services/data/v57.0/query?q=${encodeURIComponent(query)}`;
+    console.log('🔄 Running SOQL query...');
+    const result = await conn.query(query);
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${accessToken}`,
-      'Content-Type': 'application/json'
+    console.log('✅ Total records found:', result.totalSize);
+    return result.totalSize > 0;
+
+  } catch (error) {
+    console.error('❌ Salesforce query failed:', error);
+    throw error;
+  } finally {
+    if (conn) {
+      await conn.logout();
+      console.log('✅ Salesforce disconnected');
     }
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    console.error('❌ Query failed:', error);
-    throw new Error(`Query failed: ${error}`);
   }
-
-  const result = await response.json();
-  console.log('✅ Records found:', result.totalSize);
-  console.log('✅ Records:', result.records);
-  return result;
-}
-
-export async function disconnectSF(): Promise<void> {
-  accessToken = null;
-  instanceUrl = null;
-  console.log('✅ Salesforce disconnected');
 }

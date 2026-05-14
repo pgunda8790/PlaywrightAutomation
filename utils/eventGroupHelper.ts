@@ -1,7 +1,7 @@
-import { Page } from '@playwright/test';
+import { Page,expect } from '@playwright/test';
 import { runSOQL } from './apiHelper';
 import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
-import{getRecord} from '../utils/sfForceOperations';
+//import{getRecord} from './jsForceOperations';
 import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
 import {getFromJson} from '../utils/dataExtracter';
 
@@ -111,4 +111,38 @@ AND conference360__Event_Name__c LIKE '%${eventName}%'`;
 
   const records = await runSOQL(query, page);
   return records.length > 0;
+}
+
+export async function studentOrientationEligibilityCheck(page:Page,email:string)//Mandatory details- email
+{
+
+  const query = `SELECT hed__Chosen_Full_Name__c,Email,zBU_UGO_Attendee_Count__c
+                 FROM Contact 
+                 WHERE zBU_UGO_Attendee_Count__c= 0
+                 AND Email='${email}'`;
+  const records = await runSOQL(query,page);
+
+  return records.length > 0;
+}
+
+export async function clickRequiredEvent(page: Page, eventName: string) {
+  const query = `SELECT Name , OwnerID
+FROM conference360__Event__c`;
+
+  const records = await runSOQL(query, page);
+
+  const matchedEvent = records.find((r: any) =>
+    r.Name.toLowerCase().includes(eventName.toLowerCase())
+  );
+
+  if (!matchedEvent) {
+    throw new Error(`No event found matching: "${eventName}"`);
+  }
+
+  console.log(`Event found: ${matchedEvent.Name}`);
+  await page.getByText(matchedEvent.Name, { exact: false }).first().click();
+
+  await expect(
+    page.getByRole("heading", { name: matchedEvent.Name, exact: false })
+  ).toBeVisible();
 }

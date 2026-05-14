@@ -1,5 +1,12 @@
-import { getSFConnection } from './sfConnection';
-import { runQuery } from './sfConnection';
+import { createConnection } from '../utils/sfConnection';
+import { getQuery } from './sfConnection';
+
+export async function getRecord(query: string) {
+  const result = await getQuery(query);
+  return result;
+}
+
+/*
 // CREATE
 export async function createRecord(objectName: string, data: object) {
   const conn = await getSFConnection();
@@ -11,10 +18,6 @@ export async function createRecord(objectName: string, data: object) {
 
 
 
-export async function getRecord(query: string) {
-  const result = await runQuery(query);
-  return result;
-}
 
 
 // UPDATE
@@ -36,3 +39,5 @@ export async function deleteRecord(objectName: string, id: string) {
 }
 
 // UPSERT
+
+*/
