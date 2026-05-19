@@ -1,63 +1,67 @@
-
-
-import { Page, chromium, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 import * as fs from 'fs';
-import dotenv from 'dotenv';
-import path from 'path';
+import { LoginPage } from '../pages/loginPage';
 
 export const STATE_PATH = 'state.json';
-import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
 
-export async function sessionExists(){
-  if (!fs.existsSync(STATE_PATH)) return false;
+export async function loginSF(page: Page) {
+  const login = new LoginPage(page);
 
-  const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ storageState: STATE_PATH });
-  const page = await context.newPage();
-  const orgURL = process.env.orgURL!;
+  console.log('--- Checking Session ---');
+
+  if (fs.existsSync(STATE_PATH)) {
+    const orgURL = process.env.orgURL!;
+    try {
+      await page.goto(orgURL, { waitUntil: 'load', timeout: 30000 });
+
+      await page.waitForFunction(
+        () =>
+          document.title.includes('Recently Viewed | Events | Salesforce') ||
+          document.title.toLowerCase().includes('login'),
+        { timeout: 20000, polling: 1000 }
+      );
+
+      const pageTitle = await page.title();
+
+      if (!pageTitle.toLowerCase().includes('login')) {
+        const isValid = pageTitle === 'Recently Viewed | Events | Salesforce';
+        if (isValid) {
+          console.log('Session exists: true — skipping login');
+          return;
+        }
+      }
+
+      console.log('Session exists: false — Starting Fresh Login');
+    } catch (error) {
+      console.log(`Session check failed: ${error} — Starting Fresh Login`);
+    }
+  } else {
+    console.log('Session exists: false — Starting Fresh Login');
+  }
 
   try {
-  await page.goto(orgURL, {
-    waitUntil: 'domcontentloaded',
-    timeout: 10000,
-  });
+    await page.goto(process.env.orgURL!);
+    await login.buLoginName.fill(process.env.buLoginName!);
+    await login.buPassword.fill(process.env.buPassword!);
+    await login.buLoginContinue.click();
 
-  const appLauncher = await page.locator("//button[@title='App Launcher']").isVisible();
-  return appLauncher;
-} catch {
-  return false;
-} finally {
-  await browser.close(); // always closes, whether true, false, or error
-}
-}
+    await page.waitForFunction(
+      () =>
+        document.title.includes('Recently Viewed | Events | Salesforce') ||
+        document.title.toLowerCase().includes('login'),
+      { timeout: 60000 }
+    );
 
-export async function loginAndSaveSession() {
-  const browser = await chromium.launch({ headless: false });
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  const eventPage = new EventGroupPage(page);
-  
+    const pageTitle = await page.title();
+    if (pageTitle.toLowerCase().includes('login')) {
+      throw new Error('Login failed — still on login page after attempting login.');
+    }
 
-  const username = process.env.MY_PERSONAL_USERNAME!;
-  const password = process.env.MY_PERSONAL_PASSWORD!;
-  const orgURL = process.env.orgURL!;
-try{
-  await page.goto(orgURL);
-  //await eventPage.buLoginName.fill(process.env.buLoginName!);
-  //await eventPage.buPassword.fill(process.env.buPassword!);
-  //await eventPage.buLoginContinue.click();
-  await page.locator('#username').fill(username);
-  await page.locator('#password').fill(password);
-  await page.click('#Login');
-}
-catch
-{
- console.log('Login skipped');
-}
-  await page.waitForURL('**/lightning/**',{ timeout: 100000 });
+    await page.context().storageState({ path: STATE_PATH });
+    console.log('--- Login Complete | Session saved to state.json ---');
 
-  await context.storageState({ path: STATE_PATH });
-  await context.close();
-  await browser.close();
-  console.log('Fresh session saved to state.json');
+  } catch (error) {
+    console.log('Login failed:', error);
+    throw error;
+  }
 }

@@ -9,7 +9,7 @@ export class LoginPage {
   bypassCode:Locator;
   verifyCode:Locator;
   trustBrowser:Locator;
-  welcomeText:Locator;
+  homePage:Locator;
   
 
 
@@ -24,6 +24,6 @@ export class LoginPage {
     this.bypassCode=page.locator("//input[@name='passcode-input']");
     this.verifyCode=page.locator("//button[normalize-space()='Verify']");
     this.trustBrowser=page.locator("//button[@id='trust-browser-button']");
-    this.welcomeText=page.locator("(//*[contains(normalize-space(),'Welcome to Boston University!')])[last()]");
+    this.homePage=page.locator("(//span[normalize-space()='Home'])[1]");
     } 
 }

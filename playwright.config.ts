@@ -7,9 +7,10 @@ const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
 export default defineConfig({
   testDir: './tests',
-  timeout:100000,
+  timeout:30000,
+  globalTimeout: 30000,
 
-  fullyParallel: true,
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
@@ -19,12 +20,13 @@ export default defineConfig({
     ['allure-playwright', { resultsDir: `reports/allure-results-${timestamp}` }],
   ],
 
-  globalSetup: './tests/global-setup.ts',
+  //globalSetup: './tests/global-setup.ts',
 
   use: {
     trace: 'on-first-retry',
     screenshot: 'on', //only-on-failure
     video: 'on', //retain-on-failure
+    
   },
 
   projects: [

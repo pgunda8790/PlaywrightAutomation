@@ -17,7 +17,7 @@ export async function userLoginByPassMFA(page: Page) {
   await login.verifyCode.click();
   await login.trustBrowser.click();
   await page.waitForLoadState('networkidle', { timeout: 60000 });
-  await login.welcomeText.waitFor({ state: 'visible' });
+  await login.homePage.waitFor({ state: 'visible' });
   }
   catch{
     console.log(error);

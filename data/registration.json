@@ -1,10 +1,21 @@
 
 {
-  "studentEmail" : "tst_2201@bu.edu",
-  "eventName" : "'June (now Fall 2026) Orientation clone of winter'",
+  "studentEmail" : "tst_1612@bu.edu",
+  "userName":"Test Test1612",
+  "eventName" : "May Orientation clone of winter",  
+  "ticketName" : "College of Communication - COM | Free",
+  "diaryfreeMeals" :true,
  "SpecificationMeal":"Lactose Free Meal",
  "emergencyContactName":"John",
- "emergencyConatactPhone":"2182981",
+ "emergencyConatactPhone":"+121365284",
+ "contactNameToClear" : "Mike Tyson",
+ "emergencyNameUpdated":"Mike",
+ "emergencyPhoneUpdated":"98765423",
+ "optionalTour":true,
  "signatiureName" : "TestUser",
-  "sessionstadd" : ["Cinema & Media Studies", "History of Art & Architecture at BU"]
+ "addedSession": "Introduction to SILab",
+ "cancellationComments":"Test cancel",
+  "uncheckedSession": "Cinema & Media Studies",
+  "sessionstadd" : ["Cinema & Media Studies", "History of Art & Architecture at BU","A Walking Tour of Religious Spaces on Campus"]
+  
 }
