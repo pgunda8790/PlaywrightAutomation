@@ -1,9 +1,10 @@
 
 {
   "studentEmail" : "tst_1612@bu.edu",
-  "userName":"Test Test1612",
+  "userName":"Test TEST1612",
   "eventName" : "May Orientation clone of winter",  
-  "ticketName" : "College of Communication - COM | Free",
+  "ticketName" : "College of Communication - COM",
+  "admitTerm":["Spring 2027","Fall 2026"],
   "diaryfreeMeals" :true,
  "SpecificationMeal":"Lactose Free Meal",
  "emergencyContactName":"John",

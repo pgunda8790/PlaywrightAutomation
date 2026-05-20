@@ -1,8 +1,30 @@
 import { BrowserContext, Page, expect } from '@playwright/test';
-import { runSOQL } from '../utils/apiHelper';
-import { loginSF } from '../utils/auth';
+import { runSOQL } from './apiHelper';
+import { loginSF } from './auth';
 import registerData from "../data/registration.json";
 import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+export async function addSessions(jsonFilePath: string, page: Page) {
+  const register = new EventRegistrationPage(page);
+  const sessionNames: string[] = require(jsonFilePath).sessionsToAdd;
+  console.log("Sessionnames :" + sessionNames);
+  const allSessions = register.allsessions;
+  const totalCount = await allSessions.count();
+  console.log("Total count " + totalCount);
+
+  for (let i = 0; i < totalCount; i++) {
+    const sessionText = (await allSessions.nth(i).innerText()).trim();
+    if (sessionNames.includes(sessionText)) {
+      const addButton = register.addSessionButton.nth(i);
+      if (await addButton.isEnabled()) {
+        await addButton.click();
+        console.log("Added : " + sessionText);
+      }
+    }
+  }
+}
 
 export async function validateSessions(context: BrowserContext, attendeePage: Page, userEmail: string) {
 
@@ -70,6 +92,73 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
   console.log('All non-mandatory sessions validated successfully!');
 
   return sfSessionNames;
+}
+
+
+export async function verifyAttendee( page: Page,retries = 5,interval = 5000){
+  const query = `SELECT 
+    conference360__Account_Name__c,
+    conference360__Event_Name__c,
+    conference360__Email2__c,
+    zBU_Dairy_Allergy_Details__c,
+    zBU_Dairy_free_Meals__c,
+    zBU_Orientation_Emergency_Contact_Name__c,
+    zBU_Orientation_Emergency_Contact_Phone__c,
+    zBU_Participant_Responsibilities_SignOff__c,
+    conference360__Registration_Status__c,
+    conference360__First_Name2__c,
+    conference360__Last_Name2__c,
+    conference360__Attendance_Status__c,
+    zBU_Additional_Allergy__c,
+    zBU_Additional_Allergy_Details__c,
+    zBU_Accommodation_Details__c,
+    zBU_Gluten_Free__c,
+    zBU_Halal_Meals__c,
+    zBU_Kosher_Meals__c,
+    zBU_Nut_Allergy__c,
+    zBU_Vegan_Meals__c,
+    zBU_Vegetarian_Meals__c,
+    zBU_Interested_in_a_tour__c
+  FROM conference360__Attendee__c
+  WHERE conference360__Email2__c = '${registerData.studentEmail}'
+  AND conference360__Event_Name__c LIKE '%${registerData.eventName}%'
+  AND conference360__Registration_Status__c = 'Registered'`;
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    console.log(`Attempt ${attempt}/${retries}: Querying backend...`);
+
+    
+    if (attempt > 1) await sleep(interval);
+
+    const records = await runSOQL(query, page);
+
+    if (!records || records.length === 0) {
+      console.log(`Attempt ${attempt}: No records found yet`);
+      continue;
+    }
+
+    const record = records[0];
+    console.log('Record found:', JSON.stringify(record, null, 2));
+
+    
+    const unpopulated = [];
+    if (record.zBU_Dairy_free_Meals__c !== registerData.diaryfreeMeals) unpopulated.push('zBU_Dairy_free_Meals__c');
+    if (record.zBU_Dairy_Allergy_Details__c !== registerData.SpecificationMeal) unpopulated.push('zBU_Dairy_Allergy_Details__c');
+    if (record.zBU_Orientation_Emergency_Contact_Name__c !== registerData.emergencyContactName) unpopulated.push('zBU_Orientation_Emergency_Contact_Name__c');
+    if (record.zBU_Orientation_Emergency_Contact_Phone__c !== registerData.emergencyConatactPhone) unpopulated.push('zBU_Orientation_Emergency_Contact_Phone__c');
+    if (record.zBU_Interested_in_a_tour__c !== registerData.optionalTour) unpopulated.push('zBU_Interested_in_a_tour__c');
+    if (record.zBU_Participant_Responsibilities_SignOff__c !== registerData.signatiureName) unpopulated.push('zBU_Participant_Responsibilities_SignOff__c');
+
+    if (unpopulated.length === 0) {
+      console.log('All fields validated successfully');
+      return true;
+    }
+
+    console.log(`Attempt ${attempt}: Fields not yet populated: ${unpopulated.join(', ')}`);
+  }
+
+  console.log(`Validation failed after ${retries} attempts`);
+  return false;
 }
 
 export async function validateEmergencyContact(sfPage: Page, userEmail: string, expectedName: string, expectedPhone: string) {
@@ -161,4 +250,69 @@ export async function cancellationConfirmation(page: Page) {
   console.log(`Cancellation reason matched: "${registerData.cancellationComments}"`);
 
   console.log('Cancellation confirmation completed successfully!');
+}
+
+export async function studentOrientationEligibilityCheck(page: Page,email: string,retries = 3,interval = 3000) {
+
+  const terms = registerData.admitTerm.map((t: string) => `'${t}'`).join(',');
+  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+  
+
+  const query = `SELECT 
+    hed__Chosen_Full_Name__c,
+    Email,
+    zBU_UGO_Attendee_Count__c,
+    zBU_Orientation_Eligible__c,
+    zBU_Admit_Term__c,
+    zBU_Admit_Type_Audience__c,
+    zBU_CareerAudience__c,
+    zBU_EnrollmentStatusAudience__c,
+    zBU_SchoolCollegeAudience__c
+  FROM Contact
+  WHERE Email = '${email}'
+  AND zBU_UGO_Attendee_Count__c = 0
+  AND zBU_Orientation_Eligible__c = true
+  AND zBU_Admit_Term__c IN (${terms})
+  AND zBU_Admit_Type_Audience__c = 'Freshman'
+  AND zBU_CareerAudience__c = 'Undergraduate'
+  AND zBU_SchoolCollegeAudience__c IN ('CAS','COM','CGS','UPAR')`;
+
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const records = await runSOQL(query, page);
+
+    if (records && records.length > 0) {
+      console.log(`Eligible student found for email: ${email}`);
+      return true;
+    }
+    if (attempt < retries) await sleep(interval);
+  }
+
+  console.log(`No eligible student found for email: ${email} after ${retries} attempts`);
+  return false;
+}
+
+export async function validateFieldValidationError(page:Page) 
+{
+const register = new EventRegistrationPage(page);
+await page.waitForLoadState('domcontentloaded');
+await register.requiredFieldError.scrollIntoViewIfNeeded();
+await expect(register.requiredFieldError).toBeVisible();
+
+}
+
+export async function fillRegistrationDetailsByAttendee(page:Page)
+
+{
+  const register = new EventRegistrationPage(page);
+await expect(register.userDataAutoFetch).toBeVisible();
+await register.dieteryPreference.click();
+await register.yes.click();
+await register.diaryFreeMealCheck.click();
+await register.MealSpecification.fill(registerData.SpecificationMeal);
+await register.emergencyName.fill(registerData.emergencyContactName);
+await register.emergencyPhone.fill(registerData.emergencyConatactPhone);
+await register.optionalTour.click();
+await register.readAndUnderstandInfo.fill(registerData.signatiureName);
+await page.waitForTimeout(2000);
+await register.readAndUnderstandInfo.press('Tab');
 }

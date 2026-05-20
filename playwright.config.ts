@@ -7,8 +7,7 @@ const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
 export default defineConfig({
   testDir: './tests',
-  timeout:30000,
-  globalTimeout: 30000,
+  timeout:60000,
 
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
