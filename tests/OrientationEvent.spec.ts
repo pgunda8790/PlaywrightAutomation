@@ -1,19 +1,10 @@
 
 import { test, expect,Locator} from '@playwright/test';
 import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
+import {checkOrientationRecordExists,clickActiveEventGroup,clickOrientationRecord,uncheckDefaultCheckbox,cloneEvent} from '../utils/eventGroupHelper';
+import { existsSync } from 'fs';
 
-import dotenv from 'dotenv';
-import { runSOQL } from '../utils/apiHelper';
-
-import {
-  checkOrientationRecordExists,
-  clickActiveEventGroup,
-  clickOrientationRecord,
-  uncheckDefaultCheckbox,
-  cloneEvent
-} from '../utils/eventGroupHelper';
-import { readExcelData } from '../utils/excelReader';
-test.use({ storageState: 'state.json' });
+test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 test('Create Orientation Event Group if not exists', async ({ page }) => {
 
 const eventPage = new EventGroupPage(page);
