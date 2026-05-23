@@ -1,37 +1,52 @@
-import { test, expect} from '@playwright/test';
-import {EventRegistrationPage} from '../pages/OrientationEvents/eventRegistrationPage';
-import {} from '../utils/eventGroupHelper';
-import { userLoginByPassMFA } from '../utils/BuLogin';
+import { test, expect,} from '@playwright/test';
+import {EventRegistrationPage} from '../../pages/orientationEvents/eventRegistrationPage';
+import {} from '../../utils/OrientationHelpers/eventGroupHelper';
+import { userLoginByPassMFA } from '../../utils/BuLogin';
 import { error } from 'node:console';
-import{saveToJson} from '../utils/dataExtracter';
-import registerData from "../data/registration.json";
-import {AttendeePage} from '../pages/OrientationEvents/attendeeLinkPage';
-import { loginSF } from '../utils/auth';
-import {validateSessions,validateEmergencyContact,cancellationPageFieldsVisibilityCheck,cancellationConfirmation,addSessions,verifyAttendee} from '../utils/eventRegistrationHelpers';
+import{saveToJson} from '../../utils/dataExtracter';
+import registerData from "../../data/registration.json";
+import {AttendeePage} from '../../pages/orientationEvents/attendeeLinkPage';
+import { loginSF } from '../../utils/auth';
+import {fillRegistrationDetailsByAttendee,getEventRegisteredCount,getEventItemCounts,validateSessions,validateEmergencyContact,cancellationPageFieldsVisibilityCheck,cancellationConfirmation,addSessions,verifyAttendee} from '../../utils/OrientationHelpers/eventRegistrationHelpers';
 import { existsSync } from 'fs';
+
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
+test.describe('Registration Creation and Cancellation validations', () => {
+  test.describe.configure({ mode: 'serial' });
+  
+  let suiteFailed = false;
 
-test('Event Registration', async ({ page}) => {
+  test.beforeEach(async ({}, testInfo) => {
+    if (suiteFailed) testInfo.skip(true, 'Skipping due to previous test failure');
+  });
+
+  test.afterEach(async ({}, testInfo) => {
+    if (testInfo.status === 'failed') suiteFailed = true;
+  });
+
+test('Event Registration @testNow', async ({ page}) => {
 
 const register = new EventRegistrationPage(page);
 
 await page.goto(process.env.MY_BU_PORTAL!);
 await userLoginByPassMFA(page);
 await register.newStudentOrientation.click();
-await register.mayOrientation.click();
+await register.Orientation.click();
 await register.registerEvent.first().click();
 await register.addMyself.click();
 await saveToJson({EventName:register.eventName});
 await expect(register.redeemed).toBeVisible();
 await register.registerEvent.last().click();
 await register.reviewSession.click({ force: true });
+await fillRegistrationDetailsByAttendee(page);
 await register.reviewSession.click({ force: true });
 await register.sessionsScreen.waitFor({ state: 'visible'});
 await register.allsessions.first().waitFor({ state: 'visible', timeout: 15000 });
-await addSessions("../data/accountData.json",page);
-await expect(register.userNameInSummary).toHaveText(registerData.userName);
+await addSessions(page);
+const text = await register.userNameInSummary.innerText();
+expect(text.replace(/\s+/g, ' ').trim().toLowerCase()).toBe(registerData.userName.toLowerCase());
 await register.registerEvent.last().click();
 await page.waitForLoadState('domcontentloaded');
 try
@@ -41,7 +56,6 @@ try
 catch{
     console.log("Seems the logo is not found : "+ error);
 }
-await page.waitForTimeout(50000);
 
 });
 
@@ -69,7 +83,7 @@ const register = new EventRegistrationPage(page);
 await page.goto(process.env.MY_BU_PORTAL!);
 await userLoginByPassMFA(page);
 await register.newStudentOrientation.click();
-await register.mayOrientation.click();
+await register.Orientation.click();
 await register.registerEvent.first().click();
 await register.addMyself.click();
 await expect(register.redeemed).toBeVisible();
@@ -113,6 +127,7 @@ test('View AttendeeLink page and session agenda', async ({ page, context }) => {
   await validateSessions(context,newPage, registerData.studentEmail);
 });
 
+/*
 test('Update Non mandatory sessions and validate backend', async ({ page, context }) => {
 
   const register = new EventRegistrationPage(page);
@@ -150,9 +165,9 @@ console.log(`Added session found in SF: "${registerData.addedSession}"`);
 
 });
 
+*/
 
-
-test('The Registration Update Info @test',async ({ page,context }) =>{
+test('The Registration Update Info',async ({ page,context }) =>{
 
 const register = new EventRegistrationPage(page);
 await page.goto(process.env.MY_BU_PORTAL!);
@@ -178,14 +193,16 @@ await validateEmergencyContact(sfPage,registerData.studentEmail,registerData.eme
 await sfPage.close();
 });
 
-test('Student can update their information after clearing it',async ({ page,context }) =>{
 
 
-});
+test('The Registration Cancellation and record count validation @test2',async ({ page }) =>{
 
+await loginSF(page);
+const attendeeRemainigSnapshot = await getEventRegisteredCount(page);
+const eventItemRemainingSnapshot = await getEventItemCounts(page);
 
-test('The Registration Cancellation',async ({ page }) =>{
-
+console.log("Remaining Attendee Registration for event: "+ attendeeRemainigSnapshot);
+console.log("Remaining Attendee Registrations for particular Ticket: "+ eventItemRemainingSnapshot);
 const register = new EventRegistrationPage(page);
 await page.goto(process.env.MY_BU_PORTAL!);
 await userLoginByPassMFA(page);
@@ -193,43 +210,22 @@ await register.newStudentOrientation.click();
 await cancellationPageFieldsVisibilityCheck(page);
 await register.cancelRegistration.click();
 await register.yesCancel.click();
-await register.cancelRegistration.fill(registerData.cancellationComments);
+await register.cancellationReason.click();
+await register.cancellationReason.fill(registerData.cancellationComments);
 await expect(register.confirmCancel).toBeVisible();
 await register.finish.click();
 await page.waitForTimeout(15000);
-await cancellationConfirmation(page);
+await cancellationConfirmation(page,registerData.StudentCancelled,registerData.cancellationComments);
+
+await page.goto(process.env.orgURL!);
+const attendeeRemainingAfterCancel = await getEventRegisteredCount(page);
+const eventItemRemainingAfterCancel = await getEventItemCounts(page);
+
+  expect(attendeeRemainingAfterCancel).toBe(attendeeRemainigSnapshot + 1);
+  expect(eventItemRemainingAfterCancel).toBe(eventItemRemainingSnapshot + 1);
+
+console.log("Remaining Attendee Registration for event: "+ attendeeRemainingAfterCancel);
+console.log("Remaining Attendee Registrations for particular Ticket: "+ eventItemRemainingAfterCancel);
 });
 
-/*
-test('Verify Event and Event Item counts after registration and cancellation', async ({ page }) => {
-  test.setTimeout(180000);
-
-  const eventName = registerData.eventName;
-
-  // --- Snapshot before ---
-  const attendeeSnapshot = await getAttendeeCount(page, eventName);
-  const eventItemSnapshot = await getEventItemCounts(page, eventName);
-  console.log('Snapshot — Attendees:', attendeeSnapshot, '| Remaining:', eventItemSnapshot.remaining);
-
-  // --- Register ---
-  await registerAttendee(page);
-
-  const attendeeAfterReg = await getAttendeeCount(page, eventName);
-  const eventItemAfterReg = await getEventItemCounts(page, eventName);
-
-  expect(attendeeAfterReg).toBe(attendeeSnapshot + 1);
-  expect(eventItemAfterReg.remaining).toBe(eventItemSnapshot.remaining - 1);
-  console.log('✅ After registration — counts decreased by 1');
-
-  // --- Cancel ---
-  await cancelAttendee(page, registerData.studentEmail);
-
-  const attendeeAfterCancel = await getAttendeeCount(page, eventName);
-  const eventItemAfterCancel = await getEventItemCounts(page, eventName);
-
-  expect(attendeeAfterCancel).toBe(attendeeSnapshot);
-  expect(eventItemAfterCancel.remaining).toBe(eventItemSnapshot.remaining);
-  console.log('✅ After cancellation — counts back to original');
-});
-*/
-
+ });

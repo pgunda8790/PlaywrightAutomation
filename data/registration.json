@@ -1,8 +1,8 @@
-
 {
   "studentEmail" : "tst_1612@bu.edu",
   "userName":"Test TEST1612",
-  "eventName" : "May Orientation clone of winter",  
+  "orientationFor":"Fall",
+  "eventName" : "June (now Fall 2026) Orientation clone of winter", 
   "ticketName" : "College of Communication - COM",
   "admitTerm":["Spring 2027","Fall 2026"],
   "diaryfreeMeals" :true,
@@ -16,7 +16,10 @@
  "signatiureName" : "TestUser",
  "addedSession": "Introduction to SILab",
  "cancellationComments":"Test cancel",
-  "uncheckedSession": "Cinema & Media Studies",
-  "sessionstadd" : ["Cinema & Media Studies", "History of Art & Architecture at BU","A Walking Tour of Religious Spaces on Campus"]
+ "StudentCancelled" : "Student Cancelled",
+ "adminCancellationReason" : "No Show Cancelled",
+ "adminCancellationComments":"",
+ "uncheckedSession": "A Walking Tour of Religious Spaces on Campus",
+ "sessionsToAdd" : ["Cinema & Media Studies", "History of Art & Architecture at BU","Arts in Action","A Walking Tour of Religious Spaces on Campus", "Kilachand Honors College: Freedom Trail","BU Marine Program"]
   
 }

@@ -1,9 +1,8 @@
-import { Page, chromium, Locator } from '@playwright/test';
+import { Page} from '@playwright/test';
 import * as fs from 'fs';
-import dotenv from 'dotenv';
-import path from 'path';
+
 export const STATE_PATH = 'state.json';
-import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
+import { EventGroupPage } from '../pages/orientationEvents/eventGroupPage';
 import { LoginPage } from '../pages/loginPage';
 
 export async function sessionExists(page: Page) {

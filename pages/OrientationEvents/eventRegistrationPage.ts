@@ -1,10 +1,11 @@
 import { Page, Locator } from '@playwright/test';
+import registerData from "../../data/registration.json";
 
 export class EventRegistrationPage {
 
   BuHomePageLogo:Locator;
   newStudentOrientation:Locator;
-  mayOrientation:Locator;
+  Orientation:Locator;
   fallOrientation:Locator;
   registerEvent:Locator;
   addMyself:Locator;
@@ -61,7 +62,7 @@ export class EventRegistrationPage {
     
     this.BuHomePageLogo =page.locator("//a[@title='MyBU']");
     this.newStudentOrientation=page.locator("//div[normalize-space()='New Student Orientation']/div");
-    this.mayOrientation=page.locator("(//div[contains(normalize-space(),'May')])[last()]");
+    this.Orientation = page.locator(`(//div[contains(normalize-space(),'${registerData.orientationFor}')])[last()]`);
     this.fallOrientation =page.locator("(//div[contains(normalize-space(),'Fall')])[last()]");
     this.registerEvent=frame.locator("//button[normalize-space()='Register' or normalize-space()='register']");
     this.addMyself=frame.locator("//span[normalize-space()='ADD MYSELF']");
@@ -90,7 +91,7 @@ export class EventRegistrationPage {
     this.requiredFieldError = frame.locator("(//mat-error[normalize-space()='This is required'])[1]");
     this.userNameInSummary=frame.locator("//div[contains(@class,'ticket-summary')]/strong");
     this.nameOnCancellation=page.locator("//div[@class='nameText']/p");
-    this.cancellationPageFields=page.locator("//div[@class='title]");
+    this.cancellationPageFields=page.locator("//div[@class='title']");
     this.updateInfo =page.locator("//button[normalize-space()='Update my Info']");
     this.nextSteps =page.locator("//strong[normalize-space()='Next Steps']");
     this.helpFulResources=page.locator("//strong[normalize-space()='Helpful Resources']");

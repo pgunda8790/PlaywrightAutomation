@@ -1,7 +1,7 @@
 
 import { test, expect,Locator} from '@playwright/test';
-import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
-import {checkOrientationRecordExists,clickActiveEventGroup,clickOrientationRecord,uncheckDefaultCheckbox,cloneEvent} from '../utils/eventGroupHelper';
+import { EventGroupPage } from '../../pages/orientationEvents/eventGroupPage';
+import {checkOrientationRecordExists,clickActiveEventGroup,clickOrientationRecord,uncheckDefaultCheckbox,cloneEvent} from '../../utils/OrientationHelpers/eventGroupHelper';
 import { existsSync } from 'fs';
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });

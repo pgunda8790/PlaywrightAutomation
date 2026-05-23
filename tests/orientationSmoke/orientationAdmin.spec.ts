@@ -1,17 +1,17 @@
 import { test, expect} from '@playwright/test';
-import {EventsPage} from '../pages/OrientationEvents/eventsPage';
-import {verifyAttendee} from '../utils/eventRegistrationHelpers';
-import {studentOrientationEligibilityCheck,clickRequiredEvent,fillRegistrationDetailsByAdmin} from '../utils/eventAdminHelpers';
-import registerData from "../data/registration.json";
-import { loginSF } from '../utils/auth';
+import {EventsPage} from '../../pages/orientationEvents/eventAdminPage';
+import {cancellationConfirmation, verifyAttendee} from '../../utils/OrientationHelpers/eventRegistrationHelpers';
+import {studentOrientationEligibilityCheck,clickRequiredEvent,fillRegistrationDetailsByAdmin} from '../../utils/OrientationHelpers/eventAdminHelpers';
+import registerData from "../../data/registration.json";
+import { loginSF } from '../../utils/auth';
 import { existsSync } from 'fs';
-import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
-import { userLoginByPassMFA } from '../utils/BuLogin';
-import { AttendeePage } from '../pages/OrientationEvents/attendeeLinkPage';
+import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
+import { userLoginByPassMFA } from '../../utils/BuLogin';
+import { AttendeePage } from '../../pages/orientationEvents/attendeeLinkPage';
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
-test('Register attendee from Event ticket', async ({ page }) => {
+test('Register attendee from Event ticket @testNow', async ({ page }) => {
   test.setTimeout(180000); //3mins
 
   const event = new EventsPage(page);
@@ -77,3 +77,36 @@ test('Student can view attendeeLink after Staff Registration', async ({ page,con
     await expect(attendee.agendaTab).toBeVisible();
   
 });
+
+
+test('Attendee is set to No Show Cancelled @run', async ({ page }) => {
+  test.setTimeout(180000); //3mins
+
+  const event = new EventsPage(page);
+  await loginSF(page);
+  await event.EventsTab.click();
+  await event.recentView.waitFor({ state: 'visible', timeout: 10000 });
+  await event.recentView.click();
+
+   if (!(await event.all.isVisible())) {
+  await event.recentView.click();
+  await event.all.waitFor({ state: 'visible', timeout: 10000 });
+   }
+  await event.all.click();
+  await clickRequiredEvent(page, registerData.eventName);
+
+  await event.attendeeLink.click();
+  await event.getRegisteredAttendeeByUsername.scrollIntoViewIfNeeded();
+  await event.getRegisteredAttendeeByUsername.click();
+  await event.editRegistrationStatus.click();
+  await page.waitForLoadState('domcontentloaded');
+  await event.registrationStatusField.click();
+  await event.cancelledStatusValue.click();
+  await event.registrationCancellationReason.click();
+  await event.adminCancellationReason.click();
+  await event.saveEdit.click();
+  await cancellationConfirmation(page,registerData.adminCancellationReason,registerData.adminCancellationComments);
+
+
+});
+

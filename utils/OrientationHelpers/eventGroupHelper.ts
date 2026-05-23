@@ -1,9 +1,6 @@
 import { Page,expect } from '@playwright/test';
-import { runSOQL } from './apiHelper';
-import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
-import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
-import {getFromJson} from '../utils/dataExtracter';
-import registerData from "../data/registration.json";
+import { runSOQL } from '../apiHelper';
+import { EventGroupPage } from '../../pages/orientationEvents/eventGroupPage';
 
 const currentYear = new Date().getFullYear().toString();
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

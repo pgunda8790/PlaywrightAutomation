@@ -1,10 +1,7 @@
 import { Page,expect } from '@playwright/test';
-import { runSOQL } from './apiHelper';
-import { EventGroupPage } from '../pages/OrientationEvents/eventGroupPage';
-import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
-import {getFromJson} from '../utils/dataExtracter';
-import registerData from "../data/registration.json";
-import { EventsPage } from '../pages/OrientationEvents/eventsPage';
+import { runSOQL } from '../apiHelper';
+import registerData from "../../data/registration.json";
+import { EventsPage } from '../../pages/orientationEvents/eventAdminPage';
 
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -62,9 +59,8 @@ export async function clickRequiredEvent(page: Page, eventName: string) {
 
   console.log(`Event found: ${matchedEvent.Name}`);
   await page.getByText(matchedEvent.Name, { exact: false }).first().click();
-  await expect(
-    page.getByRole("heading", { name: matchedEvent.Name, exact: false })
-  ).toBeVisible();
+  await page.waitForLoadState("domcontentloaded");
+await expect(page.getByRole("heading", { name: matchedEvent.Name, exact: false })).toBeVisible();
 } 
 
 export async function fillRegistrationDetailsByAdmin(page:Page)
@@ -113,3 +109,4 @@ console.log("Entered all the food preferences");
   await event.readAndUnderstandInfo.fill(registerData.signatiureName);
   console.log("Entered all the additional details for the attendee");
 }
+

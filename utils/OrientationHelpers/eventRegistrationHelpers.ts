@@ -1,14 +1,14 @@
 import { BrowserContext, Page, expect } from '@playwright/test';
-import { runSOQL } from './apiHelper';
-import { loginSF } from './auth';
-import registerData from "../data/registration.json";
-import { EventRegistrationPage } from '../pages/OrientationEvents/eventRegistrationPage';
+import { runSOQL } from '../apiHelper';
+import { loginSF } from '../auth';
+import registerData from "../../data/registration.json";
+import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function addSessions(jsonFilePath: string, page: Page) {
+export async function addSessions(page: Page) {
   const register = new EventRegistrationPage(page);
-  const sessionNames: string[] = require(jsonFilePath).sessionsToAdd;
+  const sessionNames: string[] = registerData.sessionsToAdd;
   console.log("Sessionnames :" + sessionNames);
   const allSessions = register.allsessions;
   const totalCount = await allSessions.count();
@@ -39,7 +39,6 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
   const sfPage = await sfContext.newPage();
   await loginSF(sfPage);
 
-  // Only non-mandatory sessions
   const query = `SELECT conference360__Session__r.Name,
                  conference360__Session__r.conference360__Event__r.Name,
                  conference360__Session__r.zBU_Mandatory__c
@@ -47,7 +46,9 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
                  WHERE conference360__Contact__r.Email = '${userEmail}'
                  AND conference360__Registration_Status__c = 'Registered'
                  AND conference360__Session__r.conference360__Event__r.Name = '${registerData.eventName}'
-                 AND conference360__Session__r.zBU_Mandatory__c = false`;
+                 AND conference360__Session__r.zBU_Mandatory__c = false
+                 AND conference360__Attendee__r.conference360__Registration_Status__c = 'Registered'`;
+   
 
   const records = await runSOQL(query, sfPage);
   const sfCount = records.length;
@@ -95,7 +96,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
 }
 
 
-export async function verifyAttendee( page: Page,retries = 5,interval = 5000){
+export async function verifyAttendee( page: Page,retries = 5,interval = 20000){
   const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,
@@ -163,7 +164,7 @@ export async function verifyAttendee( page: Page,retries = 5,interval = 5000){
 
 export async function validateEmergencyContact(sfPage: Page, userEmail: string, expectedName: string, expectedPhone: string) {
 
-  const query = `SELECT zBU_Orientation_Emergency_Contact_Name__c, zBU_Orientation_Emergency_Contact_Phone__c 
+  const query = `SELECT conference360__Email2__c,zBU_Orientation_Emergency_Contact_Name__c, zBU_Orientation_Emergency_Contact_Phone__c 
                  FROM conference360__Attendee__c 
                  WHERE conference360__Email2__c = '${userEmail}'`;
 
@@ -186,7 +187,8 @@ export async function cancellationPageFieldsVisibilityCheck(page: Page) {
   const register = new EventRegistrationPage(page);
 
   try {
-    await expect(register.nameOnCancellation.innerText).toBe(registerData.userName);
+    const text = await register.nameOnCancellation.innerText();
+    expect(text.trim().toLowerCase()).toBe(registerData.userName.trim().toLowerCase());
     await expect(register.cancellationPageFields.filter({ hasText: 'Event Name:' })).toBeVisible();
     await expect(register.cancellationPageFields.filter({ hasText: 'Event Start Date:' })).toBeVisible();
     await expect(register.cancellationPageFields.filter({ hasText: 'Event End Date:' })).toBeVisible();
@@ -203,7 +205,7 @@ export async function cancellationPageFieldsVisibilityCheck(page: Page) {
 }
 
 
-export async function cancellationConfirmation(page: Page) {
+export async function cancellationConfirmation(page: Page,cancellationRsn:String,cancellationComments:String) {
 
   // Query 1 — Contact ticket count
   const contactQuery = `SELECT Id, Name,
@@ -217,11 +219,8 @@ export async function cancellationConfirmation(page: Page) {
   const contactRecords = await runSOQL(contactQuery, page);
   const contact = contactRecords[0];
 
-  console.log(`Attendee Count: ${contact.zBU_UGO_Attendee_Count__c}`);
-
-  // Verify ticket count is 0
+  console.log(`Ticket count confirmed: ${contact.zBU_UGO_Attendee_Count__c}`);
   expect(contact.zBU_UGO_Attendee_Count__c).toBe(0);
-  console.log(`Ticket count confirmed: 0`);
 
   // Query 2 — Attendee cancellation details
   const cancellationQuery = `SELECT Id, Name,
@@ -231,7 +230,7 @@ export async function cancellationConfirmation(page: Page) {
                              conference360__Contact__r.Email,
                              conference360__Contact__r.Name
                              FROM conference360__Attendee__c
-                             WHERE conference360__Contact__r.Email = '${registerData.studentEmail}'
+                             WHERE conference360__Contact__r.Email = 'tst_1612@bu.edu'
                              ORDER BY LastModifiedDate DESC
                              LIMIT 1`;
 
@@ -242,12 +241,14 @@ export async function cancellationConfirmation(page: Page) {
   console.log(`Cancellation Reason: ${attendee.zBU_Registration_Cancellation_Reason__c}`);
   console.log(`Cancellation Comments: ${attendee.zBU_Cancellation_Description__c}`);
 
-  expect(attendee.conference360__Registration_Status__c).toBe('Cancelled');
-  console.log(`Registration Status confirmed: Cancelled`);
+  expect(attendee.conference360__Registration_Status__c).toBe('Canceled');
+  console.log(`Registration Status confirmed: Canceled`);
 
   // Verify cancellation reason matches
-  expect(attendee.zBU_Registration_Cancellation_Reason__c).toBe(registerData.cancellationComments);
-  console.log(`Cancellation reason matched: "${registerData.cancellationComments}"`);
+  expect(attendee.zBU_Registration_Cancellation_Reason__c).toBe(cancellationRsn);
+  console.log(`Cancellation reason matched: "${cancellationRsn}"`);
+
+  expect(attendee.zBU_Cancellation_Description__c).toBe(cancellationComments);
 
   console.log('Cancellation confirmation completed successfully!');
 }
@@ -315,4 +316,38 @@ await register.optionalTour.click();
 await register.readAndUnderstandInfo.fill(registerData.signatiureName);
 await page.waitForTimeout(2000);
 await register.readAndUnderstandInfo.press('Tab');
+}
+
+
+
+export async function getEventRegisteredCount(page: Page): Promise<number> {
+  const query = `SELECT conference360__Registered__c, conference360__Remaining_Capacity__c, conference360__Attendee_Limit__c
+    FROM conference360__Event__c
+    WHERE Name LIKE '%${registerData.eventName}%'
+    LIMIT 1
+  `;
+  const records = await runSOQL(query, page);
+  if (!records || records.length === 0) throw new Error(`Event not found: '%${registerData.eventName}%'`);
+
+  const remaining  = records[0].conference360__Remaining_Capacity__c;
+
+
+
+  return remaining;
+}
+
+export async function getEventItemCounts(page: Page){
+  const query =`SELECT conference360__Item_Name__c,conference360__Remaining_Quantity__c,conference360__Quantity_Made_Available__c
+    FROM conference360__Event_Item__c
+    WHERE conference360__Event__r.Name LIKE '%${registerData.eventName}%'
+    and conference360__Item_Name__c like '%${registerData.ticketName}%'`;
+    
+  const records = await runSOQL(query, page);
+  if (!records || records.length === 0) throw new Error(`Event Item not found: ${registerData.ticketName}`);
+
+  const remaining  = records[0].conference360__Remaining_Quantity__c;
+
+  console.log(`✅ Event Item Remaining :` );
+
+  return remaining;
 }

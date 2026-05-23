@@ -26,6 +26,14 @@ export class EventsPage {
   registrationCompleted:Locator;
   dairyFree:Locator;
   dairyPreference:Locator;
+  attendeeLink :Locator;
+  getRegisteredAttendeeByUsername:Locator;
+  editRegistrationStatus:Locator;
+  registrationStatusField:Locator;
+  cancelledStatusValue:Locator;
+  registrationCancellationReason:Locator;
+  adminCancellationReason:Locator;
+  saveEdit:Locator;
 
 
   constructor(private page: Page) {
@@ -54,7 +62,15 @@ export class EventsPage {
     this.summaryButton=page.locator("//button[normalize-space()='Summary']");
     this.completeRegistration=page.locator("//button[@title='Complete Registration']");
     this.registrationCompleted=page.locator("//div[normalize-space()='Registration Completed']/div");
-    
+    this.attendeeLink=page.locator("//records-hoverable-link[contains(normalize-space(),'Attendees')]");
+    this.getRegisteredAttendeeByUsername = page.locator(`//tr[@role='row'][.//td[normalize-space()='${registerData.userName}']][.//td[normalize-space()='Registered']]/th`);
+    this.editRegistrationStatus=page.locator("//button[@title='Edit Registration Status']"); 
+    this.registrationStatusField=page.locator("//button[@aria-label='Registration Status']");
+    this.cancelledStatusValue=page.locator("//*[@data-value='Canceled']");
+    this.registrationCancellationReason=page.locator("//button[@aria-label='Registration Cancellation Reason']");
+    this.adminCancellationReason=page.locator(`//lightning-base-combobox-item[@data-value='${registerData.adminCancellationReason}']`);
+    this.saveEdit=page.locator("//button[@name='SaveEdit']");
+  }
+
    
   } 
-}

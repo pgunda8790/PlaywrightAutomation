@@ -14,8 +14,6 @@ export async function getAccessToken(page: Page): Promise<string> {
   const accessToken = sid.value.includes('!')
     ? sid.value.split('!')[1]
     : sid.value;
-
-  console.log('Access Token retrieved:');
   return accessToken;
 }
 
