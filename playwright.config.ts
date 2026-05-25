@@ -15,8 +15,8 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 //
  reporter: [
-    ['html', { open: 'always', outputFolder: `reports/html-report-${timestamp}` }],
-    ['allure-playwright', { resultsDir: `reports/allure-results-${timestamp}` }],
+    ['html', { open: 'never', outputFolder: `reports/html-report-${timestamp}` }],
+    ['allure-playwright', { resultsDir: 'reports/allure-results' }],
   ],
 
   //globalSetup: './tests/global-setup.ts',

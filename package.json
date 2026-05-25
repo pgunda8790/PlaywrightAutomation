@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
+    "test:allure": "node scripts/test-with-allure.js",
     "test:chromium": "playwright test --project=chromium --headed",
     "test:firefox": "playwright test --project=firefox --headed",
     "test:all": "playwright test --headed",
-    "allure:serve": "allure serve reports/allure-results-*",
-    "allure:generate": "allure generate reports/allure-results-* --clean -o reports/allure-report",
+    "allure:serve": "allure serve reports/allure-results",
+    "allure:generate": "allure generate reports/allure-results --clean -o reports/allure-report",
     "allure:open": "allure open reports/allure-report",
     "clean:reports": "rimraf reports"
   },
