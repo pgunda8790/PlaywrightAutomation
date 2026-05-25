@@ -19,9 +19,21 @@ jobs:
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
+      continue-on-error: true
+    - name: Generate Allure Report
+      if: always()
+      run: npx allure generate reports/allure-results --clean -o reports/allure-report
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: playwright-report
-        path: playwright-report/
+        name: allure-report
+        path: reports/allure-report/
+        retention-days: 30
+    - name: Upload Playwright HTML Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: playwright-html-report
+        path: reports/html-report-*/
         retention-days: 30
