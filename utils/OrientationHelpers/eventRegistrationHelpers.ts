@@ -96,7 +96,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
 }
 
 
-export async function verifyAttendee( page: Page,retries = 5,interval = 20000){
+export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
   const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,

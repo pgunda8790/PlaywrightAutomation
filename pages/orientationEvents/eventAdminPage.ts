@@ -70,6 +70,7 @@ export class EventsPage {
     this.registrationCancellationReason=page.locator("//button[@aria-label='Registration Cancellation Reason']");
     this.adminCancellationReason=page.locator(`//lightning-base-combobox-item[@data-value='${registerData.adminCancellationReason}']`);
     this.saveEdit=page.locator("//button[@name='SaveEdit']");
+    
   }
 
    
