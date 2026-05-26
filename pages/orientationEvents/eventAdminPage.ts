@@ -34,6 +34,7 @@ export class EventsPage {
   registrationCancellationReason:Locator;
   adminCancellationReason:Locator;
   saveEdit:Locator;
+  printableView:Locator;
 
 
   constructor(private page: Page) {
@@ -41,7 +42,7 @@ export class EventsPage {
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     
     this.EventsTab =page.locator("//a[@title='Events']//span[normalize-space()='Events']");
-    this.recentView=page.locator("//span[normalize-space()='Recently Viewed']/parent::h1");
+    this.recentView=page.locator("//span[normalize-space()='Recently Viewed']");
     this.all=page.locator("//span[@title='All']");
     this.ticketSelction = page.locator(`//*[contains(@aria-label,'${registerData.ticketName}')]`);
     this.addAttendee=page.locator("//span[normalize-space()='Add Attendee']");
@@ -63,14 +64,16 @@ export class EventsPage {
     this.completeRegistration=page.locator("//button[@title='Complete Registration']");
     this.registrationCompleted=page.locator("//div[normalize-space()='Registration Completed']/div");
     this.attendeeLink=page.locator("//records-hoverable-link[contains(normalize-space(),'Attendees')]");
-    this.getRegisteredAttendeeByUsername = page.locator(`//tr[@role='row'][.//td[normalize-space()='${registerData.userName}']][.//td[normalize-space()='Registered']]/th`);
+    this.getRegisteredAttendeeByUsername = page.locator(` (//tr[@role='row'][.//td[normalize-space()='${registerData.userName}']][.//td[normalize-space()='Registered']]/th//span[starts-with(normalize-space(),'AT')])[last()]`);
     this.editRegistrationStatus=page.locator("//button[@title='Edit Registration Status']"); 
     this.registrationStatusField=page.locator("//button[@aria-label='Registration Status']");
     this.cancelledStatusValue=page.locator("//*[@data-value='Canceled']");
     this.registrationCancellationReason=page.locator("//button[@aria-label='Registration Cancellation Reason']");
     this.adminCancellationReason=page.locator(`//lightning-base-combobox-item[@data-value='${registerData.adminCancellationReason}']`);
     this.saveEdit=page.locator("//button[@name='SaveEdit']");
-    
+    this.printableView = page.locator("//div[@title='Printable View']");
+
+   
   }
 
    

@@ -11,7 +11,6 @@ export class EventGroupPage {
    defaultTrue:Locator;
    recentView:Locator;
   all:Locator;
-  
   editDefault:Locator;
   defaultCheckbox:Locator;
   saveButton:Locator;

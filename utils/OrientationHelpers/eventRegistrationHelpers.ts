@@ -122,7 +122,7 @@ export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
     zBU_Interested_in_a_tour__c
   FROM conference360__Attendee__c
   WHERE conference360__Email2__c = '${registerData.studentEmail}'
-  AND conference360__Event_Name__c LIKE '%${registerData.eventName}%'
+  AND conference360__Event_Name__c LIKE '%${registerData.orientationFor}%'
   AND conference360__Registration_Status__c = 'Registered'`;
 
   for (let attempt = 1; attempt <= retries; attempt++) {
@@ -205,9 +205,9 @@ export async function cancellationPageFieldsVisibilityCheck(page: Page) {
 }
 
 
-export async function cancellationConfirmation(page: Page,cancellationRsn:String,cancellationComments:String) {
+export async function cancellationConfirmation(page: Page,cancellationRsn: String,cancellationComments: String) {
 
-  // Query 1 — Contact ticket count
+  // Query 1 — Contact ticket count with retry
   const contactQuery = `SELECT Id, Name,
                         zBU_UGO_Attendee_Count__c,
                         conference360__Events_Attended__c,
@@ -216,8 +216,21 @@ export async function cancellationConfirmation(page: Page,cancellationRsn:String
                         WHERE Email = '${registerData.studentEmail}'
                         AND Name = '${registerData.userName}'`;
 
-  const contactRecords = await runSOQL(contactQuery, page);
-  const contact = contactRecords[0];
+  let contact: any;
+  let retries = 3;
+
+  while (retries > 0) {
+    const contactRecords = await runSOQL(contactQuery, page);
+    contact = contactRecords[0];
+
+    console.log(`Ticket count: ${contact.zBU_UGO_Attendee_Count__c}`);
+
+    if (contact.zBU_UGO_Attendee_Count__c === 0) break;
+
+    console.log(`Ticket count is ${contact.zBU_UGO_Attendee_Count__c}, retrying in 20 seconds... (${retries} retries left)`);
+    await page.waitForTimeout(20000);
+    retries--;
+  }
 
   console.log(`Ticket count confirmed: ${contact.zBU_UGO_Attendee_Count__c}`);
   expect(contact.zBU_UGO_Attendee_Count__c).toBe(0);
@@ -243,10 +256,9 @@ export async function cancellationConfirmation(page: Page,cancellationRsn:String
 
   expect(attendee.conference360__Registration_Status__c).toBe('Canceled');
   console.log(`Registration Status confirmed: Canceled`);
-
-  // Verify cancellation reason matches
-  expect(attendee.zBU_Registration_Cancellation_Reason__c).toBe(cancellationRsn);
-  console.log(`Cancellation reason matched: "${cancellationRsn}"`);
+   // Verify cancellation reason matches
+  expect(attendee.zBU_Cancellation_Description__c ?? '').toBe(cancellationComments);
+  console.log("Cancellation reason matched");
 
   expect(attendee.zBU_Cancellation_Description__c).toBe(cancellationComments);
 

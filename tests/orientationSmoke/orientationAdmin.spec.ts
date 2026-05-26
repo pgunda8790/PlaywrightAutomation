@@ -1,7 +1,7 @@
 import { test, expect} from '@playwright/test';
 import {EventsPage} from '../../pages/orientationEvents/eventAdminPage';
 import {cancellationConfirmation, verifyAttendee} from '../../utils/OrientationHelpers/eventRegistrationHelpers';
-import {studentOrientationEligibilityCheck,clickRequiredEvent,fillRegistrationDetailsByAdmin} from '../../utils/OrientationHelpers/eventAdminHelpers';
+import {studentOrientationEligibilityCheck,clickAllEvents,clickRequiredEvent,fillRegistrationDetailsByAdmin} from '../../utils/OrientationHelpers/eventAdminHelpers';
 import registerData from "../../data/registration.json";
 import { loginSF } from '../../utils/auth';
 import { existsSync } from 'fs';
@@ -11,7 +11,7 @@ import { AttendeePage } from '../../pages/orientationEvents/attendeeLinkPage';
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
-test('Register attendee from Event ticket @testNow', async ({ page }) => {
+test('Register attendee from Event ticket', async ({ page }) => {
   test.setTimeout(180000); //3mins
 
   const event = new EventsPage(page);
@@ -24,14 +24,7 @@ test('Register attendee from Event ticket @testNow', async ({ page }) => {
   console.log("Student is Eligible for the orientationEvent");
 
   await event.EventsTab.click();
-  await event.recentView.waitFor({ state: 'visible', timeout: 10000 });
-  await event.recentView.click();
-
-   if (!(await event.all.isVisible())) {
-  await event.recentView.click();
-  await event.all.waitFor({ state: 'visible', timeout: 10000 });
-}
-  await event.all.click();
+  await clickAllEvents(page);
   await clickRequiredEvent(page, registerData.eventName);
 
   await event.ticketSelction.waitFor({ state: 'visible', timeout: 10000 });
@@ -86,13 +79,8 @@ test('Attendee is set to No Show Cancelled @run', async ({ page }) => {
   await loginSF(page);
   await event.EventsTab.click();
   await event.recentView.waitFor({ state: 'visible', timeout: 10000 });
-  await event.recentView.click();
 
-   if (!(await event.all.isVisible())) {
-  await event.recentView.click();
-  await event.all.waitFor({ state: 'visible', timeout: 10000 });
-   }
-  await event.all.click();
+  await clickAllEvents(page);
   await clickRequiredEvent(page, registerData.eventName);
 
   await event.attendeeLink.click();

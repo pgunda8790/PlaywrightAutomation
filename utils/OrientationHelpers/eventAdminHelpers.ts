@@ -46,6 +46,7 @@ export async function studentOrientationEligibilityCheck(page: Page,email: strin
 }
 
 export async function clickRequiredEvent(page: Page, eventName: string) {
+  
   const query = `SELECT Name, OwnerID FROM conference360__Event__c`;
   const records = await runSOQL(query, page);
 
@@ -69,8 +70,7 @@ export async function fillRegistrationDetailsByAdmin(page:Page)
   const event = new EventsPage(page);
   await event.userSearch.click();
   await event.userSearch.pressSequentially(registerData.userName, { delay: 150 });
-
-  await event.userResult.waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForTimeout(1000);
   await expect(event.userResult).toContainText(registerData.userName, { timeout: 10000 });
   await event.userResult.click();
   console.log("Selected the Desired User");
@@ -108,5 +108,23 @@ console.log("Entered all the food preferences");
   await event.readAndUnderstandInfo.scrollIntoViewIfNeeded();
   await event.readAndUnderstandInfo.fill(registerData.signatiureName);
   console.log("Entered all the additional details for the attendee");
+}
+
+
+export async function clickAllEvents(page: Page): Promise<void> {
+
+  const event = new EventsPage(page);
+
+  let retries = 3;
+  while (retries > 0)
+  {
+  await event.recentView.click({ force: true });
+  await event.all.waitFor({ state: 'visible', timeout: 10000 });
+  await event.all.click();
+  await page.waitForTimeout(2000);
+  if (await event.printableView.isVisible()) break;
+  await page.waitForTimeout(1000);
+  retries--;
+  }
 }
 
