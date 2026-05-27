@@ -110,21 +110,3 @@ console.log("Entered all the food preferences");
   console.log("Entered all the additional details for the attendee");
 }
 
-
-export async function clickAllEvents(page: Page): Promise<void> {
-
-  const event = new EventsPage(page);
-
-  let retries = 3;
-  while (retries > 0)
-  {
-  await event.recentView.click({ force: true });
-  await event.all.waitFor({ state: 'visible', timeout: 10000 });
-  await event.all.click();
-  await page.waitForTimeout(2000);
-  if (await event.printableView.isVisible()) break;
-  await page.waitForTimeout(1000);
-  retries--;
-  }
-}
-

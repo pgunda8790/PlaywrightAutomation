@@ -96,7 +96,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
 }
 
 
-export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
+export async function verifyAttendee( page: Page,retries = 5,interval = 30000){
   const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,
@@ -257,7 +257,7 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
   expect(attendee.conference360__Registration_Status__c).toBe('Canceled');
   console.log(`Registration Status confirmed: Canceled`);
    // Verify cancellation reason matches
-  expect(attendee.zBU_Cancellation_Description__c ?? '').toBe(cancellationComments);
+  expect(attendee.zBU_Cancellation_Description__c ?? "").toBe(cancellationComments);
   console.log("Cancellation reason matched");
 
   expect(attendee.zBU_Cancellation_Description__c).toBe(cancellationComments);

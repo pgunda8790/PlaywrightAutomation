@@ -18,7 +18,7 @@
  "cancellationComments":"Test cancel",
  "StudentCancelled" : "Student Cancelled",
  "adminCancellationReason" : "No Show Cancelled",
- "adminCancellationComments":"",
+ "adminCancellationComments":"Cancel student",
  "uncheckedSession": "A Walking Tour of Religious Spaces on Campus",
  "sessionsToAdd" : ["Cinema & Media Studies", "History of Art & Architecture at BU","Arts in Action","A Walking Tour of Religious Spaces on Campus", "Kilachand Honors College: Freedom Trail","BU Marine Program"]
   

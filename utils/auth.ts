@@ -35,9 +35,7 @@ export async function loginSF(page: Page) {
     } catch (error) {
       console.log(`Session check failed: ${error} — Starting Fresh Login`);
     }
-  } else {
-    console.log('Session exists: false — Starting Fresh Login');
-  }
+  } 
 
   try {
     await page.goto(process.env.orgURL!);
