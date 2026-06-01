@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { EventsPage } from '../../pages/orientationEvents/eventAdminPage';
 import { cancellationConfirmation, verifyAttendee } from '../../utils/OrientationHelpers/eventRegistrationHelpers';
 import { studentOrientationEligibilityCheck, clickRequiredEvent, fillRegistrationDetailsByAdmin } from '../../utils/OrientationHelpers/eventAdminHelpers';
-import { loginSF } from '../../utils/auth';
+import { loginSF } from '../../utils/authUtils';
 import { existsSync } from 'fs';
 import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
 import { userLoginByPassMFA } from '../../utils/BuLogin';
@@ -11,9 +11,10 @@ import { readExcelData } from '../../utils/excelReader'; // ← your excel reade
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
-// ✅ Load Excel data once at the top (row where execute = 'yes')
-const testDataRows = readExcelData('orientation_test_data.xlsx', 'Test Data');
-const registerData = testDataRows[0]; // first matching row
+
+const testDataRows = readExcelData('orientation_test_data.xlsx', 'Registration');
+const registerData = testDataRows.find(row => row.Type === 'Staff Registration');
+
 
 test.describe('Admin Orientation Event Flow', () => {
   test.describe.configure({ mode: 'serial' });
@@ -28,11 +29,10 @@ test.describe('Admin Orientation Event Flow', () => {
     if (testInfo.status === 'failed') suiteFailed = true;
   });
 
-  // ─── TEST 1 ───────────────────────────────────────────────────────────────
   test('Register attendee from Event ticket', async ({ page }) => {
     test.setTimeout(180000);
 
-    const event = new EventsPage(page);
+    const event = new EventsPage(page, registerData);
     const studentEmail = registerData.studentEmail;
 
     await test.step('Login to SalesForce', async () => {
@@ -40,8 +40,8 @@ test.describe('Admin Orientation Event Flow', () => {
     });
 
     await test.step('Check student orientation eligibility', async () => {
-      const isEligible = await studentOrientationEligibilityCheck(page, studentEmail);
-      if (!isEligible) throw new Error("Student already registered");
+      const isEligible = await studentOrientationEligibilityCheck(page,registerData, studentEmail);
+      if (!isEligible) throw new Error("Student already registered" + studentEmail);
       console.log("Student is Eligible for the orientationEvent");
     });
 
@@ -65,7 +65,7 @@ test.describe('Admin Orientation Event Flow', () => {
     });
 
     await test.step('Fill registration details and complete registration', async () => {
-      await fillRegistrationDetailsByAdmin(page);
+      await fillRegistrationDetailsByAdmin(page,registerData);
       await event.summaryButton.click();
       await event.completeRegistration.waitFor({ state: 'visible', timeout: 15000 });
       await event.completeRegistration.click();
@@ -74,24 +74,24 @@ test.describe('Admin Orientation Event Flow', () => {
     });
 
     await test.step('Verify attendee record in backend', async () => {
-      const verified = await verifyAttendee(page);
+      const verified = await verifyAttendee(page,registerData);
       if (!verified) throw new Error('Attendee verification failed in backend');
     });
 
     await test.step('Wait for eligibility status to update in backend', async () => {
       console.log("Waiting for the backend to update eligibility...");
       await expect.poll(
-        () => studentOrientationEligibilityCheck(page, studentEmail),
+        () => studentOrientationEligibilityCheck(page,registerData,studentEmail),
         { timeout: 60000, intervals: [5000] }
       ).toBe(false);
     });
 
-  }); // END TEST 1
+  }); 
 
-  // ─── TEST 2 ───────────────────────────────────────────────────────────────
+ 
   test('Student can view attendeeLink after Staff Registration', async ({ page, context }) => {
 
-    const register = new EventRegistrationPage(page);
+    const register = new EventRegistrationPage(page,registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
@@ -109,17 +109,17 @@ test.describe('Admin Orientation Event Flow', () => {
       );
 
       await newPage.waitForLoadState('domcontentloaded');
-      const attendee = new AttendeePage(newPage);
+      const attendee = new AttendeePage(newPage,registerData);
       await expect(attendee.agendaTab).toBeVisible({ timeout: 15000 });
     });
 
-  }); // END TEST 2
+  });
 
-  // ─── TEST 3 ───────────────────────────────────────────────────────────────
+
   test('Attendee is set to No Show Cancelled @test', async ({ page }) => {
     test.setTimeout(180000);
 
-    const event = new EventsPage(page);
+    const event = new EventsPage(page, registerData);
 
     await test.step('Login to SalesForce', async () => {
       await loginSF(page);
@@ -156,7 +156,7 @@ test.describe('Admin Orientation Event Flow', () => {
 
     await test.step('Verify cancellation confirmation in backend', async () => {
       await cancellationConfirmation(
-        page,
+        page,registerData,
         registerData.adminCancellationReason,
         registerData.adminCancellationComments
       );

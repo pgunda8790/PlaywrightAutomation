@@ -3,7 +3,7 @@ import { test, expect,Locator} from '@playwright/test';
 import { EventGroupPage } from '../../pages/orientationEvents/eventGroupPage';
 import {checkOrientationRecordExists,clickActiveEventGroup,clickOrientationRecord,uncheckDefaultCheckbox,cloneEvent} from '../../utils/OrientationHelpers/eventGroupHelper';
 import { existsSync } from 'fs';
-import {loginSF} from '../../utils/auth';
+import {loginSF} from '../../utils/authUtils';
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
@@ -19,10 +19,14 @@ test('Create Orientation Event Group if not exists', async ({ page }) => {
   });
 
   await test.step('Navigate to Event Groups Tab', async () => {
-    await eventPage.EventGroupsTab.waitFor({ state: 'visible' });
+    await eventPage.more.click();
+    await eventPage.EventGroupsTab.first().waitFor({ state: 'visible' });
     await eventPage.EventGroupsTab.click();
-    await eventPage.recentView.click();
-    await eventPage.all.click();
+    await eventPage.recentView.waitFor({ state: 'visible', timeout: 10000 });
+      await page.waitForTimeout(1000);
+      await eventPage.recentView.click({ force: true });
+      await page.waitForLoadState('domcontentloaded');
+      await eventPage.all.click();
   });
 
   await test.step('Check if the current year orientation record exists', async () => {

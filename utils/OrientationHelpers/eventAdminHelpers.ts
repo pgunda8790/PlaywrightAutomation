@@ -1,16 +1,18 @@
 import { Page,expect } from '@playwright/test';
 import { runSOQL } from '../apiHelper';
-import registerData from "../../data/registration.json";
+//import registerData from "../../data/registration.json";
 import { EventsPage } from '../../pages/orientationEvents/eventAdminPage';
 
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function studentOrientationEligibilityCheck(page: Page,email: string,retries = 3,interval = 3000) {
+export async function studentOrientationEligibilityCheck(page: Page,registerData: any,email: string,retries = 3,interval = 3000) {
 
-  const terms = registerData.admitTerm.map((t: string) => `'${t}'`).join(',');
-  
-  
+  const admitTerm: string[] = typeof registerData.admitTerm === 'string'
+  ? registerData.admitTerm.split('|').map((t: string) => t.trim())
+  : registerData.admitTerm;
+
+   const terms = admitTerm.map((t: string) => `'${t}'`).join(',');
 
   const query = `SELECT 
     hed__Chosen_Full_Name__c,
@@ -64,10 +66,10 @@ export async function clickRequiredEvent(page: Page, eventName: string) {
 await expect(page.getByRole("heading", { name: matchedEvent.Name, exact: false })).toBeVisible();
 } 
 
-export async function fillRegistrationDetailsByAdmin(page:Page)
+export async function fillRegistrationDetailsByAdmin(page:Page,registerData: any)
 {
 
-  const event = new EventsPage(page);
+  const event = new EventsPage(page, registerData);
   await event.userSearch.click();
   await event.userSearch.pressSequentially(registerData.userName, { delay: 150 });
   await page.waitForTimeout(1000);
@@ -103,7 +105,7 @@ console.log("Entered all the food preferences");
 
   await event.emergencyContactName.waitFor({ state: 'visible', timeout: 10000 });
   await event.emergencyContactName.fill(registerData.emergencyContactName);
-  await event.emergencyContactPhone.fill(registerData.emergencyConatactPhone);
+  await event.emergencyContactPhone.fill(String(registerData.emergencyConatactPhone));
   await event.optionalTour.click();
   await event.readAndUnderstandInfo.scrollIntoViewIfNeeded();
   await event.readAndUnderstandInfo.fill(registerData.signatiureName);

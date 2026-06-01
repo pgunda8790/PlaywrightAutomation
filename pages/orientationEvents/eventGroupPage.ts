@@ -17,6 +17,7 @@ export class EventGroupPage {
   inputGroupName:Locator;
   activeGroup:Locator;
   orientationRecord:Locator;
+  more:Locator;
   
   
 
@@ -24,7 +25,8 @@ export class EventGroupPage {
   constructor(private page: Page) {
 
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
-    this.EventGroupsTab = page.locator("//*[@role='listitem']//span[normalize-space()='Event Groups']");
+    this.more=page.locator("//span[normalize-space()='More']");
+    this.EventGroupsTab = page.locator("(//*[@role='listitem']//span[normalize-space()='Event Groups'])[last()]");
     this.newElement = page.locator("(//*[normalize-space()='New'])[1]");
     this.GroupName=page.locator("//*[@field-label='Event Group Name']//input");
     this.LogoURL=page.locator("//*[@field-label='Logo URL']//input");

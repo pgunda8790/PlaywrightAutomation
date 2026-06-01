@@ -92,8 +92,19 @@ Projects/
 
 ## Prerequisites
 
-- Node.js 18+ (LTS recommended)
-- [Allure CLI](https://allurereport.org/docs/install/) (for report generation)
+| Tool | Version | Download |
+|------|---------|---------|
+| Node.js | 18+ LTS | https://nodejs.org |
+| Java JDK | 11+ | https://adoptium.net (required by Allure CLI) |
+| Git | latest | https://git-scm.com |
+
+Verify your setup:
+```bash
+node --version    # must be 18+
+java --version    # must be 11+
+git --version
+```
+
 - Access to BU Salesforce sandbox environments
 - BU portal credentials with MFA passcode
 

@@ -1,6 +1,5 @@
 
 import { Page, Locator } from '@playwright/test';
-import registerData from "../../data/registration.json";
 
 export class AttendeePage {
 
@@ -19,14 +18,14 @@ export class AttendeePage {
   submit:Locator;
   
 
-  constructor(private page: Page)
+  constructor(private page: Page,registerData:any)
   
   {
 
 const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
 
 this.dateLocator = page.locator("//*[@class='product-item__date']/div");
-this.eventLocator =page.locator(`//*[normalize-space()='${registerData.eventName}']`)
+this.eventLocator =page.locator(`//h1[contains(normalize-space(),'${registerData.eventName}')]`)
 this.contactName =page.locator(`//*[conatins(normalize-space(),'${registerData.userName}')]`);
 this.QRCode = page.locator("//canvas[contains(@aria-label,'QR code')]");
 this.addToCalender=page.locator("//span[normalize-space()='Add To Calendar']");

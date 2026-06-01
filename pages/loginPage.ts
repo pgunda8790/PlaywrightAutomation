@@ -10,6 +10,10 @@ export class LoginPage {
   verifyCode:Locator;
   trustBrowser:Locator;
   homePage:Locator;
+  username:Locator;
+  password:Locator;
+  loginSandbox:Locator;
+
   
 
 
@@ -25,5 +29,8 @@ export class LoginPage {
     this.verifyCode=page.locator("//button[normalize-space()='Verify']");
     this.trustBrowser=page.locator("//button[@id='trust-browser-button']");
     this.homePage=page.locator("(//span[normalize-space()='Home'])[1]");
+    this.username=page.locator("//input[@id='username']");
+    this.password=page.locator("//input[@id='password']");
+    this.loginSandbox=page.locator("//input[@id='Login']")
     } 
 }

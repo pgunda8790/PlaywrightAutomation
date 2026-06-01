@@ -3,15 +3,22 @@ import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegist
 import { userLoginByPassMFA } from '../../utils/BuLogin';
 import { error } from 'node:console';
 import { saveToJson } from '../../utils/dataExtracter';
-import registerData from "../../data/registration.json";
+//import registerData from "../../data/registration.json";
+import { readExcelData } from '../../utils/excelReader';
 import { AttendeePage } from '../../pages/orientationEvents/attendeeLinkPage';
-import { loginSF } from '../../utils/auth';
+import { loginSF } from '../../utils/authUtils';
 import { fillRegistrationDetailsByAttendee, getEventRegisteredCount, getEventItemCounts, validateSessions, validateEmergencyContact, cancellationPageFieldsVisibilityCheck, cancellationConfirmation, addSessions, verifyAttendee } from '../../utils/OrientationHelpers/eventRegistrationHelpers';
 import { existsSync } from 'fs';
 
 test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
 
 test.describe('Registration Creation and Cancellation validations', () => {
+  const testDataRows = readExcelData('orientation_test_data.xlsx', 'Registration');
+  const registerData = testDataRows.find(row => row.Type === 'Student Registration');
+
+    if (!registerData) {
+  throw new Error('No data found in Test Data sheet. Check execute column is set to yes.');
+     }
   test.describe.configure({ mode: 'serial' });
 
   let suiteFailed = false;
@@ -25,9 +32,9 @@ test.describe('Registration Creation and Cancellation validations', () => {
   });
 
   // ─── TEST 1 ───────────────────────────────────────────────────────────────
-  test('Student Orientation Event Registration', async ({ page }) => {
+  test('Student Orientation Event Registration @test1', async ({ page }) => {
 
-    const register = new EventRegistrationPage(page);
+    const register = new EventRegistrationPage(page,registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
@@ -53,14 +60,14 @@ test.describe('Registration Creation and Cancellation validations', () => {
     });
 
     await test.step('Fill all the student registration details', async () => {
-      await fillRegistrationDetailsByAttendee(page);
+      await fillRegistrationDetailsByAttendee(page, registerData);
     });
 
     await test.step('Select the required sessions for the student', async () => {
       await register.reviewSession.click({ force: true });
       await register.sessionsScreen.waitFor({ state: 'visible' });
       await register.allsessions.first().waitFor({ state: 'visible', timeout: 15000 });
-      await addSessions(page);
+      await addSessions(page, registerData);
     });
 
     await test.step('Verify Summary information of user and click on register', async () => {
@@ -81,14 +88,14 @@ test.describe('Registration Creation and Cancellation validations', () => {
   }); // END TEST 1
 
   // ─── TEST 2 ───────────────────────────────────────────────────────────────
-  test('Verify Attendee record is stored in backend', async ({ page }) => {
+  test('Verify Attendee record is stored in backend @test2', async ({ page }) => {
 
     await test.step('Login To SalesForce', async () => {
       await loginSF(page);
     });
 
     await test.step('Verify the attendee record in backend and its relation to the event', async () => {
-      const attendeeFound = await verifyAttendee(page);
+      const attendeeFound = await verifyAttendee(page, registerData);
 
       if (attendeeFound) {
         console.log("Attendee Found");
@@ -101,9 +108,9 @@ test.describe('Registration Creation and Cancellation validations', () => {
   }); // END TEST 2
 
   // ─── TEST 3 ───────────────────────────────────────────────────────────────
-  test('View AttendeeLink page and session agenda', async ({ page, context }) => {
+  test('View AttendeeLink page and session agenda @test3', async ({ page, context }) => {
 
-    const register = new EventRegistrationPage(page);
+    const register = new EventRegistrationPage(page,registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
@@ -121,7 +128,7 @@ test.describe('Registration Creation and Cancellation validations', () => {
       );
 
       await newPage.waitForLoadState('domcontentloaded');
-      const attendee = new AttendeePage(newPage);
+      const attendee = new AttendeePage(newPage,registerData);
 
       await attendee.dateLocator.waitFor({ state: 'visible' });
       await attendee.eventLocator.waitFor({ state: 'visible' });
@@ -132,15 +139,50 @@ test.describe('Registration Creation and Cancellation validations', () => {
       await attendee.descriptionDropdown.first().click();
       await attendee.sessionContent.isVisible();
 
-      await validateSessions(context, newPage, registerData.studentEmail);
+      await validateSessions(context, newPage, registerData);
     });
 
-  }); // END TEST 3
+  }); 
 
-  // ─── TEST 4 ───────────────────────────────────────────────────────────────
-  test('The Registration Update Info', async ({ page, context }) => {
+  //Test4
+  test('Update Non mandatory sessions and validate backend @test4', async ({ page, context }) => {
 
-    const register = new EventRegistrationPage(page);
+  const register = new EventRegistrationPage(page,registerData);
+  await page.goto(process.env.MY_BU_PORTAL!);
+  await userLoginByPassMFA(page);
+  await register.newStudentOrientation.click();
+  await register.attendeeLink.click();
+
+  const newPage = await context.waitForEvent('page',
+    page => page.url().includes('events.blackthorn.io')
+  );
+
+  await newPage.waitForLoadState('domcontentloaded');
+  const attendee = new AttendeePage(newPage,registerData);
+
+  await attendee.sessionRegistrationTab.dblclick({ delay: 100 });
+  await attendee.sessionToAdd.first().click();
+  console.log(`Checked session: "${registerData.addedSession}"`);
+
+  await attendee.uncheckedSession.first().scrollIntoViewIfNeeded();
+  await attendee.uncheckedSession.first().click();
+  console.log(`Unchecked session: "${registerData.uncheckedSession}"`);
+  await attendee.submit.click();
+  //Wait for changes to sync to backend
+  await newPage.waitForLoadState('domcontentloaded');
+
+  //Validate using your existing function
+  const sfNames = await validateSessions(context,newPage,registerData);
+
+expect(sfNames).toContain(registerData.addedSession);
+console.log(`Added session found in SF: "${registerData.addedSession}"`);
+
+});
+
+//Test5
+  test('The Registration Update Info @test5', async ({ page, context }) => {
+
+    const register = new EventRegistrationPage(page,registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
@@ -180,19 +222,18 @@ test.describe('Registration Creation and Cancellation validations', () => {
       await sfPage.close();
     });
 
-  }); // END TEST 4
+  }); 
 
-  // ─── TEST 5 ───────────────────────────────────────────────────────────────
-  test('The Registration Cancellation and record count validation', async ({ page }) => {
+  test('The Registration Cancellation and record count validation @test6', async ({ page }) => {
 
-    const register = new EventRegistrationPage(page);
+    const register = new EventRegistrationPage(page,registerData);
     let attendeeRemainigSnapshot: number;
     let eventItemRemainingSnapshot: number;
 
     await test.step('Login to SalesForce and take count of remaining seats available', async () => {
       await loginSF(page);
-      attendeeRemainigSnapshot = await getEventRegisteredCount(page);
-      eventItemRemainingSnapshot = await getEventItemCounts(page);
+      attendeeRemainigSnapshot = await getEventRegisteredCount(page, registerData);
+      eventItemRemainingSnapshot = await getEventItemCounts(page, registerData);
       console.log("Remaining Attendee Registration for event: " + attendeeRemainigSnapshot);
       console.log("Remaining Attendee Registrations for particular Ticket: " + eventItemRemainingSnapshot);
     });
@@ -207,7 +248,7 @@ test.describe('Registration Creation and Cancellation validations', () => {
     });
 
     await test.step('Verify Cancellation page fields and click on cancel registeration', async () => {
-      await cancellationPageFieldsVisibilityCheck(page);
+      await cancellationPageFieldsVisibilityCheck(page, registerData);
       await register.cancelRegistration.click();
       await register.yesCancel.click();
       await register.cancellationReason.click();
@@ -218,13 +259,13 @@ test.describe('Registration Creation and Cancellation validations', () => {
 
     await test.step('Verify Cancellation Confirmation in the backend', async () => {
       await page.waitForTimeout(15000);
-      await cancellationConfirmation(page, registerData.StudentCancelled, registerData.cancellationComments);
+      await cancellationConfirmation(page,registerData,registerData.StudentCancelled, registerData.cancellationComments);
     });
 
     await test.step('Verify seat counts are restored after cancellation', async () => {
       await page.goto(process.env.orgURL!);
-      const attendeeRemainingAfterCancel = await getEventRegisteredCount(page);
-      const eventItemRemainingAfterCancel = await getEventItemCounts(page);
+      const attendeeRemainingAfterCancel = await getEventRegisteredCount(page, registerData);
+      const eventItemRemainingAfterCancel = await getEventItemCounts(page, registerData);
 
       expect(attendeeRemainingAfterCancel).toBe(attendeeRemainigSnapshot + 1);
       expect(eventItemRemainingAfterCancel).toBe(eventItemRemainingSnapshot + 1);
@@ -233,6 +274,6 @@ test.describe('Registration Creation and Cancellation validations', () => {
       console.log("Remaining Attendee Registrations for particular Ticket: " + eventItemRemainingAfterCancel);
     });
 
-  }); // END TEST 5
+  }); 
 
-}); // END test.describe
+}); 

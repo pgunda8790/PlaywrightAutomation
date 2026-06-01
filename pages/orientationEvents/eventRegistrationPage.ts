@@ -1,5 +1,5 @@
 import { Page, Locator } from '@playwright/test';
-import registerData from "../../data/registration.json";
+
 
 export class EventRegistrationPage {
 
@@ -56,13 +56,17 @@ export class EventRegistrationPage {
 
 
 
-  constructor(private page: Page) {
+  constructor(private page: Page,registerData:any) {
 
+
+    if (!registerData) {
+      throw new Error('No data found in Registration sheet. Check execute column is set to yes.');
+    }
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     
     this.BuHomePageLogo =page.locator("//a[@title='MyBU']");
     this.newStudentOrientation=page.locator("//div[normalize-space()='New Student Orientation']/div");
-    this.Orientation = page.locator(`(//div[contains(normalize-space(),'${registerData.orientationFor}')])[last()]`);
+    this.Orientation = page.locator(`(//div[contains(normalize-space(),"${registerData.orientationFor}")])[last()]`);
     this.fallOrientation =page.locator("(//div[contains(normalize-space(),'Fall')])[last()]");
     this.registerEvent=frame.locator("//button[normalize-space()='Register' or normalize-space()='register']");
     this.addMyself=frame.locator("//span[normalize-space()='ADD MYSELF']");

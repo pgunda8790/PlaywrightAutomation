@@ -1,5 +1,4 @@
 import { Page, Locator } from '@playwright/test';
-import registerData from "../../data/registration.json";
 
 
 export class EventsPage {
@@ -39,7 +38,7 @@ export class EventsPage {
 
 
 
-  constructor(private page: Page) {
+  constructor(private page: Page, registerData: any) {
     
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     

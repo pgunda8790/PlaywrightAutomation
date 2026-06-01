@@ -1,13 +1,16 @@
 import { BrowserContext, Page, expect } from '@playwright/test';
 import { runSOQL } from '../apiHelper';
-import { loginSF } from '../auth';
-import registerData from "../../data/registration.json";
+import { loginSF } from '../authUtils';
+import { readExcelData } from '../../utils/excelReader';
 import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
 
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function addSessions(page: Page) {
-  const register = new EventRegistrationPage(page);
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+//const testDataRows = readExcelData('orientation_test_data.xlsx', 'Registration');
+//const registerData = testDataRows[0];
+
+export async function addSessions(page: Page,registerData:any) {
+  const register = new EventRegistrationPage(page,registerData);
   const sessionNames: string[] = registerData.sessionsToAdd;
   console.log("Sessionnames :" + sessionNames);
   const allSessions = register.allsessions;
@@ -26,7 +29,7 @@ export async function addSessions(page: Page) {
   }
 }
 
-export async function validateSessions(context: BrowserContext, attendeePage: Page, userEmail: string) {
+export async function validateSessions(context: BrowserContext, attendeePage: Page, registerData: any) {
 
   if (!registerData.eventName) {
     throw new Error('eventName is required to filter sessions!');
@@ -43,9 +46,9 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
                  conference360__Session__r.conference360__Event__r.Name,
                  conference360__Session__r.zBU_Mandatory__c
                  FROM conference360__Session_Attendee__c 
-                 WHERE conference360__Contact__r.Email = '${userEmail}'
+                 WHERE conference360__Contact__r.Email = '${registerData.studentEmail}'
                  AND conference360__Registration_Status__c = 'Registered'
-                 AND conference360__Session__r.conference360__Event__r.Name = '${registerData.eventName}'
+                 AND conference360__Session__r.conference360__Event__r.Name LIKE '%${registerData.eventName}%'
                  AND conference360__Session__r.zBU_Mandatory__c = false
                  AND conference360__Attendee__r.conference360__Registration_Status__c = 'Registered'`;
    
@@ -56,7 +59,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
   if (sfCount === 0) {
     await sfPage.close();
     await sfContext.close();
-    throw new Error(`No non-mandatory sessions found for event "${registerData.eventName}" and email "${userEmail}"`);
+    throw new Error(`No non-mandatory sessions found for event "${registerData.eventName}" and email "${registerData.studentEmail}"`);
   }
 
   const fetchedEventName = records[0]?.conference360__Session__r?.conference360__Event__r?.Name;
@@ -96,7 +99,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
 }
 
 
-export async function verifyAttendee( page: Page,retries = 5,interval = 30000){
+export async function verifyAttendee( page: Page,registerData:any,retries = 5,interval = 30000){
   const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,
@@ -183,8 +186,8 @@ export async function validateEmergencyContact(sfPage: Page, userEmail: string, 
   console.log('✅ Emergency contact details validated successfully');
 }
 
-export async function cancellationPageFieldsVisibilityCheck(page: Page) {
-  const register = new EventRegistrationPage(page);
+export async function cancellationPageFieldsVisibilityCheck(page: Page,registerData:any) {
+  const register = new EventRegistrationPage(page,registerData);
 
   try {
     const text = await register.nameOnCancellation.innerText();
@@ -205,7 +208,7 @@ export async function cancellationPageFieldsVisibilityCheck(page: Page) {
 }
 
 
-export async function cancellationConfirmation(page: Page,cancellationRsn: String,cancellationComments: String) {
+export async function cancellationConfirmation(page: Page,registerData: any,cancellationRsn: String,cancellationComments: String) {
 
   // Query 1 — Contact ticket count with retry
   const contactQuery = `SELECT Id, Name,
@@ -243,7 +246,7 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
                              conference360__Contact__r.Email,
                              conference360__Contact__r.Name
                              FROM conference360__Attendee__c
-                             WHERE conference360__Contact__r.Email = 'tst_1612@bu.edu'
+                             WHERE conference360__Contact__r.Email = '${registerData.studentEmail}'
                              ORDER BY LastModifiedDate DESC
                              LIMIT 1`;
 
@@ -260,63 +263,22 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
   expect(attendee.zBU_Cancellation_Description__c ?? "").toBe(cancellationComments);
   console.log("Cancellation reason matched");
 
-  expect(attendee.zBU_Cancellation_Description__c).toBe(cancellationComments);
-
   console.log('Cancellation confirmation completed successfully!');
 }
 
-export async function studentOrientationEligibilityCheck(page: Page,email: string,retries = 3,interval = 3000) {
-
-  const terms = registerData.admitTerm.map((t: string) => `'${t}'`).join(',');
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  
-
-  const query = `SELECT 
-    hed__Chosen_Full_Name__c,
-    Email,
-    zBU_UGO_Attendee_Count__c,
-    zBU_Orientation_Eligible__c,
-    zBU_Admit_Term__c,
-    zBU_Admit_Type_Audience__c,
-    zBU_CareerAudience__c,
-    zBU_EnrollmentStatusAudience__c,
-    zBU_SchoolCollegeAudience__c
-  FROM Contact
-  WHERE Email = '${email}'
-  AND zBU_UGO_Attendee_Count__c = 0
-  AND zBU_Orientation_Eligible__c = true
-  AND zBU_Admit_Term__c IN (${terms})
-  AND zBU_Admit_Type_Audience__c = 'Freshman'
-  AND zBU_CareerAudience__c = 'Undergraduate'
-  AND zBU_SchoolCollegeAudience__c IN ('CAS','COM','CGS','UPAR')`;
-
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    const records = await runSOQL(query, page);
-
-    if (records && records.length > 0) {
-      console.log(`Eligible student found for email: ${email}`);
-      return true;
-    }
-    if (attempt < retries) await sleep(interval);
-  }
-
-  console.log(`No eligible student found for email: ${email} after ${retries} attempts`);
-  return false;
-}
-
-export async function validateFieldValidationError(page:Page) 
+export async function validateFieldValidationError(page:Page,registerData:any) 
 {
-const register = new EventRegistrationPage(page);
+const register = new EventRegistrationPage(page,registerData);
 await page.waitForLoadState('domcontentloaded');
 await register.requiredFieldError.scrollIntoViewIfNeeded();
 await expect(register.requiredFieldError).toBeVisible();
 
 }
 
-export async function fillRegistrationDetailsByAttendee(page:Page)
+export async function fillRegistrationDetailsByAttendee(page:Page,registerData:any)
 
 {
-  const register = new EventRegistrationPage(page);
+  const register = new EventRegistrationPage(page,registerData);
 await expect(register.userDataAutoFetch).toBeVisible();
 await register.dieteryPreference.click();
 await register.yes.click();
@@ -332,7 +294,7 @@ await register.readAndUnderstandInfo.press('Tab');
 
 
 
-export async function getEventRegisteredCount(page: Page): Promise<number> {
+export async function getEventRegisteredCount(page: Page,registerData:any) {
   const query = `SELECT conference360__Registered__c, conference360__Remaining_Capacity__c, conference360__Attendee_Limit__c
     FROM conference360__Event__c
     WHERE Name LIKE '%${registerData.eventName}%'
@@ -348,7 +310,7 @@ export async function getEventRegisteredCount(page: Page): Promise<number> {
   return remaining;
 }
 
-export async function getEventItemCounts(page: Page){
+export async function getEventItemCounts(page: Page,registerData:any){
   const query =`SELECT conference360__Item_Name__c,conference360__Remaining_Quantity__c,conference360__Quantity_Made_Available__c
     FROM conference360__Event_Item__c
     WHERE conference360__Event__r.Name LIKE '%${registerData.eventName}%'

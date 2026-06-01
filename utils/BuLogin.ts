@@ -1,6 +1,5 @@
 import { Page } from '@playwright/test';
 import { LoginPage } from '../pages/loginPage';
-import * as fs from 'fs';
 import { error } from 'console';
 
 
