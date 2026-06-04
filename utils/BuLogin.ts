@@ -3,13 +3,13 @@ import { LoginPage } from '../pages/loginPage';
 import { error } from 'console';
 
 
-export async function userLoginByPassMFA(page: Page) {
+export async function userLoginByPassMFA(page: Page,username:string) {
 
 
   const login = new LoginPage(page);
   try
   {
-  await login.buLoginName.fill(process.env.BUTestUser!);
+  await login.buLoginName.fill(username);
   await login.buPassword.fill(process.env.BUTestPassword!);
   await login.buLoginContinue.click();
   await login.bypassCode.fill(process.env.BUPasscode!);

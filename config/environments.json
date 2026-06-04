@@ -1,0 +1,14 @@
+{
+  "sptest": {
+    "sfConnectionURL": "https://bostonuniversity-b--sptest.sandbox.my.salesforce.com",
+    "LoginURL": "https://bostonuniversity-b--sptest.sandbox.my.salesforce.com",
+    "orgURL": "https://bostonuniversity-b--sptest.sandbox.my.salesforce-setup.com",
+    "MY_BU_PORTAL": "https://bostonuniversity-b--sptest.sandbox.my.site.com/MyBU/s/"
+  },
+  "ueptest": {
+    "sfConnectionURL": "https://bostonuniversity-b--ueptest.sandbox.my.salesforce.com",
+    "LoginURL": "https://test.salesforce.com/",
+    "orgURL": "https://bostonuniversity-b--ueptest.sandbox.my.salesforce-setup.com",
+    "MY_BU_PORTAL": "https://bostonuniversity-b--ueptest.sandbox.my.site.com/MyBU/s/"
+  }
+}

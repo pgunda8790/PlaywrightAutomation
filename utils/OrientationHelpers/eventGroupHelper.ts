@@ -1,17 +1,19 @@
-import { Page,expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { runSOQL } from '../apiHelper';
 import { EventGroupPage } from '../../pages/orientationEvents/eventGroupPage';
+import { getSFAccessToken } from '../sfJwtAuth';
 
 const currentYear = new Date().getFullYear().toString();
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function checkOrientationRecordExists(page:Page){
+export async function checkOrientationRecordExists() {
   const query = `SELECT OwnerId, Name FROM conference360__Event_Group__c WHERE Name LIKE '%Orientation ${currentYear}%'`;
-  const records = await runSOQL(query,page);
+  const accessToken = await getSFAccessToken();
+  const records = await runSOQL(query, accessToken);
   return records.length > 0;
 }
 
-export async function clickActiveEventGroup(page: Page){
+export async function clickActiveEventGroup(page: Page) {
   const eventPage = new EventGroupPage(page);
   await page.waitForLoadState('domcontentloaded');
   const isVisible = await eventPage.activeGroup.isVisible();
@@ -23,8 +25,8 @@ export async function clickActiveEventGroup(page: Page){
   return true;
 }
 
-export async function clickOrientationRecord(page: Page){
-  const eventPage = new EventGroupPage(page);  
+export async function clickOrientationRecord(page: Page) {
+  const eventPage = new EventGroupPage(page);
   try {
     await eventPage.orientationRecord.first().click();
     return true;
@@ -34,7 +36,7 @@ export async function clickOrientationRecord(page: Page){
   }
 }
 
-export async function uncheckDefaultCheckbox(page: Page){
+export async function uncheckDefaultCheckbox(page: Page) {
   const eventPage = new EventGroupPage(page);
   await eventPage.editDefault.click();
   const isChecked = await eventPage.defaultCheckbox.isChecked();
@@ -57,5 +59,3 @@ export async function cloneEvent(page: Page): Promise<void> {
   await eventPage.inputGroupName.fill(newName);
   await eventPage.saveButton.click();
 }
-
-

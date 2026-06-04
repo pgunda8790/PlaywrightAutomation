@@ -36,7 +36,6 @@ this.descriptionDropdown=page.locator("//span[@aria-label='Expand session inform
 this.sessionRegistrationTab=page.locator("//button[normalize-space()='Session Registration']");
 this.sessionToAdd = page.locator(`//span[normalize-space()='${registerData.addedSession}']/ancestor::div[@class='product-item__detailText']/preceding-sibling::div`);
 this.uncheckedSession=page.locator(`//h2[normalize-space()='${registerData.uncheckedSession}']/ancestor::div[@class='product-item__detailText']/preceding-sibling::div/mat-checkbox[contains(@class,'checkbox-checked')]`);
-this.submit=page.locator("//span[normalize-space()='CONFIRM']");
-
+this.submit=page.locator("//span[contains(normalize-space(),'CONFIRM')]");
 
 }}

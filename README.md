@@ -40,7 +40,8 @@ Tests run serially and validate both the UI and backend (via Salesforce SOQL API
 | [Playwright](https://playwright.dev) | ^1.58.2 | E2E browser automation |
 | TypeScript | ^6.0.2 | Type-safe test authoring |
 | [Allure](https://allurereport.org) | ^2.30.0 | Rich test reporting |
-| [jsforce](https://jsforce.github.io) | ^3.10.14 | Salesforce API / SOQL queries |
+| [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) | ^9.0.3 | Salesforce JWT OAuth flow |
+| axios | ^1.17.0 | SOQL REST API queries |
 | xlsx | ^0.18.5 | Excel test data reader |
 | dotenv | ^17.4.2 | Environment variable management |
 
@@ -52,6 +53,8 @@ Tests run serially and validate both the UI and backend (via Salesforce SOQL API
 Projects/
 ├── .github/workflows/
 │   └── playwright.yml          # GitHub Actions CI/CD pipeline
+├── config/
+│   └── environments.json       # Per-environment URL config (sptest / ueptest)
 ├── pages/                      # Page Object Model (POM)
 │   ├── loginPage.ts            # BU portal login page
 │   └── orientationEvents/
@@ -66,10 +69,12 @@ Projects/
 │       ├── orientationEvent.spec.ts        # Event group tests
 │       └── orientationRegistration.spec.ts # Student registration tests
 ├── utils/
-│   ├── auth.ts                 # Salesforce session management
+│   ├── auth.ts                 # Salesforce JWT login (frontdoor.jsp)
 │   ├── authUtils.ts            # Session validation utilities
+│   ├── sfJwtAuth.ts            # JWT bearer token exchange with Salesforce
 │   ├── BuLogin.ts              # BU portal login with MFA bypass
-│   ├── apiHelper.ts            # SOQL query execution
+│   ├── apiHelper.ts            # SOQL query execution via REST API
+│   ├── flowStateManager.ts     # Cross-test pass/fail state persistence
 │   ├── dataExtracter.ts        # JSON data persistence between tests
 │   ├── excelReader.ts          # Excel test data reader
 │   └── OrientationHelpers/
@@ -80,6 +85,9 @@ Projects/
 │   ├── registration.json           # Core test configuration data
 │   ├── orientation_test_data.xlsx   # Excel-based test data
 │   └── extractedData.json          # Runtime data passed between tests
+├── adminFlowState.json         # Runtime: admin test pass/fail state
+├── studentFlowState.json       # Runtime: student test pass/fail state
+├── server.key                  # Salesforce connected-app private key (not committed)
 ├── scripts/
 │   └── test-with-allure.js     # Allure report generation script
 ├── .env.example                # Environment variable template
@@ -105,7 +113,8 @@ java --version    # must be 11+
 git --version
 ```
 
-- Access to BU Salesforce sandbox environments
+- Access to BU Salesforce sandbox environments (`sptest` or `ueptest`)
+- A Salesforce Connected App configured for JWT Bearer OAuth
 - BU portal credentials with MFA passcode
 
 ---
@@ -125,39 +134,59 @@ npx playwright install
 
 # 4. Configure environment variables (see below)
 cp .env.example .env
+
+# 5. Place the Salesforce private key (do NOT commit this file)
+# Copy your connected-app private key to:
+#   server.key   (project root)
 ```
 
 ---
 
 ## Environment Configuration
 
+### Target environment
+
+The active Salesforce sandbox is selected via the `TEST_ENV` variable. Available values are defined in `config/environments.json`:
+
+| `TEST_ENV` | Salesforce sandbox |
+|---|---|
+| `sptest` (default) | `bostonuniversity-b--sptest` |
+| `ueptest` | `bostonuniversity-b--ueptest` |
+
+### `.env` file
+
 Copy `.env.example` to `.env` and fill in all required values:
 
 ```env
-# Salesforce Admin Credentials
-MY_USERNAME=your_sf_username
-MY_PASSWORD=your_sf_password
+# Target environment: sptest | ueptest  (defaults to sptest)
+TEST_ENV=sptest
 
-# Salesforce Org URLs
-orgURL=https://bostonuniversity-b--sptest.sandbox.my.salesforce-setup.com/lightning/
-SPTestURL=<sandbox url>
-UEPTestURL=<sandbox url>
+# Salesforce JWT OAuth – Connected App credentials
+SF_CLIENT_ID=your_connected_app_consumer_key
+SF_USERNAME=your_sf_username
 
-# BU Portal Credentials (for student-side tests)
+# BU Portal credentials (student-side tests)
 BULoginName=your_bu_login
-BuPassword=your_bu_password
+BUTestPassword=your_bu_password
 BUPasscode=your_mfa_passcode
 ```
 
-> **Never commit `.env` to source control.** It is listed in `.gitignore`.
+> **Never commit `.env` or `server.key` to source control.** Both are listed in `.gitignore`.
+
+The `config/environments.json` file contains all sandbox URLs and is safe to commit — it holds no secrets.
 
 ---
 
 ## Running Tests
 
-### All tests (headless)
+### All tests (headless, default env)
 ```bash
 npm test
+```
+
+### Target a specific environment
+```bash
+TEST_ENV=ueptest npx playwright test
 ```
 
 ### Specific browser (headed)
@@ -214,6 +243,7 @@ npm run clean:reports
 Reports are written to:
 - `reports/allure-results/` — raw results
 - `reports/allure-report/` — generated HTML report
+- `reports/html-report-<timestamp>/` — timestamped Playwright HTML reports
 
 ---
 
@@ -221,16 +251,33 @@ Reports are written to:
 
 GitHub Actions pipeline is defined in [.github/workflows/playwright.yml](.github/workflows/playwright.yml).
 
-**Triggers:** Push or PR to `main` / `master`
+**Triggers:**
+- **Scheduled:** Every Monday at 9:30 AM IST (04:00 UTC) — runs all tests against the default environment
+- **Manual (`workflow_dispatch`):** Trigger a run from the GitHub Actions UI with optional inputs:
+
+| Input | Description | Default |
+|---|---|---|
+| `spec_file` | Path relative to `tests/` to run a single spec (leave blank for all) | _(all tests)_ |
+| `browser` | Browser to use: `chromium`, `firefox`, `webkit` | `chromium` |
+| `headed` | Run in headed mode (routed through `xvfb`) | `false` |
+
+**Required GitHub Secrets:**
+
+| Secret | Description |
+|---|---|
+| `SF_CLIENT_ID` | Salesforce Connected App consumer key |
+| `SF_USERNAME` | Salesforce username for JWT auth |
+| `BUTESTPASSWORD` | BU portal password |
+| `BUPASSCODE` | BU portal MFA passcode |
 
 **Pipeline steps:**
 1. Checkout code
-2. Setup Node.js (LTS)
+2. Setup Node.js (LTS) with npm cache
 3. `npm ci` — install dependencies
-4. Install Playwright browsers
-5. Run all tests
+4. Install selected Playwright browser + system deps
+5. Run tests (headless or headed via xvfb)
 6. Generate Allure report
-7. Upload Allure report artifact (30-day retention)
+7. Upload Allure report artifact (30-day retention, named with browser + date + run number)
 8. Upload Playwright HTML report artifact (30-day retention)
 
 ---
@@ -240,11 +287,17 @@ GitHub Actions pipeline is defined in [.github/workflows/playwright.yml](.github
 ### Page Object Model (POM)
 All UI interactions are encapsulated in page classes under `pages/`. Tests never use raw selectors — they call page methods, making tests resilient to selector changes.
 
-### Session Persistence
-Salesforce sessions are cached in `state.json` after the first login. Subsequent tests reuse the session, skipping re-authentication. The session is validated before each use and refreshed automatically if expired.
+### Multi-Environment Config
+`config/environments.json` defines the full set of URLs for each sandbox. `playwright.config.ts` reads `TEST_ENV` at startup, resolves the matching config block, and injects the URLs as `process.env` variables (`sfConnectionURL`, `LoginURL`, `orgURL`, `MY_BU_PORTAL`). Switching environments requires only changing `TEST_ENV` — no code changes needed.
+
+### Salesforce JWT Authentication
+`utils/sfJwtAuth.ts` performs a JWT bearer token exchange with Salesforce using a Connected App private key (`server.key`). `utils/auth.ts` uses the resulting access token to log in via `frontdoor.jsp`, bypassing the interactive login page entirely. This approach is CI-friendly and requires no stored passwords for Salesforce.
+
+### Flow State Manager
+`utils/flowStateManager.ts` provides a lightweight file-based state store (`adminFlowState.json`, `studentFlowState.json`) that persists pass/fail outcomes across test steps. Later tests can conditionally skip or assert based on whether an upstream step succeeded, preventing cascading failures from masking root causes.
 
 ### SOQL Validation
-Tests validate UI actions against the Salesforce backend using SOQL queries via the `apiHelper.ts` module. This confirms records are correctly created/updated in the database, not just in the UI.
+Tests validate UI actions against the Salesforce backend using SOQL queries via the `apiHelper.ts` module (Salesforce REST API + axios). This confirms records are correctly created/updated in the database, not just in the UI.
 
 ### Test Data
 - **`registration.json`** — static test configuration (student email, event name, ticket, sessions, etc.)
