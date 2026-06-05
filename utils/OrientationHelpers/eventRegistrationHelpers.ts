@@ -1,13 +1,14 @@
 import { BrowserContext, Page, expect } from '@playwright/test';
 import { runSOQL } from '../apiHelper';
-import { loginSF } from '../auth';
-import registerData from "../../data/registration.json";
+import { readExcelData } from '../../utils/excelReader';
 import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
+import { getSFAccessToken } from '../sfJwtAuth';
+
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function addSessions(page: Page) {
-  const register = new EventRegistrationPage(page);
+export async function addSessions(page: Page, registerData: any) {
+  const register = new EventRegistrationPage(page, registerData);
   const sessionNames: string[] = registerData.sessionsToAdd;
   console.log("Sessionnames :" + sessionNames);
   const allSessions = register.allsessions;
@@ -26,37 +27,30 @@ export async function addSessions(page: Page) {
   }
 }
 
-export async function validateSessions(context: BrowserContext, attendeePage: Page, userEmail: string) {
+export async function validateSessions(context: BrowserContext, attendeePage: Page, registerData: any) {
 
   if (!registerData.eventName) {
     throw new Error('eventName is required to filter sessions!');
   }
 
-  // SF context setup inside function
-  const sfContext = await context.browser()!.newContext({
-    storageState: 'state.json'
-  });
-  const sfPage = await sfContext.newPage();
-  await loginSF(sfPage);
+  // JWT approach - get access token directly
+  const accessToken = await getSFAccessToken();
 
   const query = `SELECT conference360__Session__r.Name,
                  conference360__Session__r.conference360__Event__r.Name,
                  conference360__Session__r.zBU_Mandatory__c
                  FROM conference360__Session_Attendee__c 
-                 WHERE conference360__Contact__r.Email = '${userEmail}'
+                 WHERE conference360__Contact__r.Email = '${registerData.studentEmail}'
                  AND conference360__Registration_Status__c = 'Registered'
-                 AND conference360__Session__r.conference360__Event__r.Name = '${registerData.eventName}'
+                 AND conference360__Session__r.conference360__Event__r.Name LIKE '%${registerData.eventName}%'
                  AND conference360__Session__r.zBU_Mandatory__c = false
                  AND conference360__Attendee__r.conference360__Registration_Status__c = 'Registered'`;
-   
 
-  const records = await runSOQL(query, sfPage);
+  const records = await runSOQL(query, accessToken);
   const sfCount = records.length;
 
   if (sfCount === 0) {
-    await sfPage.close();
-    await sfContext.close();
-    throw new Error(`No non-mandatory sessions found for event "${registerData.eventName}" and email "${userEmail}"`);
+    throw new Error(`No non-mandatory sessions found for event "${registerData.eventName}" and email "${registerData.studentEmail}"`);
   }
 
   const fetchedEventName = records[0]?.conference360__Session__r?.conference360__Event__r?.Name;
@@ -96,7 +90,7 @@ export async function validateSessions(context: BrowserContext, attendeePage: Pa
 }
 
 
-export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
+export async function verifyAttendee(registerData: any, retries = 5, interval = 30000) {
   const query = `SELECT 
     conference360__Account_Name__c,
     conference360__Event_Name__c,
@@ -128,10 +122,10 @@ export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
   for (let attempt = 1; attempt <= retries; attempt++) {
     console.log(`Attempt ${attempt}/${retries}: Querying backend...`);
 
-    
     if (attempt > 1) await sleep(interval);
 
-    const records = await runSOQL(query, page);
+    const accessToken = await getSFAccessToken();
+    const records = await runSOQL(query, accessToken);
 
     if (!records || records.length === 0) {
       console.log(`Attempt ${attempt}: No records found yet`);
@@ -141,12 +135,11 @@ export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
     const record = records[0];
     console.log('Record found:', JSON.stringify(record, null, 2));
 
-    
     const unpopulated = [];
     if (record.zBU_Dairy_free_Meals__c !== registerData.diaryfreeMeals) unpopulated.push('zBU_Dairy_free_Meals__c');
     if (record.zBU_Dairy_Allergy_Details__c !== registerData.SpecificationMeal) unpopulated.push('zBU_Dairy_Allergy_Details__c');
     if (record.zBU_Orientation_Emergency_Contact_Name__c !== registerData.emergencyContactName) unpopulated.push('zBU_Orientation_Emergency_Contact_Name__c');
-    if (record.zBU_Orientation_Emergency_Contact_Phone__c !== registerData.emergencyConatactPhone) unpopulated.push('zBU_Orientation_Emergency_Contact_Phone__c');
+    if (record.zBU_Orientation_Emergency_Contact_Phone__c !== String(registerData.emergencyConatactPhone)) unpopulated.push('zBU_Orientation_Emergency_Contact_Phone__c');
     if (record.zBU_Interested_in_a_tour__c !== registerData.optionalTour) unpopulated.push('zBU_Interested_in_a_tour__c');
     if (record.zBU_Participant_Responsibilities_SignOff__c !== registerData.signatiureName) unpopulated.push('zBU_Participant_Responsibilities_SignOff__c');
 
@@ -162,13 +155,14 @@ export async function verifyAttendee( page: Page,retries = 5,interval = 25000){
   return false;
 }
 
-export async function validateEmergencyContact(sfPage: Page, userEmail: string, expectedName: string, expectedPhone: string) {
+export async function validateEmergencyContact(userEmail: string, expectedName: string, expectedPhone: string) {
 
   const query = `SELECT conference360__Email2__c,zBU_Orientation_Emergency_Contact_Name__c, zBU_Orientation_Emergency_Contact_Phone__c 
                  FROM conference360__Attendee__c 
                  WHERE conference360__Email2__c = '${userEmail}'`;
 
-  const records = await runSOQL(query, sfPage);
+  const accessToken = await getSFAccessToken();
+  const records = await runSOQL(query, accessToken);
   const record = records[0];
 
   const actualName = record.zBU_Orientation_Emergency_Contact_Name__c;
@@ -183,8 +177,8 @@ export async function validateEmergencyContact(sfPage: Page, userEmail: string, 
   console.log('✅ Emergency contact details validated successfully');
 }
 
-export async function cancellationPageFieldsVisibilityCheck(page: Page) {
-  const register = new EventRegistrationPage(page);
+export async function cancellationPageFieldsVisibilityCheck(page: Page, registerData: any) {
+  const register = new EventRegistrationPage(page, registerData);
 
   try {
     const text = await register.nameOnCancellation.innerText();
@@ -205,7 +199,9 @@ export async function cancellationPageFieldsVisibilityCheck(page: Page) {
 }
 
 
-export async function cancellationConfirmation(page: Page,cancellationRsn: String,cancellationComments: String) {
+export async function cancellationConfirmation(page: Page, registerData: any, cancellationRsn: String, cancellationComments: String) {
+
+  const accessToken = await getSFAccessToken();
 
   // Query 1 — Contact ticket count with retry
   const contactQuery = `SELECT Id, Name,
@@ -220,7 +216,7 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
   let retries = 3;
 
   while (retries > 0) {
-    const contactRecords = await runSOQL(contactQuery, page);
+    const contactRecords = await runSOQL(contactQuery, accessToken);
     contact = contactRecords[0];
 
     console.log(`Ticket count: ${contact.zBU_UGO_Attendee_Count__c}`);
@@ -243,11 +239,11 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
                              conference360__Contact__r.Email,
                              conference360__Contact__r.Name
                              FROM conference360__Attendee__c
-                             WHERE conference360__Contact__r.Email = 'tst_1612@bu.edu'
+                             WHERE conference360__Contact__r.Email = '${registerData.studentEmail}'
                              ORDER BY LastModifiedDate DESC
                              LIMIT 1`;
 
-  const attendeeRecords = await runSOQL(cancellationQuery, page);
+  const attendeeRecords = await runSOQL(cancellationQuery, accessToken);
   const attendee = attendeeRecords[0];
 
   console.log(`Registration Status: ${attendee.conference360__Registration_Status__c}`);
@@ -256,110 +252,62 @@ export async function cancellationConfirmation(page: Page,cancellationRsn: Strin
 
   expect(attendee.conference360__Registration_Status__c).toBe('Canceled');
   console.log(`Registration Status confirmed: Canceled`);
-   // Verify cancellation reason matches
-  expect(attendee.zBU_Cancellation_Description__c ?? '').toBe(cancellationComments);
+  expect(attendee.zBU_Cancellation_Description__c ?? "").toBe(cancellationComments);
   console.log("Cancellation reason matched");
-
-  expect(attendee.zBU_Cancellation_Description__c).toBe(cancellationComments);
 
   console.log('Cancellation confirmation completed successfully!');
 }
 
-export async function studentOrientationEligibilityCheck(page: Page,email: string,retries = 3,interval = 3000) {
-
-  const terms = registerData.admitTerm.map((t: string) => `'${t}'`).join(',');
-  const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-  
-
-  const query = `SELECT 
-    hed__Chosen_Full_Name__c,
-    Email,
-    zBU_UGO_Attendee_Count__c,
-    zBU_Orientation_Eligible__c,
-    zBU_Admit_Term__c,
-    zBU_Admit_Type_Audience__c,
-    zBU_CareerAudience__c,
-    zBU_EnrollmentStatusAudience__c,
-    zBU_SchoolCollegeAudience__c
-  FROM Contact
-  WHERE Email = '${email}'
-  AND zBU_UGO_Attendee_Count__c = 0
-  AND zBU_Orientation_Eligible__c = true
-  AND zBU_Admit_Term__c IN (${terms})
-  AND zBU_Admit_Type_Audience__c = 'Freshman'
-  AND zBU_CareerAudience__c = 'Undergraduate'
-  AND zBU_SchoolCollegeAudience__c IN ('CAS','COM','CGS','UPAR')`;
-
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    const records = await runSOQL(query, page);
-
-    if (records && records.length > 0) {
-      console.log(`Eligible student found for email: ${email}`);
-      return true;
-    }
-    if (attempt < retries) await sleep(interval);
-  }
-
-  console.log(`No eligible student found for email: ${email} after ${retries} attempts`);
-  return false;
+export async function validateFieldValidationError(page: Page, registerData: any) {
+  const register = new EventRegistrationPage(page, registerData);
+  await page.waitForLoadState('domcontentloaded');
+  await register.requiredFieldError.scrollIntoViewIfNeeded();
+  await expect(register.requiredFieldError).toBeVisible();
 }
 
-export async function validateFieldValidationError(page:Page) 
-{
-const register = new EventRegistrationPage(page);
-await page.waitForLoadState('domcontentloaded');
-await register.requiredFieldError.scrollIntoViewIfNeeded();
-await expect(register.requiredFieldError).toBeVisible();
-
+export async function fillRegistrationDetailsByAttendee(page: Page, registerData: any) {
+  const register = new EventRegistrationPage(page, registerData);
+  await expect(register.userDataAutoFetch).toBeVisible();
+  await register.dieteryPreference.click();
+  await register.yes.click();
+  await register.diaryFreeMealCheck.click();
+  await register.MealSpecification.fill(registerData.SpecificationMeal);
+  await register.emergencyName.fill(registerData.emergencyContactName);
+  await register.emergencyPhone.fill(registerData.emergencyConatactPhone);
+  await register.optionalTour.click();
+  await register.readAndUnderstandInfo.fill(registerData.signatiureName);
+  await page.waitForTimeout(2000);
+  await register.readAndUnderstandInfo.press('Tab');
 }
 
-export async function fillRegistrationDetailsByAttendee(page:Page)
-
-{
-  const register = new EventRegistrationPage(page);
-await expect(register.userDataAutoFetch).toBeVisible();
-await register.dieteryPreference.click();
-await register.yes.click();
-await register.diaryFreeMealCheck.click();
-await register.MealSpecification.fill(registerData.SpecificationMeal);
-await register.emergencyName.fill(registerData.emergencyContactName);
-await register.emergencyPhone.fill(registerData.emergencyConatactPhone);
-await register.optionalTour.click();
-await register.readAndUnderstandInfo.fill(registerData.signatiureName);
-await page.waitForTimeout(2000);
-await register.readAndUnderstandInfo.press('Tab');
-}
-
-
-
-export async function getEventRegisteredCount(page: Page): Promise<number> {
+export async function getEventRegisteredCount(registerData: any) {
   const query = `SELECT conference360__Registered__c, conference360__Remaining_Capacity__c, conference360__Attendee_Limit__c
     FROM conference360__Event__c
     WHERE Name LIKE '%${registerData.eventName}%'
     LIMIT 1
   `;
-  const records = await runSOQL(query, page);
+  const accessToken = await getSFAccessToken();
+  const records = await runSOQL(query, accessToken);
   if (!records || records.length === 0) throw new Error(`Event not found: '%${registerData.eventName}%'`);
 
-  const remaining  = records[0].conference360__Remaining_Capacity__c;
-
-
+  const remaining = records[0].conference360__Remaining_Capacity__c;
 
   return remaining;
 }
 
-export async function getEventItemCounts(page: Page){
-  const query =`SELECT conference360__Item_Name__c,conference360__Remaining_Quantity__c,conference360__Quantity_Made_Available__c
+export async function getEventItemCounts(registerData: any) {
+  const query = `SELECT conference360__Item_Name__c,conference360__Remaining_Quantity__c,conference360__Quantity_Made_Available__c
     FROM conference360__Event_Item__c
     WHERE conference360__Event__r.Name LIKE '%${registerData.eventName}%'
     and conference360__Item_Name__c like '%${registerData.ticketName}%'`;
-    
-  const records = await runSOQL(query, page);
+
+  const accessToken = await getSFAccessToken();
+  const records = await runSOQL(query, accessToken);
   if (!records || records.length === 0) throw new Error(`Event Item not found: ${registerData.ticketName}`);
 
-  const remaining  = records[0].conference360__Remaining_Quantity__c;
+  const remaining = records[0].conference360__Remaining_Quantity__c;
 
-  console.log(`✅ Event Item Remaining :` );
+  console.log(`✅ Event Item Remaining :`);
 
   return remaining;
 }

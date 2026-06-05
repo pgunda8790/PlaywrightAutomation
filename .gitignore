@@ -14,3 +14,6 @@ reports/state.json
 tests/.env
 state.json
 c:\Users\pgunda\PlayWright Automation\Projects\state.json
+# open .gitignore in VS Code and add these 2 lines
+server.key
+server.crt

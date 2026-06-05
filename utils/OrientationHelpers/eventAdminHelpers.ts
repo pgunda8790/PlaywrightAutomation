@@ -1,16 +1,18 @@
-import { Page,expect } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { runSOQL } from '../apiHelper';
-import registerData from "../../data/registration.json";
 import { EventsPage } from '../../pages/orientationEvents/eventAdminPage';
+import { getSFAccessToken } from '../sfJwtAuth';
 
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-export async function studentOrientationEligibilityCheck(page: Page,email: string,retries = 3,interval = 3000) {
+export async function studentOrientationEligibilityCheck(registerData: any, email: string, retries = 3, interval = 3000) {
 
-  const terms = registerData.admitTerm.map((t: string) => `'${t}'`).join(',');
-  
-  
+  const admitTerm: string[] = typeof registerData.admitTerm === 'string'
+    ? registerData.admitTerm.split('|').map((t: string) => t.trim())
+    : registerData.admitTerm;
+
+  const terms = admitTerm.map((t: string) => `'${t}'`).join(',');
 
   const query = `SELECT 
     hed__Chosen_Full_Name__c,
@@ -32,7 +34,8 @@ export async function studentOrientationEligibilityCheck(page: Page,email: strin
   AND zBU_SchoolCollegeAudience__c IN ('CAS','COM','CGS','UPAR')`;
 
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const records = await runSOQL(query, page);
+    const accessToken = await getSFAccessToken();
+    const records = await runSOQL(query, accessToken);
 
     if (records && records.length > 0) {
       console.log(`Eligible student found for email: ${email}`);
@@ -46,9 +49,10 @@ export async function studentOrientationEligibilityCheck(page: Page,email: strin
 }
 
 export async function clickRequiredEvent(page: Page, eventName: string) {
-  
+
   const query = `SELECT Name, OwnerID FROM conference360__Event__c`;
-  const records = await runSOQL(query, page);
+  const accessToken = await getSFAccessToken();
+  const records = await runSOQL(query, accessToken);
 
   const matchedEvent = records.find((r: any) =>
     r.Name.toLowerCase().includes(eventName.toLowerCase())
@@ -61,16 +65,16 @@ export async function clickRequiredEvent(page: Page, eventName: string) {
   console.log(`Event found: ${matchedEvent.Name}`);
   await page.getByText(matchedEvent.Name, { exact: false }).first().click();
   await page.waitForLoadState("domcontentloaded");
-await expect(page.getByRole("heading", { name: matchedEvent.Name, exact: false })).toBeVisible();
-} 
+  await page.waitForTimeout(2000);
+  await expect(page.getByRole("heading", { name: matchedEvent.Name, exact: false })).toBeVisible();
+}
 
-export async function fillRegistrationDetailsByAdmin(page:Page)
-{
+export async function fillRegistrationDetailsByAdmin(page: Page, registerData: any) {
 
-  const event = new EventsPage(page);
+  const event = new EventsPage(page, registerData);
   await event.userSearch.click();
   await event.userSearch.pressSequentially(registerData.userName, { delay: 150 });
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(3000);
   await expect(event.userResult).toContainText(registerData.userName, { timeout: 10000 });
   await event.userResult.click();
   console.log("Selected the Desired User");
@@ -91,40 +95,21 @@ export async function fillRegistrationDetailsByAdmin(page:Page)
   await event.dairyFree.click();
 
   if (!(await event.dairyPreference.isVisible())) {
-  await event.dairyFree.click(); // uncheck
-  await page.waitForTimeout(500);
-  await event.dairyFree.click(); // recheck
-    }
+    await event.dairyFree.click(); // uncheck
+    await page.waitForTimeout(500);
+    await event.dairyFree.click(); // recheck
+  }
 
-await event.dairyPreference.waitFor({ state: 'visible', timeout: 10000 });
-await expect(event.dairyPreference).toBeEnabled({ timeout: 10000 });
-await event.dairyPreference.fill(registerData.SpecificationMeal);
-console.log("Entered all the food preferences");
+  await event.dairyPreference.waitFor({ state: 'visible', timeout: 10000 });
+  await expect(event.dairyPreference).toBeEnabled({ timeout: 10000 });
+  await event.dairyPreference.fill(registerData.SpecificationMeal);
+  console.log("Entered all the food preferences");
 
   await event.emergencyContactName.waitFor({ state: 'visible', timeout: 10000 });
   await event.emergencyContactName.fill(registerData.emergencyContactName);
-  await event.emergencyContactPhone.fill(registerData.emergencyConatactPhone);
+  await event.emergencyContactPhone.fill(String(registerData.emergencyConatactPhone));
   await event.optionalTour.click();
   await event.readAndUnderstandInfo.scrollIntoViewIfNeeded();
   await event.readAndUnderstandInfo.fill(registerData.signatiureName);
   console.log("Entered all the additional details for the attendee");
 }
-
-
-export async function clickAllEvents(page: Page): Promise<void> {
-
-  const event = new EventsPage(page);
-
-  let retries = 3;
-  while (retries > 0)
-  {
-  await event.recentView.click({ force: true });
-  await event.all.waitFor({ state: 'visible', timeout: 10000 });
-  await event.all.click();
-  await page.waitForTimeout(2000);
-  if (await event.printableView.isVisible()) break;
-  await page.waitForTimeout(1000);
-  retries--;
-  }
-}
-

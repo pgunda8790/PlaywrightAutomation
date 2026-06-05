@@ -1,5 +1,4 @@
 import { Page, Locator } from '@playwright/test';
-import registerData from "../../data/registration.json";
 
 
 export class EventsPage {
@@ -35,14 +34,16 @@ export class EventsPage {
   adminCancellationReason:Locator;
   saveEdit:Locator;
   printableView:Locator;
+  adminCancellationDescription:Locator;
 
 
-  constructor(private page: Page) {
+
+  constructor(private page: Page, registerData: any) {
     
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     
     this.EventsTab =page.locator("//a[@title='Events']//span[normalize-space()='Events']");
-    this.recentView=page.locator("//span[normalize-space()='Recently Viewed']");
+    this.recentView = page.locator("//button[contains(@title,'Select a List View: Events')]");
     this.all=page.locator("//span[@title='All']");
     this.ticketSelction = page.locator(`//*[contains(@aria-label,'${registerData.ticketName}')]`);
     this.addAttendee=page.locator("//span[normalize-space()='Add Attendee']");
@@ -72,6 +73,7 @@ export class EventsPage {
     this.adminCancellationReason=page.locator(`//lightning-base-combobox-item[@data-value='${registerData.adminCancellationReason}']`);
     this.saveEdit=page.locator("//button[@name='SaveEdit']");
     this.printableView = page.locator("//div[@title='Printable View']");
+    this.adminCancellationDescription=page.locator("//label[normalize-space()='Cancellation Description']/following-sibling::div/textarea");
 
    
   }

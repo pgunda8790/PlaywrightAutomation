@@ -2,8 +2,9 @@ const { execSync } = require('child_process');
 
 // Run Playwright tests — catch so we still generate the report even if tests fail
 try {
-
-execSync('npx playwright test', { stdio: 'inherit' });
+  //execSync('npx playwright test', { stdio: 'inherit' });
+const args = process.argv.slice(2).join(' ');
+execSync(`npx playwright test ${args}`, { stdio: 'inherit' });
 
 } catch {
   console.log('\nSome tests failed — generating Allure report anyway...\n');
