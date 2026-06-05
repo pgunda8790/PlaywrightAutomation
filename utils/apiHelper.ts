@@ -1,5 +1,6 @@
 // utils/apiHelper.ts
 import { Page } from '@playwright/test';
+import axios from 'axios';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -17,27 +18,12 @@ export async function getAccessToken(page: Page): Promise<string> {
   return accessToken;
 }
 
-export async function runSOQL(soqlQuery: string, page: Page) {
-  const accessToken = await getAccessToken(page);
-  const url = `${instanceUrl}/services/data/v59.0/query?q=${encodeURIComponent(soqlQuery)}`;
-  const headers = { Authorization: `Bearer ${accessToken}` };
-  const response = await page.context().request.get(url, { headers });
+export async function runSOQL(soqlQuery: string, accessToken: string) {
+  const url = `${process.env.orgURL}/services/data/v59.0/query?q=${encodeURIComponent(soqlQuery)}`;
+  
+  const response = await axios.get(url, {
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
 
-  if (!response.ok()) {
-    const body = await response.text();
-    throw new Error(
-      `SOQL request failed [${response.status()}]:\nURL: ${url}\nResponse: ${body.substring(0, 500)}`
-    );
-  }
-
-  const contentType = response.headers()['content-type'] ?? '';
-  if (!contentType.includes('application/json')) {
-    const body = await response.text();
-    throw new Error(
-      `Expected JSON but got "${contentType}".\nThis usually means your session expired or OrgURL is wrong.\nResponse: ${body.substring(0, 300)}`
-    );
-  }
-
-  const { records } = await response.json();
-  return records;
+  return response.data.records;
 }

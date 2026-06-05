@@ -43,7 +43,7 @@ export class EventsPage {
     const frame = page.frameLocator('iframe[src*="blackthorn.io"]');
     
     this.EventsTab =page.locator("//a[@title='Events']//span[normalize-space()='Events']");
-    this.recentView = page.locator("//button[contains(@title,'Select a List View')]");
+    this.recentView = page.locator("//button[contains(@title,'Select a List View: Events')]");
     this.all=page.locator("//span[@title='All']");
     this.ticketSelction = page.locator(`//*[contains(@aria-label,'${registerData.ticketName}')]`);
     this.addAttendee=page.locator("//span[normalize-space()='Add Attendee']");

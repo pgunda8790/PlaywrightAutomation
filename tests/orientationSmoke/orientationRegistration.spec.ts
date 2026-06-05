@@ -1,44 +1,33 @@
 import { test, expect } from '@playwright/test';
 import { EventRegistrationPage } from '../../pages/orientationEvents/eventRegistrationPage';
 import { userLoginByPassMFA } from '../../utils/BuLogin';
-import { error } from 'node:console';
 import { saveToJson } from '../../utils/dataExtracter';
-//import registerData from "../../data/registration.json";
 import { readExcelData } from '../../utils/excelReader';
 import { AttendeePage } from '../../pages/orientationEvents/attendeeLinkPage';
-import { loginSF } from '../../utils/authUtils';
 import { fillRegistrationDetailsByAttendee, getEventRegisteredCount, getEventItemCounts, validateSessions, validateEmergencyContact, cancellationPageFieldsVisibilityCheck, cancellationConfirmation, addSessions, verifyAttendee } from '../../utils/OrientationHelpers/eventRegistrationHelpers';
-import { existsSync } from 'fs';
+import { createFlowState } from '../../utils/flowStateManager';
 
-test.use({ storageState: existsSync('state.json') ? 'state.json' : undefined });
+const testDataRows = readExcelData('orientation_test_data.xlsx', 'Registration');
+const registerData = testDataRows.find(row => row.Type === 'Student Registration');
+
+if (!registerData) {
+  throw new Error('No data found in Test Data sheet. Check execute column is set to yes.');
+}
+
+const flow = createFlowState('studentFlowState.json');
 
 test.describe('Registration Creation and Cancellation validations', () => {
-  const testDataRows = readExcelData('orientation_test_data.xlsx', 'Registration');
-  const registerData = testDataRows.find(row => row.Type === 'Student Registration');
-
-    if (!registerData) {
-  throw new Error('No data found in Test Data sheet. Check execute column is set to yes.');
-     }
-  test.describe.configure({ mode: 'serial' });
-
-  let suiteFailed = false;
-
-  test.beforeEach(async ({ }, testInfo) => {
-    if (suiteFailed) testInfo.skip(true, 'Skipping due to previous test failure');
-  });
-
-  test.afterEach(async ({ }, testInfo) => {
-    if (testInfo.status === 'failed') suiteFailed = true;
-  });
 
   // ─── TEST 1 ───────────────────────────────────────────────────────────────
-  test('Student Orientation Event Registration @test1', async ({ page }) => {
+  test('Student Orientation Event Registration', async ({ page }) => {
 
-    const register = new EventRegistrationPage(page,registerData);
+    flow.resetState();
+
+    const register = new EventRegistrationPage(page, registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
-      await userLoginByPassMFA(page);
+      await userLoginByPassMFA(page, registerData.LoginName);
     });
 
     await test.step('Select the New orientation Tile and particular event', async () => {
@@ -81,22 +70,19 @@ test.describe('Registration Creation and Cancellation validations', () => {
       try {
         await register.congratulationsLogo.waitFor({ state: 'visible' });
       } catch {
-        console.log("Seems the logo is not found : " + error);
+        console.log("Seems the logo is not found");
       }
     });
 
-  }); // END TEST 1
+    flow.markPassed('test1');
+  });
 
   // ─── TEST 2 ───────────────────────────────────────────────────────────────
-  test('Verify Attendee record is stored in backend @test2', async ({ page }) => {
-
-    await test.step('Login To SalesForce', async () => {
-      await loginSF(page);
-    });
+  test('Verify Attendee record is stored in backend', async ({ page }) => {
+    test.skip(!flow.hasPassed('test1'), 'Skipping: Test 1 did not pass');
 
     await test.step('Verify the attendee record in backend and its relation to the event', async () => {
-      const attendeeFound = await verifyAttendee(page, registerData);
-
+      const attendeeFound = await verifyAttendee(registerData);
       if (attendeeFound) {
         console.log("Attendee Found");
       } else {
@@ -105,16 +91,18 @@ test.describe('Registration Creation and Cancellation validations', () => {
       expect(attendeeFound).toBe(true);
     });
 
-  }); // END TEST 2
+    flow.markPassed('test2');
+  });
 
   // ─── TEST 3 ───────────────────────────────────────────────────────────────
-  test('View AttendeeLink page and session agenda @test3', async ({ page, context }) => {
+  test('View AttendeeLink page and session agenda', async ({ page, context }) => {
+    test.skip(!flow.hasPassed('test1', 'test2'), 'Skipping: Test 1 or 2 did not pass');
 
-    const register = new EventRegistrationPage(page,registerData);
+    const register = new EventRegistrationPage(page, registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
-      await userLoginByPassMFA(page);
+      await userLoginByPassMFA(page, registerData.LoginName);
     });
 
     await test.step('Select the New orientation Tile and Click on attendee Link', async () => {
@@ -126,9 +114,8 @@ test.describe('Registration Creation and Cancellation validations', () => {
       const newPage = await context.waitForEvent('page',
         page => page.url().includes('events.blackthorn.io')
       );
-
       await newPage.waitForLoadState('domcontentloaded');
-      const attendee = new AttendeePage(newPage,registerData);
+      const attendee = new AttendeePage(newPage, registerData);
 
       await attendee.dateLocator.waitFor({ state: 'visible' });
       await attendee.eventLocator.waitFor({ state: 'visible' });
@@ -141,52 +128,59 @@ test.describe('Registration Creation and Cancellation validations', () => {
 
       await validateSessions(context, newPage, registerData);
     });
+  });
 
-  }); 
+  // ─── TEST 4 ───────────────────────────────────────────────────────────────
+  test('Update Non mandatory sessions and validate backend', async ({ page, context }) => {
+    test.skip(!flow.hasPassed('test1', 'test2'), 'Skipping: Test 1 or 2 did not pass');
 
-  //Test4
-  test('Update Non mandatory sessions and validate backend @test4', async ({ page, context }) => {
+    const register = new EventRegistrationPage(page, registerData);
 
-  const register = new EventRegistrationPage(page,registerData);
-  await page.goto(process.env.MY_BU_PORTAL!);
-  await userLoginByPassMFA(page);
-  await register.newStudentOrientation.click();
-  await register.attendeeLink.click();
+    
+    await test.step('Student login to BU portal', async () => {
+      await page.goto(process.env.MY_BU_PORTAL!);
+      await userLoginByPassMFA(page, registerData.LoginName);
+    });
 
-  const newPage = await context.waitForEvent('page',
-    page => page.url().includes('events.blackthorn.io')
-  );
+    await test.step('Select the New orientation Tile and Click on attendee Link', async () => {
+      await register.newStudentOrientation.click();
+      await register.attendeeLink.click();
+    });
 
-  await newPage.waitForLoadState('domcontentloaded');
-  const attendee = new AttendeePage(newPage,registerData);
+    await test.step('Verify Blackthorn page is opened ,added and removed a session and submitted', async () => {
+    const newPage = await context.waitForEvent('page',
+      page => page.url().includes('events.blackthorn.io')
+    );
+    await newPage.waitForLoadState('domcontentloaded');
+    const attendee = new AttendeePage(newPage, registerData);
 
-  await attendee.sessionRegistrationTab.dblclick({ delay: 100 });
-  await attendee.sessionToAdd.first().click();
-  console.log(`Checked session: "${registerData.addedSession}"`);
+    await attendee.sessionRegistrationTab.dblclick({ delay: 100 });
+    await attendee.sessionToAdd.first().click();
+    console.log(`Checked session: "${registerData.addedSession}"`);
 
-  await attendee.uncheckedSession.first().scrollIntoViewIfNeeded();
-  await attendee.uncheckedSession.first().click();
-  console.log(`Unchecked session: "${registerData.uncheckedSession}"`);
-  await attendee.submit.click();
-  //Wait for changes to sync to backend
-  await newPage.waitForLoadState('domcontentloaded');
+    await attendee.uncheckedSession.first().scrollIntoViewIfNeeded();
+    await attendee.uncheckedSession.first().click();
+    console.log(`Unchecked session: "${registerData.uncheckedSession}"`);
 
-  //Validate using your existing function
-  const sfNames = await validateSessions(context,newPage,registerData);
+    await expect(attendee.submit).toBeVisible();
+    await attendee.submit.click();
+    await newPage.waitForLoadState('domcontentloaded');
+    const sfNames = await validateSessions(context, newPage, registerData);
+    console.log('SF Session Names returned:', sfNames);
+    expect(sfNames).toContain(registerData.addedSession);
+    console.log(`Added session found in SF: "${registerData.addedSession}"`);
+    });
+  });
 
-expect(sfNames).toContain(registerData.addedSession);
-console.log(`Added session found in SF: "${registerData.addedSession}"`);
+  // ─── TEST 5 ───────────────────────────────────────────────────────────────
+  test('The Registration Update Info', async ({ page, context }) => {
+    test.skip(!flow.hasPassed('test1', 'test2'), 'Skipping: Test 1 or 2 did not pass');
 
-});
-
-//Test5
-  test('The Registration Update Info @test5', async ({ page, context }) => {
-
-    const register = new EventRegistrationPage(page,registerData);
+    const register = new EventRegistrationPage(page, registerData);
 
     await test.step('Student login to BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
-      await userLoginByPassMFA(page);
+      await userLoginByPassMFA(page, registerData.LoginName);
     });
 
     await test.step('Select the New orientation Tile', async () => {
@@ -216,31 +210,28 @@ console.log(`Added session found in SF: "${registerData.addedSession}"`);
     });
 
     await test.step('Validate the updated changes stored in backend', async () => {
-      const sfPage = await context.newPage();
-      await loginSF(sfPage);
-      await validateEmergencyContact(sfPage, registerData.studentEmail, registerData.emergencyNameUpdated, registerData.emergencyPhoneUpdated);
-      await sfPage.close();
+      await validateEmergencyContact(registerData.studentEmail, registerData.emergencyNameUpdated, registerData.emergencyPhoneUpdated);
     });
+  });
 
-  }); 
+  // ─── TEST 6 — only needs test 1 + test 2, independent of 3,4,5 ───────────
+  test('The Registration Cancellation and record count validation', async ({ page }) => {
+    test.skip(!flow.hasPassed('test1', 'test2'), 'Skipping: Test 1 or 2 did not pass');
 
-  test('The Registration Cancellation and record count validation @test6', async ({ page }) => {
-
-    const register = new EventRegistrationPage(page,registerData);
+    const register = new EventRegistrationPage(page, registerData);
     let attendeeRemainigSnapshot: number;
     let eventItemRemainingSnapshot: number;
 
-    await test.step('Login to SalesForce and take count of remaining seats available', async () => {
-      await loginSF(page);
-      attendeeRemainigSnapshot = await getEventRegisteredCount(page, registerData);
-      eventItemRemainingSnapshot = await getEventItemCounts(page, registerData);
+    await test.step('Take count of remaining seats available', async () => {
+      attendeeRemainigSnapshot = await getEventRegisteredCount(registerData);
+      eventItemRemainingSnapshot = await getEventItemCounts(registerData);
       console.log("Remaining Attendee Registration for event: " + attendeeRemainigSnapshot);
       console.log("Remaining Attendee Registrations for particular Ticket: " + eventItemRemainingSnapshot);
     });
 
     await test.step('Login to Student BU portal', async () => {
       await page.goto(process.env.MY_BU_PORTAL!);
-      await userLoginByPassMFA(page);
+      await userLoginByPassMFA(page, registerData.LoginName);
     });
 
     await test.step('Navigate to student orientation page', async () => {
@@ -259,13 +250,12 @@ console.log(`Added session found in SF: "${registerData.addedSession}"`);
 
     await test.step('Verify Cancellation Confirmation in the backend', async () => {
       await page.waitForTimeout(15000);
-      await cancellationConfirmation(page,registerData,registerData.StudentCancelled, registerData.cancellationComments);
+      await cancellationConfirmation(page, registerData, registerData.StudentCancelled, registerData.cancellationComments);
     });
 
     await test.step('Verify seat counts are restored after cancellation', async () => {
-      await page.goto(process.env.orgURL!);
-      const attendeeRemainingAfterCancel = await getEventRegisteredCount(page, registerData);
-      const eventItemRemainingAfterCancel = await getEventItemCounts(page, registerData);
+      const attendeeRemainingAfterCancel = await getEventRegisteredCount(registerData);
+      const eventItemRemainingAfterCancel = await getEventItemCounts(registerData);
 
       expect(attendeeRemainingAfterCancel).toBe(attendeeRemainigSnapshot + 1);
       expect(eventItemRemainingAfterCancel).toBe(eventItemRemainingSnapshot + 1);
@@ -273,7 +263,6 @@ console.log(`Added session found in SF: "${registerData.addedSession}"`);
       console.log("Remaining Attendee Registration for event: " + attendeeRemainingAfterCancel);
       console.log("Remaining Attendee Registrations for particular Ticket: " + eventItemRemainingAfterCancel);
     });
+  });
 
-  }); 
-
-}); 
+});

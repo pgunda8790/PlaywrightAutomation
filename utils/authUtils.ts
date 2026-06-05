@@ -40,8 +40,8 @@ export async function loginSF(page: Page) {
   try {
     
     await page.goto(process.env.LoginURL!);
-    await login.username.fill(process.env.buLoginName!);
-    await login.password.fill(process.env.buPassword!);
+    await login.username.fill(process.env.SFLoginName!);
+    await login.password.fill(process.env.SFPassword!);
     await login.loginSandbox.click();
 
     await page.waitForFunction(
