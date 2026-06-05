@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       spec_file:
-        description: 'Spec file relative to tests/ (e.g. orientationSmoke/orientationRegistration.spec.ts). Leave blank to run all tests.'
+        description: 'Spec file path (e.g. tests/orientationSmoke/orientationRegistration.spec.ts). Leave blank to run all.'
         required: false
         default: ''
         type: string
@@ -27,17 +27,15 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 120        # Increased to handle long-running tests (3-4 min each)
     runs-on: ubuntu-latest
 
     env:
-
       BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
       BUPasscode: ${{ secrets.BUPASSCODE }}
       SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
       SF_USERNAME: ${{ secrets.SF_USERNAME }}
 
-  
     steps:
       - uses: actions/checkout@v4
 
@@ -49,8 +47,29 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Cache Playwright browsers — avoids 167MB download on every run
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            playwright-${{ runner.os }}-
+
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
+        run: |
+          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
+            echo "Cache hit — installing system deps only"
+            npx playwright install-deps ${{ github.event.inputs.browser || 'chromium' }}
+          else
+            echo "Cache miss — full install"
+            npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
+          fi
+
+      # Install Allure CLI so report generation never fails
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --save-dev
 
       - name: Get run date
         id: date
@@ -64,7 +83,9 @@ jobs:
           BROWSER="${{ github.event.inputs.browser || 'chromium' }}"
           HEADED="${{ github.event.inputs.headed || 'false' }}"
 
-          CMD_ARGS="--project=$BROWSER"
+          # --timeout=240000 = 4 min per test (covers your 3-4 min tests)
+          # No --retries to avoid doubling run time on slow tests
+          CMD_ARGS="--project=$BROWSER --timeout=240000"
           [ -n "$SPEC" ] && CMD_ARGS="$SPEC $CMD_ARGS"
           [ "$HEADED" = "true" ] && CMD_ARGS="$CMD_ARGS --headed"
 
