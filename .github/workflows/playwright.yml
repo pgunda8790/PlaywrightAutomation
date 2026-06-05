@@ -1,117 +1,36 @@
-name: Playwright Tests
-
+name: Playwright Base Tests
+ 
 on:
-  schedule:
-    - cron: '0 4 * * 1'   # 9:30 AM IST (UTC+5:30) = 04:00 UTC, Monday only
+  push:    
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
   workflow_dispatch:
-    inputs:
-      spec_file:
-        description: 'Spec file path (e.g. tests/orientationSmoke/orientationRegistration.spec.ts). Leave blank to run all.'
-        required: false
-        default: ''
-        type: string
-      browser:
-        description: 'Browser'
-        required: false
-        default: 'chromium'
-        type: choice
-        options:
-          - chromium
-          - firefox
-          - webkit
-      headed:
-        description: 'Run in headed mode (routed through xvfb on Linux)'
-        required: false
-        default: false
-        type: boolean
-
+ 
 jobs:
-  test:
-    timeout-minutes: 120
+  playwright-tests:
+    name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
-
-    env:
-      BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
-      BUPasscode: ${{ secrets.BUPASSCODE }}
-      SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
-      SF_USERNAME: ${{ secrets.SF_USERNAME }}
-
+ 
+    container:
+      image: provide your container
+ 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      # Cache Playwright browsers — avoids 167MB download on every run
-      - name: Cache Playwright browsers
-        id: playwright-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            playwright-${{ runner.os }}-
-
-      # ✅ FIXED: Simplified install + 15min timeout to prevent 1hr hang
-      - name: Install Playwright browsers
-        timeout-minutes: 15
-        run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
-
-      # Install Allure CLI so report generation never fails
-      - name: Install Allure CLI
-        run: npm install -g allure-commandline --save-dev
-
-      - name: Get run date
-        id: date
-        run: echo "value=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
-
-      - name: Resolve test arguments
-        id: args
-        shell: bash
-        run: |
-          SPEC="${{ github.event.inputs.spec_file }}"
-          BROWSER="${{ github.event.inputs.browser || 'chromium' }}"
-          HEADED="${{ github.event.inputs.headed || 'false' }}"
-
-          CMD_ARGS="--project=$BROWSER --timeout=240000"
-          [ -n "$SPEC" ] && CMD_ARGS="$SPEC $CMD_ARGS"
-          [ "$HEADED" = "true" ] && CMD_ARGS="$CMD_ARGS --headed"
-
-          echo "value=$CMD_ARGS"  >> "$GITHUB_OUTPUT"
-          echo "headed=$HEADED"   >> "$GITHUB_OUTPUT"
-          echo "browser=$BROWSER" >> "$GITHUB_OUTPUT"
-
-      - name: Run Playwright tests (headless)
-        if: steps.args.outputs.headed != 'true'
-        run: npx playwright test ${{ steps.args.outputs.value }}
-        continue-on-error: true
-
-      - name: Run Playwright tests (headed via xvfb)
-        if: steps.args.outputs.headed == 'true'
-        run: xvfb-run --auto-servernum npx playwright test ${{ steps.args.outputs.value }}
-        continue-on-error: true
-
-      - name: Generate Allure report
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: 📦 Install Dependencies
+        run: npm install        
+ 
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps        
+ 
+      - name: 🧪 Run Playwright Tests
+        run: npx playwright test        
+ 
+      - name: Upload HTML report
         if: always()
-        run: npx allure generate reports/allure-results --clean -o reports/allure-report
-
-      - name: Upload Allure report
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: allure-report-${{ steps.args.outputs.browser }}-${{ steps.date.outputs.value }}-run${{ github.run_number }}
-          path: reports/allure-report/
-          retention-days: 30
-
-      - name: Upload Playwright HTML report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-html-report-${{ steps.args.outputs.browser }}-${{ steps.date.outputs.value }}-run${{ github.run_number }}
-          path: reports/html-report-*/
-          retention-days: 30
+          name: playwright-report
+          path: playwright-report/
