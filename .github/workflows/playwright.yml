@@ -27,7 +27,7 @@ on:
 
 jobs:
   test:
-    timeout-minutes: 120        # Increased to handle long-running tests (3-4 min each)
+    timeout-minutes: 120
     runs-on: ubuntu-latest
 
     env:
@@ -57,15 +57,10 @@ jobs:
           restore-keys: |
             playwright-${{ runner.os }}-
 
+      # ✅ FIXED: Simplified install + 15min timeout to prevent 1hr hang
       - name: Install Playwright browsers
-        run: |
-          if [ "${{ steps.playwright-cache.outputs.cache-hit }}" = "true" ]; then
-            echo "Cache hit — installing system deps only"
-            npx playwright install-deps ${{ github.event.inputs.browser || 'chromium' }}
-          else
-            echo "Cache miss — full install"
-            npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
-          fi
+        timeout-minutes: 15
+        run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
 
       # Install Allure CLI so report generation never fails
       - name: Install Allure CLI
@@ -83,8 +78,6 @@ jobs:
           BROWSER="${{ github.event.inputs.browser || 'chromium' }}"
           HEADED="${{ github.event.inputs.headed || 'false' }}"
 
-          # --timeout=240000 = 4 min per test (covers your 3-4 min tests)
-          # No --retries to avoid doubling run time on slow tests
           CMD_ARGS="--project=$BROWSER --timeout=240000"
           [ -n "$SPEC" ] && CMD_ARGS="$SPEC $CMD_ARGS"
           [ "$HEADED" = "true" ] && CMD_ARGS="$CMD_ARGS --headed"
