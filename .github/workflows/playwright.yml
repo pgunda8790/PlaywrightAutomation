@@ -12,8 +12,7 @@ jobs:
     name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
  
-    container:
-      image: provide your container
+ 
  
     steps:
       - name: 📥 Checkout code
