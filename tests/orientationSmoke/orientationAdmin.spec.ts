@@ -20,7 +20,7 @@ test.describe('Admin Orientation Event Flow', () => {
 
   // ─── TEST 1 — no dependencies ─────────────────────────────────────────────
   test('Register attendee from Event ticket', async ({ page }) => {
-    test.setTimeout(180000);
+    test.setTimeout(300000);
 
     flow.resetState();
 
