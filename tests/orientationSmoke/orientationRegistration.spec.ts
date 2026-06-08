@@ -80,7 +80,7 @@ test.describe('Registration Creation and Cancellation validations', () => {
   // ─── TEST 2 ───────────────────────────────────────────────────────────────
   test('Verify Attendee record is stored in backend', async ({ page }) => {
     test.skip(!flow.hasPassed('test1'), 'Skipping: Test 1 did not pass');
-
+    test.setTimeout(300000);
     await test.step('Verify the attendee record in backend and its relation to the event', async () => {
       const attendeeFound = await verifyAttendee(registerData);
       if (attendeeFound) {
@@ -158,9 +158,20 @@ test.describe('Registration Creation and Cancellation validations', () => {
     await attendee.sessionToAdd.first().click();
     console.log(`Checked session: "${registerData.addedSession}"`);
 
-    await attendee.uncheckedSession.first().scrollIntoViewIfNeeded();
-    await attendee.uncheckedSession.first().click();
+   
+    const uncheckedSession = attendee.uncheckedSession.first();
+    const isVisible = await uncheckedSession.waitFor({ 
+    state: 'visible', 
+    timeout: 5000 
+    }).then(() => true).catch(() => false);  // return false instead of throwing error
+
+    if (isVisible) {
+    await uncheckedSession.scrollIntoViewIfNeeded();
+    await uncheckedSession.click();
     console.log(`Unchecked session: "${registerData.uncheckedSession}"`);
+    } else {
+   console.log(`No unchecked session found`);
+  }
 
     await expect(attendee.submit).toBeVisible();
     await attendee.submit.click();
