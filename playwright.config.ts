@@ -22,7 +22,7 @@ const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 300000,
+  timeout: 120000,
 
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
@@ -40,6 +40,7 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'on',
     video: 'on',
+    navigationTimeout: 30000,
   },
 
   projects: [
