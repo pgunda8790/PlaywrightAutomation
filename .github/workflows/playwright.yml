@@ -24,7 +24,17 @@ jobs:
         run: npm install        
  
       - name: 🎭 Install Playwright Browsers
-        run: npx playwright install --with-deps        
+        run: npx playwright install --with-deps
+
+      - name: 📝 Create .env file
+        run: |
+          echo "BUTestPassword=${{ secrets.BUTESTPASSWORD }}" >> .env
+          echo "BUPasscode=${{ secrets.BUPASSCODE }}" >> .env
+          echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> .env
+          echo "SF_CLIENT_ID=${{ secrets.SF_CLIENT_ID }}" >> .env
+
+      - name: 🔑 Create server.key file
+        run: echo "${{ secrets.SF_PRIVATE_KEY }}" > server.key
  
       - name: 🧪 Run Playwright Tests
         run: npx playwright test --project=chromium      
