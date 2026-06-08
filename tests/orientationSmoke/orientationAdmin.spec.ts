@@ -134,6 +134,7 @@ test.describe('Admin Orientation Event Flow', () => {
     await test.step('Navigate to the required event', async () => {
       await event.EventsTab.waitFor({ state: 'visible', timeout: 30000 });
       await event.EventsTab.click({ force: true });
+      await event.EventsTab.click({ force: true });
       await page.waitForLoadState('domcontentloaded');
       await event.recentView.waitFor({ state: 'visible', timeout: 10000 });
       await page.waitForTimeout(1000);

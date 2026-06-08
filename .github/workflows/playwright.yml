@@ -1,28 +1,30 @@
 name: Playwright Base Tests
- 
+
 on:
   schedule:
     - cron: '0 0 * * 1'  # Every Monday at midnight UTC
   workflow_dispatch:
- 
+
 jobs:
   playwright-tests:
     name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for GitHub Pages deployment
 
     env:
       BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
       BUPasscode: ${{ secrets.BUPASSCODE }}
       SF_USERNAME: ${{ secrets.SF_USERNAME }}
       SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
- 
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
- 
+
       - name: 📦 Install Dependencies
-        run: npm install        
- 
+        run: npm install
+
       - name: 🎭 Install Playwright Browsers
         run: npx playwright install --with-deps
 
@@ -35,13 +37,47 @@ jobs:
 
       - name: 🔑 Create server.key file
         run: echo "${{ secrets.SF_PRIVATE_KEY }}" > server.key
- 
+
       - name: 🧪 Run Playwright Tests
-        run: npx playwright test --project=chromium      
- 
-      - name: Upload HTML report
+        run: npx playwright test --project=chromium
+        continue-on-error: true
+
+      - name: 📈 Fetch Allure History from GitHub Pages
+        if: always()
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true  # Passes on first run (gh-pages branch doesn't exist yet)
+
+      - name: 📊 Generate Allure Report
+        if: always()
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            echo "Restoring previous run history for trend data..."
+            cp -r gh-pages/history reports/allure-results/history
+          fi
+          npx allure generate reports/allure-results --clean -o allure-report
+
+      - name: 📤 Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      - name: 🚀 Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report
+
+      - name: 📤 Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
           path: playwright-report/

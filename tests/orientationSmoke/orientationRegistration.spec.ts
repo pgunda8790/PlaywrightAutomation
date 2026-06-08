@@ -227,7 +227,7 @@ test.describe('Registration Creation and Cancellation validations', () => {
 
   // ─── TEST 6 — only needs test 1 + test 2, independent of 3,4,5 ───────────
   test('The Registration Cancellation and record count validation', async ({ page }) => {
-    test.skip(!flow.hasPassed('test1', 'test2'), 'Skipping: Test 1 or 2 did not pass');
+    test.skip(!flow.hasPassed('test1'), 'Skipping: Test 1 did not pass');
 
     const register = new EventRegistrationPage(page, registerData);
     let attendeeRemainigSnapshot: number;
