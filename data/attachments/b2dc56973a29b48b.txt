@@ -1,0 +1,32 @@
+Attempt 1/5: Querying backend...
+Record found: {
+  "attributes": {
+    "type": "conference360__Attendee__c",
+    "url": "/services/data/v59.0/sobjects/conference360__Attendee__c/a1fdi000001NtT5AAK"
+  },
+  "conference360__Account_Name__c": "Test2201 (TEST) Administrative Account",
+  "conference360__Event_Name__c": "September Test Orientation Event (cloned)",
+  "conference360__Email2__c": "tst_2201@bu.edu",
+  "zBU_Dairy_Allergy_Details__c": "Gluten Free",
+  "zBU_Dairy_free_Meals__c": true,
+  "zBU_Orientation_Emergency_Contact_Name__c": "Mike",
+  "zBU_Orientation_Emergency_Contact_Phone__c": "72618802",
+  "zBU_Participant_Responsibilities_SignOff__c": "TestUser",
+  "conference360__Registration_Status__c": "Registered",
+  "conference360__First_Name2__c": "TEST",
+  "conference360__Last_Name2__c": "Test2201",
+  "conference360__Attendance_Status__c": null,
+  "zBU_Additional_Allergy__c": false,
+  "zBU_Additional_Allergy_Details__c": null,
+  "zBU_Accommodation_Details__c": null,
+  "zBU_Gluten_Free__c": false,
+  "zBU_Halal_Meals__c": false,
+  "zBU_Kosher_Meals__c": false,
+  "zBU_Nut_Allergy__c": false,
+  "zBU_Vegan_Meals__c": false,
+  "zBU_Vegetarian_Meals__c": false,
+  "zBU_Interested_in_a_tour__c": true
+}
+All fields validated successfully
+Waiting for the backend to update eligibility...
+No eligible student found for email: tst_2201@bu.edu after 3 attempts

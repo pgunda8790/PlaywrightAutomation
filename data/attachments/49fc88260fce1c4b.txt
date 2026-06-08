@@ -1,0 +1,9 @@
+Logged into Salesforce via JWT ✅
+Eligible student found for email: tst_2201@bu.edu
+Student is Eligible for the orientationEvent
+Event found: September Test Orientation Event (cloned)
+Registration page displayed for Admin
+Selected the Desired User
+Entered all the food preferences
+Entered all the additional details for the attendee
+Registration completed on UI

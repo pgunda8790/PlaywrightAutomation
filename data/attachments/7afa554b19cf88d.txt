@@ -1,0 +1,26 @@
+Checked session: "Introduction to SILab"
+No unchecked session found
+Event Name: September Test Orientation Event (cloned)
+Total non-mandatory sessions from SF: 8
+SF Session Names: [
+  'Get to Know Pre-Law at BU & Ask Us Anything!',
+  'Cinema & Media Studies',
+  'Introduction to BTEC',
+  'Introduction to the Biology and BMB majors',
+  'Find Your Squad with First-Year Success',
+  'IT is hard – IS&T can help',
+  'First Year Experience for CAS Students- Getting involved right away!',
+  'ResHall Living 101: How to thrive with your roommates and ResHall community'
+]
+Total checked sessions on UI: 9
+UI Session Names: [
+  'Get to Know Pre-Law at BU & Ask Us Anything!',
+  'Cinema & Media Studies',
+  'Introduction to BTEC',
+  'Introduction to the Biology and BMB majors',
+  'Introduction to SILab',
+  'Find Your Squad with First-Year Success',
+  'IT is hard – IS&T can help',
+  'First Year Experience for CAS Students- Getting involved right away!',
+  'ResHall Living 101: How to thrive with your roommates and ResHall community'
+]

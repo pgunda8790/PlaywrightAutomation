@@ -1,0 +1,14 @@
+Data saved: {
+  EventName: 'September Test Orientation Event (cloned)',
+  Email: 'tst_1612@bu.edu'
+}
+Sessionnames :Cinema & Media Studies|History of Art & Architecture at BU|Arts in Action|Kilachand Honors College: Freedom Trail|BU Marine Program|Finding Your People at BU
+Total count 179
+Added : Cinema & Media Studies
+Added : Kilachand Honors College: Freedom Trail
+Added : BU Marine Program
+Added : BU Marine Program
+Added : Arts in Action
+Added : Finding Your People at BU
+Added : Arts in Action
+Added : Arts in Action
