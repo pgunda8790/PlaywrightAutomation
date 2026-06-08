@@ -1,3 +1,0 @@
-Logged into Salesforce via JWT ✅
-Eligible student found for email: tst_2201@bu.edu
-Student is Eligible for the orientationEvent

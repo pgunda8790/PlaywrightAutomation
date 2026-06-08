@@ -1,2 +1,0 @@
-Logged into Salesforce via JWT ✅
-Event found: September Test Orientation Event (cloned)

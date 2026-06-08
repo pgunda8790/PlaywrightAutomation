@@ -1,3 +1,0 @@
-Backend Emergency Contact Name: Mike
-Backend Emergency Contact Phone: 98765423
-✅ Emergency contact details validated successfully
