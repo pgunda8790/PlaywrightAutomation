@@ -1,103 +1,37 @@
-name: Playwright Tests
-
+name: Playwright Base Tests
+ 
 on:
   schedule:
-    - cron: '0 4 * * 1'   # 9:30 AM IST (UTC+5:30) = 04:00 UTC, Monday only
+    - cron: '0 0 * * 1'  # Every Monday at midnight UTC
   workflow_dispatch:
-    inputs:
-      spec_file:
-        description: 'Spec file relative to tests/ (e.g. orientationSmoke/orientationRegistration.spec.ts). Leave blank to run all tests.'
-        required: false
-        default: ''
-        type: string
-      browser:
-        description: 'Browser'
-        required: false
-        default: 'chromium'
-        type: choice
-        options:
-          - chromium
-          - firefox
-          - webkit
-      headed:
-        description: 'Run in headed mode (routed through xvfb on Linux)'
-        required: false
-        default: false
-        type: boolean
-
+ 
 jobs:
-  test:
-    timeout-minutes: 60
+  playwright-tests:
+    name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
 
     env:
-
       BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
       BUPasscode: ${{ secrets.BUPASSCODE }}
-      SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
       SF_USERNAME: ${{ secrets.SF_USERNAME }}
-
-  
+      SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+ 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps ${{ github.event.inputs.browser || 'chromium' }}
-
-      - name: Get run date
-        id: date
-        run: echo "value=$(date +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
-
-      - name: Resolve test arguments
-        id: args
-        shell: bash
-        run: |
-          SPEC="${{ github.event.inputs.spec_file }}"
-          BROWSER="${{ github.event.inputs.browser || 'chromium' }}"
-          HEADED="${{ github.event.inputs.headed || 'false' }}"
-
-          CMD_ARGS="--project=$BROWSER"
-          [ -n "$SPEC" ] && CMD_ARGS="$SPEC $CMD_ARGS"
-          [ "$HEADED" = "true" ] && CMD_ARGS="$CMD_ARGS --headed"
-
-          echo "value=$CMD_ARGS"  >> "$GITHUB_OUTPUT"
-          echo "headed=$HEADED"   >> "$GITHUB_OUTPUT"
-          echo "browser=$BROWSER" >> "$GITHUB_OUTPUT"
-
-      - name: Run Playwright tests (headless)
-        if: steps.args.outputs.headed != 'true'
-        run: npx playwright test ${{ steps.args.outputs.value }}
-        continue-on-error: true
-
-      - name: Run Playwright tests (headed via xvfb)
-        if: steps.args.outputs.headed == 'true'
-        run: xvfb-run --auto-servernum npx playwright test ${{ steps.args.outputs.value }}
-        continue-on-error: true
-
-      - name: Generate Allure report
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+ 
+      - name: 📦 Install Dependencies
+        run: npm install        
+ 
+      - name: 🎭 Install Playwright Browsers
+        run: npx playwright install --with-deps        
+ 
+      - name: 🧪 Run Playwright Tests
+        run: npx playwright test --project=chromium      
+ 
+      - name: Upload HTML report
         if: always()
-        run: npx allure generate reports/allure-results --clean -o reports/allure-report
-
-      - name: Upload Allure report
         uses: actions/upload-artifact@v4
-        if: always()
         with:
-          name: allure-report-${{ steps.args.outputs.browser }}-${{ steps.date.outputs.value }}-run${{ github.run_number }}
-          path: reports/allure-report/
-          retention-days: 30
-
-      - name: Upload Playwright HTML report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: playwright-html-report-${{ steps.args.outputs.browser }}-${{ steps.date.outputs.value }}-run${{ github.run_number }}
-          path: reports/html-report-*/
-          retention-days: 30
+          name: playwright-report
+          path: playwright-report/
