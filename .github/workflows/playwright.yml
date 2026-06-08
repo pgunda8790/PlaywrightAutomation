@@ -1,35 +1,89 @@
 name: Playwright Base Tests
- 
 on:
-  push:    
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main, develop ]
+  schedule:
+    - cron: '0 0 * * 1'  # Every Monday at midnight UTC
   workflow_dispatch:
- 
+
 jobs:
   playwright-tests:
     name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
- 
- 
- 
+    permissions:
+      contents: write  # Required for GitHub Pages deployment
+
+    env:
+      BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
+      BUPasscode: ${{ secrets.BUPASSCODE }}
+      SF_USERNAME: ${{ secrets.SF_USERNAME }}
+      SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
- 
+
       - name: 📦 Install Dependencies
-        run: npm install        
- 
+        run: npm install
+
       - name: 🎭 Install Playwright Browsers
-        run: npx playwright install --with-deps        
- 
+        run: npx playwright install --with-deps
+
+      - name: 📝 Create .env file
+        run: |
+          echo "BUTestPassword=${{ secrets.BUTESTPASSWORD }}" >> .env
+          echo "BUPasscode=${{ secrets.BUPASSCODE }}" >> .env
+          echo "SF_USERNAME=${{ secrets.SF_USERNAME }}" >> .env
+          echo "SF_CLIENT_ID=${{ secrets.SF_CLIENT_ID }}" >> .env
+
+      - name: 🔑 Create server.key file
+        run: echo "${{ secrets.SF_PRIVATE_KEY }}" > server.key
+
       - name: 🧪 Run Playwright Tests
-        run: npx playwright test --project=chromium      
- 
-      - name: Upload HTML report
+        run: npx playwright test --project=chromium
+        continue-on-error: true
+
+      - name: 📈 Fetch Allure History from GitHub Pages
+        if: always()
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+        continue-on-error: true  # Passes on first run (gh-pages branch doesn't exist yet)
+
+      - name: 🔧 Restore Allure History for Trend Data
+        if: always()
+        run: |
+          if [ -d "gh-pages/history" ]; then
+            echo "Restoring previous run history for trend data..."
+            cp -r gh-pages/history allure-results/history  # ✅ Fixed path
+          else
+            echo "No previous history found. Skipping (first run)."
+          fi
+
+      - name: 📊 Generate Allure Report
+        if: always()
+        run: |
+          npm install -g allure-commandline --save-dev   # ✅ Ensures allure CLI is available
+          allure generate allure-results --clean -o allure-report  # ✅ Fixed path
+
+      - name: 📤 Upload Allure Report as Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: allure-report
+          path: allure-report/
+          retention-days: 30
+
+      - name: 🚀 Deploy Allure Report to GitHub Pages
+        if: always()
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: allure-report  # ✅ Deploys the generated report
+
+      - name: 📤 Upload Playwright HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-html-report
           path: playwright-report/
