@@ -3,20 +3,17 @@ on:
   schedule:
     - cron: '0 0 * * 1'  # Every Monday at midnight UTC
   workflow_dispatch:
-
 jobs:
   playwright-tests:
     name: 🧪 Playwright Tests
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Required for GitHub Pages deployment
-
+      contents: write
     env:
       BUTestPassword: ${{ secrets.BUTESTPASSWORD }}
       BUPasscode: ${{ secrets.BUPASSCODE }}
       SF_USERNAME: ${{ secrets.SF_USERNAME }}
       SF_CLIENT_ID: ${{ secrets.SF_CLIENT_ID }}
-
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -47,14 +44,15 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
-        continue-on-error: true  # Passes on first run (gh-pages branch doesn't exist yet)
+        continue-on-error: true
 
       - name: 🔧 Restore Allure History for Trend Data
         if: always()
         run: |
+          mkdir -p reports/allure-results
           if [ -d "gh-pages/history" ]; then
             echo "Restoring previous run history for trend data..."
-            cp -r gh-pages/history allure-results/history  # ✅ Fixed path
+            cp -r gh-pages/history reports/allure-results/history  # ✅ FIXED
           else
             echo "No previous history found. Skipping (first run)."
           fi
@@ -62,8 +60,23 @@ jobs:
       - name: 📊 Generate Allure Report
         if: always()
         run: |
-          npm install -g allure-commandline --save-dev   # ✅ Ensures allure CLI is available
-          allure generate allure-results --clean -o allure-report  # ✅ Fixed path
+          npm install -g allure-commandline
+          allure generate reports/allure-results --clean -o allure-report  # ✅ FIXED
+
+      - name: 🔧 Add .nojekyll file
+        if: always()
+        run: touch allure-report/.nojekyll
+
+      - name: 🔍 Debug - Verify report contents
+        if: always()
+        run: |
+          echo "=== allure-results ==="
+          ls -la reports/allure-results/ || echo "❌ reports/allure-results does NOT exist"
+          echo "JSON files: $(find reports/allure-results -name '*.json' 2>/dev/null | wc -l)"
+          echo ""
+          echo "=== allure-report ==="
+          ls -la allure-report/ || echo "❌ allure-report does NOT exist"
+          echo "index.html: $(test -f allure-report/index.html && echo ✅ YES || echo ❌ NO)"
 
       - name: 📤 Upload Allure Report as Artifact
         if: always()
@@ -79,11 +92,13 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: allure-report  # ✅ Deploys the generated report
+          publish_dir: allure-report
+          keep_files: false
+          enable_jekyll: false
 
       - name: 📤 Upload Playwright HTML Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-html-report
-          path: playwright-report/
+          path: reports/html-report-*/
