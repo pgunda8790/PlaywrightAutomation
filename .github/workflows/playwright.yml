@@ -38,7 +38,7 @@ jobs:
         run: echo "${{ secrets.SF_PRIVATE_KEY }}" > server.key
 
       - name: 🧪 Run Playwright Tests
-        run: npx playwright test orientationSmoke/orientationRegistration --project=chromium
+        run: npx playwright test orientationSmoke/orientationAdmin --project=chromium
         continue-on-error: true
 
       - name: 📈 Fetch Allure History from GitHub Pages
