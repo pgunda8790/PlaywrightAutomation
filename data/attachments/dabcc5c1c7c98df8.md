@@ -1,7 +1,7 @@
 # Page snapshot
 
 ```yaml
-- generic [active]:
+- generic:
   - generic [ref=e2]:
     - generic [ref=e3]:
       - link "Skip to Navigation" [ref=e4] [cursor=pointer]:
@@ -84,11 +84,11 @@
             - generic "Events (Planner)" [ref=e196]
         - navigation "Global" [ref=e199]:
           - list [ref=e200]:
-            - listitem [ref=e201]:
-              - link "Events" [ref=e202] [cursor=pointer]:
+            - listitem [ref=e201] [cursor=pointer]:
+              - link "Events" [active] [ref=e202]:
                 - /url: /lightning/o/conference360__Event__c/home
                 - generic [ref=e203]: Events
-              - button "Events List" [ref=e207] [cursor=pointer]:
+              - button "Events List" [ref=e207]:
                 - img [ref=e211]
                 - generic [ref=e214]: Events List
             - listitem [ref=e215]:
